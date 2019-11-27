@@ -19,9 +19,7 @@ class PayParkingDatabase {
     if (_database != null) {
       return _database;
     }
-
     _database = await init();
-
     return _database;
   }
 
