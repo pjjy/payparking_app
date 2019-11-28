@@ -181,18 +181,20 @@ class _ParkTransList extends State<ParkTransList> {
                     final difference = dateTimeNow.difference(dateTimeIn).inMinutes;
                     final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                     final timeAg = timeAgo.format(fifteenAgo);
-                    print(difference);
+
                     if(difference <= 90){
                       alertText = "Do you want to log out this person?";
                       alertButton = "Logout";
                       trigger = 0;
                       cardColor = Colors.white;
-                    }if(difference >= 90 && difference <= 119){
+                    }
+                    if(difference >= 90 && difference <= 119){
                       alertText = "Do you want to log out this person?";
                       alertButton = "Logout";
                       trigger = 0;
                       cardColor = Colors.blueAccent.withOpacity(.3);
-                    }if(difference >= 120){
+                    }
+                    if(difference >= 120){
                       alertText = "Do you want log out this person?";
                       alertButton = "Logout & Print";
                       trigger = 1;

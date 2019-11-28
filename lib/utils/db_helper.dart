@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart' as http;
+import 'package:data_connection_checker/data_connection_checker.dart';
+
+
 
 
 class PayParkingDatabase {
@@ -120,6 +124,28 @@ class PayParkingDatabase {
     return client.update('paypartrans', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
   }
 
+ //mysql query code
+
+
+  Future mysqlLogin(username,password) async{
+
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true){
+      final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
+        "username": username,
+        "password": password,
+      });
+      if(response.body.length >=1  && response.statusCode == 200){
+        return response.body.toString();
+//        return true;
+      }else{
+        return 'error';
+      }
+    }
+    else{
+        // walay connecttion
+    }
+  }
 
 //  Future<Car> fetchCar(int id) async {
 //    var client = await db;

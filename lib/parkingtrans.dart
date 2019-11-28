@@ -12,7 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class ParkTrans extends StatefulWidget {
-
+  final userData;
+  ParkTrans({Key key, @required this.userData}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
 }
@@ -153,7 +154,7 @@ class _ParkTrans extends State<ParkTrans> {
 //      print(stat);
 //      print(user);
 
-
+      //e ditso na sa wamp server
       await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",
@@ -171,6 +172,7 @@ class _ParkTrans extends State<ParkTrans> {
   void initState(){
     super.initState();
     selectedRadio = 0;
+    print(widget.userData);
   }
 
   void setSelectedRadio(int val){

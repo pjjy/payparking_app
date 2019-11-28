@@ -5,11 +5,23 @@ import 'parkingTransList.dart';
 import 'history.dart';
 
 class HomeT extends StatefulWidget {
+  final logInData;
+  HomeT({Key key, @required this.logInData}) : super(key: key);
   @override
   _Home createState() => _Home();
 }
 
 class _Home extends State<HomeT> {
+
+  getUserData(){
+    print(widget.logInData);
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    getUserData();
+  }
 
   @override
   Widget build(BuildContext context){
@@ -48,7 +60,7 @@ class _Home extends State<HomeT> {
           case 0:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTrans(),
+                child: ParkTrans(userData:widget.logInData),
               );
             });
           break;
