@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'parkingtrans.dart';
 import 'parkingTransList.dart';
 import 'history.dart';
+import 'package:payparking_app/utils/db_helper.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 
 class HomeT extends StatefulWidget {
   final logInData;
@@ -12,9 +14,15 @@ class HomeT extends StatefulWidget {
 }
 
 class _Home extends State<HomeT> {
+  final db = PayParkingDatabase();
+  List userData;
 
-  getUserData(){
-    print(widget.logInData);
+  Future getUserData() async{
+    var res =  await db.fetchUserData(widget.logInData);
+    setState((){
+      userData = res["user_details"];
+    });
+
   }
 
   @override
@@ -60,7 +68,7 @@ class _Home extends State<HomeT> {
           case 0:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTrans(userData:widget.logInData),
+                child: ParkTrans(userData:userData),
               );
             });
           break;

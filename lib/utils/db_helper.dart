@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'dart:convert';
 
 
 
@@ -136,8 +137,7 @@ class PayParkingDatabase {
         "password": password,
       });
       if(response.body.length >=1  && response.statusCode == 200){
-        return response.body.toString();
-//        return true;
+        return response.body;
       }else{
         return 'error';
       }
@@ -145,6 +145,15 @@ class PayParkingDatabase {
     else{
         // walay connecttion
     }
+  }
+
+  Future fetchUserData(userId) async{
+    Map dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_getUserData",body:{
+      "userId": userId,
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
   }
 
 //  Future<Car> fetchCar(int id) async {

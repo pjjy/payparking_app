@@ -12,22 +12,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class ParkTrans extends StatefulWidget {
-  final userData;
+  final List userData;
+
   ParkTrans({Key key, @required this.userData}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
 }
-class _ParkTrans extends State<ParkTrans> {
-
-
+class _ParkTrans extends State<ParkTrans>{
   final db = PayParkingDatabase();
-
   File pickedImage;
-
-
   Future pickImage() async{
-
-
     plateNoController.clear();
     String platePattern = r"([A-Z|\d]+[\s|-][A-Z\d]+)"; //platenumber regex
 //    String platePattern =  r"([A-Z|\d]+[\s|-][0-9]+)";
@@ -168,11 +162,12 @@ class _ParkTrans extends State<ParkTrans> {
   }
 
   int selectedRadio;
+
   @override
   void initState(){
     super.initState();
     selectedRadio = 0;
-    print(widget.userData);
+
   }
 
   void setSelectedRadio(int val){
@@ -191,6 +186,15 @@ class _ParkTrans extends State<ParkTrans> {
         elevation: 0.0,
         centerTitle: true,
         title: Text('Park Me',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+        actions: <Widget>[
+          FlatButton(
+            textColor: Colors.white,
+            onPressed: () {},
+            child: Text(widget.userData[0]["fname"].toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+          ),
+        ],
+
         textTheme: TextTheme(
             title: TextStyle(
                 color: Colors.black,

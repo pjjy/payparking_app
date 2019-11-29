@@ -38,8 +38,6 @@ class _ParkTransList extends State<ParkTransList> {
     var amountPay = amount;
     var penalty = 0;
 
-
-
     //insert to history tbl
     await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user);
     //update  status to 0
