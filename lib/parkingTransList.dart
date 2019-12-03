@@ -7,7 +7,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 
 
-class ParkTransList extends StatefulWidget {
+class ParkTransList extends StatefulWidget{
+  final String nameF;
+  final String location;
+  ParkTransList({Key key, @required this.nameF, this.location}) : super(key: key);
   @override
   _ParkTransList createState() => _ParkTransList();
 }
@@ -97,12 +100,14 @@ class _ParkTransList extends State<ParkTransList> {
         elevation: 0.0,
         centerTitle: true,
         title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
-        textTheme: TextTheme(
-            title: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-            )
-        ),
+        actions: <Widget>[
+          FlatButton(
+            textColor: Colors.white,
+            onPressed: () {},
+            child: Text('${widget.nameF.toString()}  ${widget.location.toString()}',style: TextStyle(fontSize: 14,color: Colors.black),),
+            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+          ),
+        ],
       ),
 
         body:Column(

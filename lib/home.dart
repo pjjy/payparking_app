@@ -4,7 +4,6 @@ import 'parkingtrans.dart';
 import 'parkingTransList.dart';
 import 'history.dart';
 import 'package:payparking_app/utils/db_helper.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 
 class HomeT extends StatefulWidget {
   final logInData;
@@ -16,18 +15,36 @@ class HomeT extends StatefulWidget {
 class _Home extends State<HomeT> {
   final db = PayParkingDatabase();
   List userData;
-
+  String id;
+  String nameL;
+  String nameF;
+  String location;
   Future getUserData() async{
     var res =  await db.fetchUserData(widget.logInData);
     setState((){
       userData = res["user_details"];
+      id = userData[0]["user_id"];
+      nameF = userData[0]["fname"];
+      nameL = userData[0]["lname"];
+      location = userData[0]["location"];
     });
-
   }
 
   @override
   void initState(){
     super.initState();
+    if(nameF == null || id == null || nameL == null || location == null)
+    {
+      nameF = "";
+      id = "";
+      nameL = "";
+      location = "";
+    }else{
+      nameF = nameF;
+      id = id;
+      nameL = nameL;
+      location = location;
+    }
     getUserData();
   }
 
@@ -35,7 +52,7 @@ class _Home extends State<HomeT> {
   Widget build(BuildContext context){
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
             title: Text('Park me',style: TextStyle(
@@ -68,14 +85,15 @@ class _Home extends State<HomeT> {
           case 0:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTrans(userData:userData),
+//                child: ParkTrans(id:id,nameL:nameL,nameF:nameF,location:location),
+                child: ParkTrans(nameF:nameF,location:location),
               );
             });
           break;
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTransList(),
+                child: ParkTransList(nameF:nameF,location:location),
               );
             });
           break;

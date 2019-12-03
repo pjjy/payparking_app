@@ -4,6 +4,7 @@ import 'home.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -20,21 +21,41 @@ class _SignInPageState extends State<SignInPage> {
      await db.init();
   }
 
+  void log(){
+    setState((){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            content: new SpinKitWanderingCubes(
+              color: Colors.blueAccent,
+              size: 60,
+            ),
+
+          );
+        },
+      );
+    });
+    logInAttempt();
+  }
+
   Future logInAttempt() async{
     var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       if(res.length >= 1 && res != 'error'){
-//        print(res);
+        Navigator.of(context).pop();
         Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomeT(logInData:res)),
         );
       }
       if(res == 'error'){
-        //print("Wrong Password");
+        Navigator.of(context).pop();
         showDialog(
-          barrierDismissible: false,
+          barrierDismissible: true,
           context: context,
           builder: (BuildContext context) {
             // return object of type Dialog
@@ -49,15 +70,15 @@ class _SignInPageState extends State<SignInPage> {
                     Navigator.of(context).pop();
                   },
                 ),
-
               ],
             );
           },
         );
       }
     }else{
+      Navigator.of(context).pop();
       showDialog(
-        barrierDismissible: false,
+        barrierDismissible: true,
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
@@ -151,7 +172,7 @@ class _SignInPageState extends State<SignInPage> {
 //              context,
 //              MaterialPageRoute(builder: (context) => HomeT()),
 //            );
-            logInAttempt();
+            log();
           },
         ),
       ),

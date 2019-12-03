@@ -12,15 +12,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class ParkTrans extends StatefulWidget {
-  final List userData;
-
-  ParkTrans({Key key, @required this.userData}) : super(key: key);
+  final String nameF;
+  final String location;
+  ParkTrans({Key key, @required this.nameF, this.location}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
 }
 class _ParkTrans extends State<ParkTrans>{
   final db = PayParkingDatabase();
   File pickedImage;
+
+
+
   Future pickImage() async{
     plateNoController.clear();
     String platePattern = r"([A-Z|\d]+[\s|-][A-Z\d]+)"; //platenumber regex
@@ -162,12 +165,11 @@ class _ParkTrans extends State<ParkTrans>{
   }
 
   int selectedRadio;
-
+  String name;
   @override
   void initState(){
     super.initState();
     selectedRadio = 0;
-
   }
 
   void setSelectedRadio(int val){
@@ -176,10 +178,11 @@ class _ParkTrans extends State<ParkTrans>{
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
 
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -190,11 +193,10 @@ class _ParkTrans extends State<ParkTrans>{
           FlatButton(
             textColor: Colors.white,
             onPressed: () {},
-            child: Text(widget.userData[0]["fname"].toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+            child: Text('${widget.nameF.toString()}  ${widget.location.toString()}',style: TextStyle(fontSize: 14,color: Colors.black),),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
-
         textTheme: TextTheme(
             title: TextStyle(
                 color: Colors.black,
@@ -226,7 +228,6 @@ class _ParkTrans extends State<ParkTrans>{
 //               },
              ),
           ),
-
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
               child: new TextFormField(
                controller:plateNoController,

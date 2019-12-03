@@ -129,7 +129,6 @@ class PayParkingDatabase {
 
 
   Future mysqlLogin(username,password) async{
-
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
