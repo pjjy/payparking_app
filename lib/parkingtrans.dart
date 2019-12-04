@@ -10,11 +10,13 @@ import 'dart:async';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 
 class ParkTrans extends StatefulWidget {
-  final String nameF;
+  final String empId;
+  final String name;
   final String location;
-  ParkTrans({Key key, @required this.nameF, this.location}) : super(key: key);
+  ParkTrans({Key key, @required this.empId, this.name, this.location}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
 }
@@ -105,34 +107,13 @@ class _ParkTrans extends State<ParkTrans>{
       }
       else{
         saveData();
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return CupertinoAlertDialog(
-              title: new Text(plateNoController.text),
-              content: new Text("Successfully Added ,Printing the Receipt"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    plateNoController.text = "";
-                  },
-                ),
-              ],
-            );
-          },
-         );
        }
      }
    }
 
   void saveData() async{
 
-
+      bool result = await DataConnectionChecker().hasConnection;
       String plateNumber = plateNoController.text;
       var today = new DateTime.now();
       var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
@@ -140,7 +121,7 @@ class _ParkTrans extends State<ParkTrans>{
       var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
       String amount = selectedRadio.toString();
       var stat = 1;
-      var user = 'boss rrrrr';
+      var user = widget.empId;
 
 
 //      print(plateNumber);
@@ -150,9 +131,30 @@ class _ParkTrans extends State<ParkTrans>{
 //      print(amount);
 //      print(stat);
 //      print(user);
-
-      //e ditso na sa wamp server
-      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
+    if(result == true){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text(plateNoController.text),
+            content: new Text("Successfully Added ,Printing the Receipt"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  plateNoController.text = "";
+                },
+              ),
+            ],
+          );
+        },
+      );
+      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
+//      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",
           toastLength: Toast.LENGTH_LONG,
@@ -162,6 +164,30 @@ class _ParkTrans extends State<ParkTrans>{
           textColor: Colors.white,
           fontSize: 16.0
       );
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+            ],
+          );
+        },
+      );
+    }
   }
 
   int selectedRadio;
@@ -170,6 +196,7 @@ class _ParkTrans extends State<ParkTrans>{
   void initState(){
     super.initState();
     selectedRadio = 0;
+    //mo prompt if na setupan na ug location or naay internet
   }
 
   void setSelectedRadio(int val){
@@ -193,7 +220,7 @@ class _ParkTrans extends State<ParkTrans>{
           FlatButton(
             textColor: Colors.white,
             onPressed: () {},
-            child: Text('${widget.nameF.toString()}  ${widget.location.toString()}',style: TextStyle(fontSize: 14,color: Colors.black),),
+            child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
@@ -217,15 +244,6 @@ class _ParkTrans extends State<ParkTrans>{
                 padding: const EdgeInsets.all(15),
                 background: Colors.blue,
                 onPressed:pickImage,
-//               onPressed: () {
-//                 Navigator.of(context, rootNavigator: true).push(
-//                    MaterialPageRoute(
-//                     builder: (context){
-//                        return CameraPrev();
-//                     },
-//                   ),
-//                 );
-//               },
              ),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),

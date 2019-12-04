@@ -47,6 +47,7 @@ class _SignInPageState extends State<SignInPage> {
     if(result == true){
       if(res.length >= 1 && res != 'error'){
         Navigator.of(context).pop();
+
         Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomeT(logInData:res)),

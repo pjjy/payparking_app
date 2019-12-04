@@ -96,7 +96,6 @@ class PayParkingDatabase {
 
   Future<List> fetchAllHistory() async {
     var client = await db;
-//    return client.query('payparhistory ORDER BY id DESC');
     var res = await client.query('payparhistory ORDER BY id DESC');
     if (res.isNotEmpty) {
       return client.query('payparhistory ORDER BY id DESC');
@@ -118,15 +117,12 @@ class PayParkingDatabase {
     return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user});
   }
 
-
-
   Future<int> updatePayTranStat(int id) async{
     var client = await db;
     return client.update('paypartrans', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
   }
 
  //mysql query code
-
 
   Future mysqlLogin(username,password) async{
     bool result = await DataConnectionChecker().hasConnection;
@@ -146,13 +142,25 @@ class PayParkingDatabase {
     }
   }
 
-  Future fetchUserData(userId) async{
+  Future olFetchUserData(userId) async{
     Map dataUser;
     final response = await http.post("http://172.16.46.130/e_parking/app_getUserData",body:{
       "userId": userId,
     });
     dataUser = jsonDecode(response.body);
     return dataUser;
+  }
+
+  Future olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat) async{
+     await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
+      'plateNumber':plateNumber.toString(),
+      'dateToday':dateToday.toString(),
+      'dateTimeToday':dateTimeToday.toString(),
+      'dateUntil':dateUntil.toString(),
+      'amount':amount.toString(),
+      'user':user.toString(),
+      'stat':stat.toString(),
+    });
   }
 
 //  Future<Car> fetchCar(int id) async {

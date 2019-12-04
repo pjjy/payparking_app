@@ -15,17 +15,15 @@ class HomeT extends StatefulWidget {
 class _Home extends State<HomeT> {
   final db = PayParkingDatabase();
   List userData;
-  String id;
-  String nameL;
-  String nameF;
+  String empId;
+  String name;
   String location;
   Future getUserData() async{
-    var res =  await db.fetchUserData(widget.logInData);
+    var res =  await db.olFetchUserData(widget.logInData);
     setState((){
       userData = res["user_details"];
-      id = userData[0]["user_id"];
-      nameF = userData[0]["fname"];
-      nameL = userData[0]["lname"];
+      empId = userData[0]["emp_id"];
+      name = userData[0]["emp_name"];
       location = userData[0]["location"];
     });
   }
@@ -33,16 +31,14 @@ class _Home extends State<HomeT> {
   @override
   void initState(){
     super.initState();
-    if(nameF == null || id == null || nameL == null || location == null)
+    if(empId == null || name == null || location == null)
     {
-      nameF = "";
-      id = "";
-      nameL = "";
+      empId = "";
+      name = "";
       location = "";
     }else{
-      nameF = nameF;
-      id = id;
-      nameL = nameL;
+      empId = empId;
+      name = name;
       location = location;
     }
     getUserData();
@@ -86,14 +82,14 @@ class _Home extends State<HomeT> {
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
 //                child: ParkTrans(id:id,nameL:nameL,nameF:nameF,location:location),
-                child: ParkTrans(nameF:nameF,location:location),
+                child: ParkTrans(empId:empId, name:name, location:location),
               );
             });
           break;
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTransList(nameF:nameF,location:location),
+                child: ParkTransList(name:name,location:location),
               );
             });
           break;
