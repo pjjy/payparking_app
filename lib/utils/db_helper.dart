@@ -56,7 +56,8 @@ class PayParkingDatabase {
         dateTimeout TEXT,
         amount TEXT,
         penalty TEXT,
-        user TEXT
+        user TEXT,
+        outBy TEXT
         )''');
 
     db.execute('''
@@ -105,16 +106,9 @@ class PayParkingDatabase {
     }
   }
 
-//  fetchAllHistoryCount() async{
-//    int count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM table_name'));
-//
-//    var client = await db;
-//    return client.query('synchistory ORDER BY id DESC LIMIT 1');
-//  }
-
-  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user) async {
+  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String outBy) async {
     var client = await db;
-    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user});
+    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'outBy':outBy});
   }
 
   Future<int> updatePayTranStat(int id) async{
@@ -160,6 +154,27 @@ class PayParkingDatabase {
       'amount':amount.toString(),
       'user':user.toString(),
       'stat':stat.toString(),
+    });
+  }
+
+  Future olFetchAll() async{
+    Map dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/appGetTransaction",body:{
+
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+  Future olAddTransHistory(plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy) async{
+    await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
+          'plateNumber':plateNumber.toString(),
+          'dateIn':dateIn.toString(),
+          'dateNow':dateNow.toString(),
+          'amountPay':amountPay.toString(),
+          'penalty':penalty.toString(),
+          'user':user.toString(),
+          'outBy':outBy.toString(),//tiwason ugma......................
     });
   }
 

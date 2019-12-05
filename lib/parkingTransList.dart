@@ -5,12 +5,14 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
+import 'package:data_connection_checker/data_connection_checker.dart';
 
 
 class ParkTransList extends StatefulWidget{
+  final String empId;
   final String name;
   final String location;
-  ParkTransList({Key key, @required this.name, this.location}) : super(key: key);
+  ParkTransList({Key key, @required this.name, this.location, this.empId}) : super(key: key);
   @override
   _ParkTransList createState() => _ParkTransList();
 }
@@ -20,20 +22,55 @@ class _ParkTransList extends State<ParkTransList> {
   final db = PayParkingDatabase();
   List plateData;
 
+  String empId;
+  String name;
+  String location;
 
 
 
+//  Future getTransData() async {
+//    var res = await db.fetchAll();
+//    setState((){
+//      plateData = res;
+//    });
+//  }
 
   Future getTransData() async {
-    var res = await db.fetchAll();
-    setState((){
-      plateData = res;
-    });
+    bool result = await DataConnectionChecker().hasConnection;
+    if (result == true) {
+      var res = await db.olFetchAll();
+      setState((){
+        plateData = res["user_details"];
+      });
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed:() {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+            ],
+          );
+        },
+      );
+    }
   }
 
 
 
-  Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user) async{
+  Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,outBy) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
@@ -41,11 +78,42 @@ class _ParkTransList extends State<ParkTransList> {
     var amountPay = amount;
     var penalty = 0;
 
-    //insert to history tbl
-    await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user);
-    //update  status to 0
-    await db.updatePayTranStat(id);
-    getTransData();
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true){
+      //code for mysql
+      await db.olAddTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      //insert to history tbl
+      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      //code for mysql
+      //update  status to 0
+      //await db.updatePayTranStat(id);
+      getTransData();
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed:() {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+            ],
+          );
+        },
+      );
+   }
+
+
     //code for print
     Fluttertoast.showToast(
         msg: "Successfully added to history",
@@ -59,30 +127,57 @@ class _ParkTransList extends State<ParkTransList> {
 
   }
 
-  Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,penalty) async{
+  Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,penalty,outBy) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
     final dateNow = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeNow);
     var amountPay = amount;
 
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true){
+      //code for mysql
+      await db.olAddTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      //insert to history tbl
+      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      //code for mysql
+      //await db.updatePayTranStat(id);
+      getTransData();
+      //code for print here
+      Fluttertoast.showToast(
+          msg: "Successfully added to history",
+          toastLength: Toast.LENGTH_LONG ,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 2,
+          backgroundColor: Colors.black54,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
 
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed:() {
+                  Navigator.of(context).pop();
+                },
+              ),
 
-    //insert to history tbl
-    await db.addTransHistory(plateNumber,dateIn.toString(),dateNow,amountPay.toString(),penalty.toString().toString(),user);
-    //update  status to 0
-    await db.updatePayTranStat(id);
-    getTransData();
-    //code for print
-    Fluttertoast.showToast(
-        msg: "Successfully added to history",
-        toastLength: Toast.LENGTH_LONG ,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 2,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -173,11 +268,11 @@ class _ParkTransList extends State<ParkTransList> {
                     String alertButton;
                     Color  cardColor;
 
-                    var dateString = plateData[index]["dateToday"]; //getting time
+                    var dateString = plateData[index]["d_dateToday"]; //getting time
                     var date = dateString.split("-"); //split time
-                    var hrString = plateData[index]["dateTimeToday"]; //getting time
+                    var hrString = plateData[index]["d_dateTimeToday"]; //getting time
                     var hour = hrString.split(":"); //split time
-                    var vType = plateData[index]["amount"];
+                    var vType = plateData[index]["d_amount"];
 
                     final dateTimeIn = DateTime(int.parse(date[0]),int.parse(date[1]),int.parse(date[2]),int.parse(hour[0]),int.parse(hour[1]));
                     final dateTimeNow = DateTime.now();
@@ -263,7 +358,6 @@ class _ParkTransList extends State<ParkTransList> {
                       penalty = 300;
                       cardColor = Colors.redAccent.withOpacity(.3);
                     }
-
                     //for 2 wheels
                     if(difference >= 120 && vType == '50'){
                       penalty = 20;
@@ -341,7 +435,7 @@ class _ParkTransList extends State<ParkTransList> {
                            builder: (BuildContext context) {
                              // return object of type Dialog
                              return CupertinoAlertDialog(
-                               title: new Text(plateData[index]["plateNumber"]),
+                                 title: new Text(plateData[index]["d_Plate"]),
                                content: new Text(alertText),
                                actions: <Widget>[
                                  // usually buttons at the bottom of the dialog
@@ -349,10 +443,11 @@ class _ParkTransList extends State<ParkTransList> {
                                    child: new Text(alertButton),
                                     onPressed: () {
                                      if(trigger == 0){
-                                        passDataToHistoryWithOutPay(plateData[index]["id"],plateData[index]["plateNumber"],dateTimeIn,DateTime.now(),plateData[index]["amount"],plateData[index]["user"]);
+
+                                        passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],widget.empId);
                                      }
                                      if(trigger == 1){
-                                        passDataToHistoryWithPay(plateData[index]["id"],plateData[index]["plateNumber"],dateTimeIn,DateTime.now(),plateData[index]["amount"],plateData[index]["user"],penalty);
+                                        passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],widget.empId,penalty);
                                      }
                                      Navigator.of(context).pop();
                                    },
@@ -376,15 +471,15 @@ class _ParkTransList extends State<ParkTransList> {
 //                       crossAxisAlignment: CrossAxisAlignment.start,
                            children: <Widget>[
                              ListTile(
-                               title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27.0),),
+                               title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27.0),),
                                subtitle: Column(
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: <Widget>[
                                    Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: 18.0),),
-                                   Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: 18.0),),
+                                   Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: 18.0),),
                                    Text('     Time lapse : $timeAg',style: TextStyle(fontSize: 18.0),),
                                    Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: 18.0),),
-                                   Text('     By : '+plateData[index]["user"],style: TextStyle(fontSize: 18.0),),
+                                   Text('     By : '+plateData[index]["d_user"],style: TextStyle(fontSize: 18.0),),
                                    Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 18.0),),
                                  ],
                                ),

@@ -221,7 +221,6 @@ class _ParkTrans extends State<ParkTrans>{
             textColor: Colors.white,
             onPressed: () {},
             child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
-            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
         textTheme: TextTheme(

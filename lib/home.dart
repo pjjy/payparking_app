@@ -89,7 +89,7 @@ class _Home extends State<HomeT> {
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTransList(name:name,location:location),
+                child: ParkTransList(empId:empId, name:name, location:location),
               );
             });
           break;
