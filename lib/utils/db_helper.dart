@@ -57,7 +57,9 @@ class PayParkingDatabase {
         amount TEXT,
         penalty TEXT,
         user TEXT,
-        outBy TEXT
+        empNameIn TEXT,
+        outBy TEXT,
+        empNameOut TEXT
         )''');
 
     db.execute('''
@@ -106,9 +108,9 @@ class PayParkingDatabase {
     }
   }
 
-  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String outBy) async {
+  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut) async {
     var client = await db;
-    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'outBy':outBy});
+    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut});
   }
 
   Future<int> updatePayTranStat(int id) async{
@@ -145,7 +147,7 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat) async{
+  Future olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,location) async{
      await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
       'plateNumber':plateNumber.toString(),
       'dateToday':dateToday.toString(),
@@ -154,6 +156,7 @@ class PayParkingDatabase {
       'amount':amount.toString(),
       'user':user.toString(),
       'stat':stat.toString(),
+      'location':location.toString()
     });
   }
 
@@ -166,15 +169,16 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olAddTransHistory(plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy) async{
-    await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
+  Future olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy) async{
+    await http.post("http://172.16.46.130/e_parking/appSaveToHistory",body:{
+          'id':id.toString(),
           'plateNumber':plateNumber.toString(),
           'dateIn':dateIn.toString(),
           'dateNow':dateNow.toString(),
           'amountPay':amountPay.toString(),
           'penalty':penalty.toString(),
           'user':user.toString(),
-          'outBy':outBy.toString(),//tiwason ugma......................
+          'outBy':outBy.toString(),
     });
   }
 

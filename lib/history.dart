@@ -146,7 +146,6 @@ class _HistoryTransList extends State<HistoryTransList> {
       ),
 
       body:Column(
-
         children: <Widget>[
           Expanded(
             child:RefreshIndicator(
@@ -157,9 +156,7 @@ class _HistoryTransList extends State<HistoryTransList> {
                   itemBuilder: (BuildContext context, int index) {
                   var f = index;
                   f++;
-
                   var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
-
                   return InkWell(
                     child: Card(
                       margin: EdgeInsets.all(5),
@@ -177,6 +174,8 @@ class _HistoryTransList extends State<HistoryTransList> {
                                 Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: 17.0),),
                                 Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: 17.0),),
                                 Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 17.0),),
+                                Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: 17.0),),
+                                Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: 17.0),),
                               ],
                             ),
 //                               trailing: Icon(Icons.more_vert),

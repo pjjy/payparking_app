@@ -38,7 +38,7 @@ class _ParkTransList extends State<ParkTransList> {
   Future getTransData() async {
     bool result = await DataConnectionChecker().hasConnection;
     if (result == true) {
-      var res = await db.olFetchAll();
+      var res = await db.olFetchAll(); //tiwason pa ugma pa ma filter ang location
       setState((){
         plateData = res["user_details"];
       });
@@ -70,7 +70,7 @@ class _ParkTransList extends State<ParkTransList> {
 
 
 
-  Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,outBy) async{
+  Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
@@ -81,9 +81,9 @@ class _ParkTransList extends State<ParkTransList> {
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      await db.olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString());
       //insert to history tbl
-      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString());
       //code for mysql
       //update  status to 0
       //await db.updatePayTranStat(id);
@@ -127,7 +127,7 @@ class _ParkTransList extends State<ParkTransList> {
 
   }
 
-  Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,penalty,outBy) async{
+  Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
@@ -137,9 +137,9 @@ class _ParkTransList extends State<ParkTransList> {
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      await db.olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString());
       //insert to history tbl
-      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user,outBy);
+      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString());
       //code for mysql
       //await db.updatePayTranStat(id);
       getTransData();
@@ -444,10 +444,10 @@ class _ParkTransList extends State<ParkTransList> {
                                     onPressed: () {
                                      if(trigger == 0){
 
-                                        passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],widget.empId);
+                                        passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.name);
                                      }
                                      if(trigger == 1){
-                                        passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],widget.empId,penalty);
+                                        passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.name);
                                      }
                                      Navigator.of(context).pop();
                                    },
@@ -479,7 +479,7 @@ class _ParkTransList extends State<ParkTransList> {
                                    Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: 18.0),),
                                    Text('     Time lapse : $timeAg',style: TextStyle(fontSize: 18.0),),
                                    Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: 18.0),),
-                                   Text('     By : '+plateData[index]["d_user"],style: TextStyle(fontSize: 18.0),),
+                                   Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: 18.0),),
                                    Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 18.0),),
                                  ],
                                ),

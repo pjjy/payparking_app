@@ -67,11 +67,11 @@ class _ParkTrans extends State<ParkTrans>{
         TextRecognizer recognizedText = FirebaseVision.instance.textRecognizer();
         VisionText readText = await recognizedText.processImage(image);
         if(regEx.hasMatch(readText.text)){
-          print(true);
+//          print(true);
           platePatternNew = readText.text;
           if(this.mounted){
             setState(() {
-              print(regEx.firstMatch(platePatternNew).group(0));
+//              print(regEx.firstMatch(platePatternNew).group(0));
               plateNoController.text = regEx.firstMatch(platePatternNew).group(0);
               recognizedText.close();
             });
@@ -153,7 +153,7 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
+      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,widget.location);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",

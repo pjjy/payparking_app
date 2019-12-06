@@ -23,6 +23,7 @@ class _SyncingPage extends State<SyncingPage>{
    var amount;
    var penalty;
    String user;
+   String outBy;
 
    Future syncTransData() async{
 
@@ -30,6 +31,7 @@ class _SyncingPage extends State<SyncingPage>{
 
     setState(() {
       hisData = res;
+
     });
     if(hisData.isEmpty){
       Navigator.of(context).pop();
@@ -38,22 +40,22 @@ class _SyncingPage extends State<SyncingPage>{
       bool result = await DataConnectionChecker().hasConnection;
       if(result == true){
         print("Wifi Connected");
-        for (int i = 0; i < hisData.length; i++){
-          appId =  hisData[i]['id'];
+        for(int i = 0; i < hisData.length; i++){
           plateNumber = hisData[i]['plateNumber'];
           dateTimeIn = hisData[i]['dateTimein'];
           dateTimeout = hisData[i]['dateTimeout'];
           amount = hisData[i]['amount'];
           penalty = hisData[i]['penalty'];
           user = hisData[i]['user'];
+          outBy = hisData[i]['outBy'];
           await http.post("http://172.16.46.130/e_parking/sync_data",body:{
-            "id": appId.toString(),
             "plateNumber": plateNumber,
             "dateTimeIn": dateTimeIn,
             "dateTimeout": dateTimeout,
             "amount": amount,
             "penalty": penalty,
             "user": user,
+            "outBy":outBy,
           });
           if(i == hisData.length-1){
             Fluttertoast.showToast(
