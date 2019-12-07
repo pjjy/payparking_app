@@ -37,7 +37,7 @@ class _ParkTrans extends State<ParkTrans>{
         buttonBackColorA = Colors.lightBlue;
         buttonBackColorB = Colors.white;
         textColorA = Colors.black45;
-        print(wheel);
+
         wheel = 50;
       });
   }
@@ -49,7 +49,7 @@ class _ParkTrans extends State<ParkTrans>{
       buttonBackColorB = Colors.lightBlue;
       buttonBackColorA = Colors.white;
       textColorB = Colors.black45;
-      print(wheel);
+
       wheel = 100;
     });
   }
