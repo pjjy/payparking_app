@@ -22,9 +22,7 @@ class _ParkTransList extends State<ParkTransList> {
   final db = PayParkingDatabase();
   List plateData;
 
-  String empId;
-  String name;
-  String location;
+
 
 
 

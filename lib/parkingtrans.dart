@@ -4,7 +4,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
-import 'package:nice_button/nice_button.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:payparking_app/utils/db_helper.dart';
@@ -16,6 +15,7 @@ class ParkTrans extends StatefulWidget {
   final String empId;
   final String name;
   final String location;
+
   ParkTrans({Key key, @required this.empId, this.name, this.location}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
@@ -23,8 +23,91 @@ class ParkTrans extends StatefulWidget {
 class _ParkTrans extends State<ParkTrans>{
   final db = PayParkingDatabase();
   File pickedImage;
+  bool pressed = true;
+  String locationA = "Add Location";
+  var wheel = 0;
+  Color buttonBackColorA;
+  Color textColorA = Colors.black45;
+  Color buttonBackColorB;
+  Color textColorB = Colors.black45;
+  Future setWheelA() async{
 
+      setState(() {
 
+        buttonBackColorA = Colors.lightBlue;
+        buttonBackColorB = Colors.white;
+        textColorA = Colors.black45;
+        print(wheel);
+        wheel = 50;
+      });
+  }
+
+  Future setWheelB() async{
+
+    setState(() {
+
+      buttonBackColorB = Colors.lightBlue;
+      buttonBackColorA = Colors.white;
+      textColorB = Colors.black45;
+      print(wheel);
+      wheel = 100;
+    });
+  }
+
+  Future addLocation() async{
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true)
+    {
+//      setState(() {
+//        locationA = "location A";
+//        print(locationA);
+//      });
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Select Location"),
+            actions: <Widget>[
+              Radio(
+                value: 100,
+                groupValue: selectedRadio,
+                activeColor: Colors.blue,
+                onChanged:(val) {
+                  setSelectedRadio(val);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+            ],
+          );
+        },
+      );
+    }
+
+  }
 
   Future pickImage() async{
     plateNoController.clear();
@@ -93,7 +176,8 @@ class _ParkTrans extends State<ParkTrans>{
   TextEditingController plateNoController = TextEditingController();
 
   void confirmed(){
-    if(plateNoController.text == ""){
+    print(wheel);
+    if(plateNoController.text == "" || locationA == "Add Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
@@ -102,7 +186,7 @@ class _ParkTrans extends State<ParkTrans>{
 //      print(selectedRadio);
     }
     else {
-      if(selectedRadio == 0){
+      if(wheel == 0){
 
       }
       else{
@@ -119,7 +203,7 @@ class _ParkTrans extends State<ParkTrans>{
       var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
       var dateTimeToday = DateFormat("H:mm").format(new DateTime.now());
       var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
-      String amount = selectedRadio.toString();
+      String amount = wheel.toString();
       var stat = 1;
       var user = widget.empId;
 
@@ -234,16 +318,36 @@ class _ParkTrans extends State<ParkTrans>{
 //          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
-             child:NiceButton(
-                width: 255,
-                elevation: 0.0,
-                radius: 52.0,
-                text: "Open Camera",
-                icon: Icons.camera_alt,
-                padding: const EdgeInsets.all(15),
-                background: Colors.blue,
+//             child:NiceButton(
+//                width: 255,
+//                elevation: 0.0,
+//                radius: 52.0,
+//                fontSize: 18.0,
+//                text: "Open Camera",
+//                icon: Icons.camera_alt,
+//                padding: const EdgeInsets.all(15),
+//                background: Colors.blue,
+//                onPressed:pickImage,
+//             ),
+
+              child: MaterialButton(
+                minWidth: 100.0,
+                height: 40.0,
                 onPressed:pickImage,
-             ),
+                child:FlatButton.icon(
+                  label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+                  splashColor: Colors.lightBlue,
+                  icon: Icon(Icons.camera_alt, color: Colors.lightBlue,),
+                  padding: EdgeInsets.all(14.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(35.0),
+                      side: BorderSide(color: Colors.lightBlue)
+                  ),
+                  onPressed:(){
+//
+                  },
+                ),
+              ),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
               child: new TextFormField(
@@ -266,33 +370,71 @@ class _ParkTrans extends State<ParkTrans>{
             color: Colors.transparent,
             height: 25.0,
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
               child:Text('Vehicle Type',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black),),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
            child: Row(
              children: <Widget>[
-               Text("4 Wheels(100)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-               Radio(
-                value: 100,
-                groupValue: selectedRadio,
-                activeColor: Colors.blue,
-                onChanged:(val) {
-                    setSelectedRadio(val);
-                },
-               ),
-               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-               Radio(
-                 value: 50,
-                 groupValue: selectedRadio,
-                 activeColor: Colors.blue,
-                 onChanged:(val) {
-                   setSelectedRadio(val);
+               FlatButton.icon(
+                 label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorA),),
+                 splashColor: Colors.lightBlue,
+                 color: buttonBackColorB,
+                 icon: Icon(Icons.directions_car, color: textColorA,),
+                 shape: RoundedRectangleBorder(
+                     borderRadius: new BorderRadius.circular(18.0),
+                     side: BorderSide(color: Colors.lightBlue)
+                 ),
+                 onPressed:(){
+                   setWheelB();
                  },
+               ),
+               Text("   "),
+               FlatButton.icon(
+                 label: Text('2 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorB),),
+                 splashColor: Colors.lightBlue,
+                 color: buttonBackColorA,
+                 icon: Icon(Icons.motorcycle, color: textColorB,),
+                 shape: RoundedRectangleBorder(
+                     borderRadius: new BorderRadius.circular(18.0),
+                     side: BorderSide(color: Colors.lightBlue)
+                 ),
+                 onPressed:(){
+                    setWheelA();
+                 },
+               ),
+               Text("   "),
+//               Radio(
+//                value: 100,
+//                groupValue: selectedRadio,
+//                activeColor: Colors.blue,
+//                onChanged:(val) {
+//                    setSelectedRadio(val);
+//                },
+//               ),
+//               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+//               Radio(
+//                 value: 50,
+//                 groupValue: selectedRadio,
+//                 activeColor: Colors.blue,
+//                 onChanged:(val) {
+//                   setSelectedRadio(val);
+//                 },
+//               ),
+               FlatButton.icon(
+                 label: Text(locationA.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.black45),),
+                 splashColor: Colors.lightBlue,
+                 icon: Icon(Icons.location_on, color: Colors.black45,),
+                 shape: RoundedRectangleBorder(
+                     borderRadius: new BorderRadius.circular(18.0),
+                     side: BorderSide(color: Colors.lightBlue)
+                 ),
+                 onPressed: addLocation,
                ),
              ]
             ),
           ),
+
 
           Padding( padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
            child: Container(
