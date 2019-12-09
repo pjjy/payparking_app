@@ -158,6 +158,7 @@ class _HistoryTransList extends State<HistoryTransList> {
                   f++;
                   var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
                   return InkWell(
+                    onLongPress: (){},
                     child: Card(
                       margin: EdgeInsets.all(5),
                       elevation: 0.0,

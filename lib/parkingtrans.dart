@@ -21,6 +21,8 @@ class ParkTrans extends StatefulWidget {
   _ParkTrans createState() => _ParkTrans();
 }
 class _ParkTrans extends State<ParkTrans>{
+
+
   final db = PayParkingDatabase();
   File pickedImage;
   bool pressed = true;
@@ -30,52 +32,78 @@ class _ParkTrans extends State<ParkTrans>{
   Color textColorA = Colors.black45;
   Color buttonBackColorB;
   Color textColorB = Colors.black45;
-  Future setWheelA() async{
-
+   setWheelA() {
       setState(() {
-
         buttonBackColorA = Colors.lightBlue;
         buttonBackColorB = Colors.white;
         textColorA = Colors.black45;
-
         wheel = 50;
       });
   }
 
-  Future setWheelB() async{
-
+   setWheelB() {
     setState(() {
-
       buttonBackColorB = Colors.lightBlue;
       buttonBackColorA = Colors.white;
       textColorB = Colors.black45;
-
       wheel = 100;
     });
   }
 
-  Future addLocation() async{
+
+
+   addLocation() async{
+    final a =  FlatButton(
+      child: new Text("Location B"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
     bool result = await DataConnectionChecker().hasConnection;
-    if(result == true)
-    {
-//      setState(() {
-//        locationA = "location A";
-//        print(locationA);
-//      });
+    if(result == true){
       showDialog(
         barrierDismissible: true,
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
           return CupertinoAlertDialog(
-            title: new Text("Select Location"),
+            title: Text('Add Location'),
             actions: <Widget>[
-              Radio(
-                value: 100,
-                groupValue: selectedRadio,
-                activeColor: Colors.blue,
-                onChanged:(val) {
-                  setSelectedRadio(val);
+
+              FlatButton(
+                child: new Text("Location A"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  locationA = 'Location A';
+                },
+              ),
+              FlatButton(
+                child: new Text("Location B"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  locationA = 'Location B';
+                },
+              ),
+              FlatButton(
+                child: new Text("Location C"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  locationA = 'Location C';
+                },
+              ),
+              FlatButton(
+                child: new Text("Location D"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  locationA = 'Location D';
+                },
+              ),
+              FlatButton(
+                child: new Text("Close & Clear"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  locationA = 'Add Location';
                 },
               ),
             ],
@@ -106,7 +134,6 @@ class _ParkTrans extends State<ParkTrans>{
         },
       );
     }
-
   }
 
   Future pickImage() async{
@@ -237,7 +264,7 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,widget.location);
+      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",
@@ -331,7 +358,7 @@ class _ParkTrans extends State<ParkTrans>{
 //             ),
 
               child: MaterialButton(
-                minWidth: 100.0,
+//                minWidth: 100.0,
                 height: 40.0,
                 onPressed:pickImage,
                 child:FlatButton.icon(
