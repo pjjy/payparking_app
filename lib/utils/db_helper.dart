@@ -59,7 +59,8 @@ class PayParkingDatabase {
         user TEXT,
         empNameIn TEXT,
         outBy TEXT,
-        empNameOut TEXT
+        empNameOut TEXT,
+        location TEXT
         )''');
 
     db.execute('''
@@ -108,9 +109,9 @@ class PayParkingDatabase {
     }
   }
 
-  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut) async {
+  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
     var client = await db;
-    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut});
+    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
   }
 
   Future<int> updatePayTranStat(int id) async{
@@ -156,7 +157,7 @@ class PayParkingDatabase {
       'amount':amount.toString(),
       'user':user.toString(),
       'stat':stat.toString(),
-      'location':location.toString()
+      'location':location.toString(),
     });
   }
 
@@ -169,7 +170,7 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy) async{
+  Future olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy,location) async{
     await http.post("http://172.16.46.130/e_parking/appSaveToHistory",body:{
           'id':id.toString(),
           'plateNumber':plateNumber.toString(),
@@ -179,6 +180,7 @@ class PayParkingDatabase {
           'penalty':penalty.toString(),
           'user':user.toString(),
           'outBy':outBy.toString(),
+          'location':location.toString(),
     });
   }
 

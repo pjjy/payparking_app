@@ -26,7 +26,7 @@ class _HistoryTransList extends State<HistoryTransList> {
     });
 
     if(syncData.isEmpty){
-        print("way sud");
+//        print("way sud");
     }else{
 //      print(syncData[0]['syncDate']);
     }
@@ -148,45 +148,50 @@ class _HistoryTransList extends State<HistoryTransList> {
       body:Column(
         children: <Widget>[
           Expanded(
+
             child:RefreshIndicator(
               onRefresh: getHistoryTransData,
-              child:ListView.builder(
+              child:Scrollbar(
+                child:ListView.builder(
 //                 physics: BouncingScrollPhysics(),
                   itemCount: plateData == null ? 0: plateData.length,
                   itemBuilder: (BuildContext context, int index) {
-                  var f = index;
-                  f++;
-                  var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
-                  return InkWell(
-                    onLongPress: (){},
-                    child: Card(
-                      margin: EdgeInsets.all(5),
-                      elevation: 0.0,
-                      child: Column(
+                    var f = index;
+                    f++;
+                    var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
+                    return InkWell(
+                      onLongPress: (){},
+                      child: Card(
+                        margin: EdgeInsets.all(5),
+                        elevation: 0.0,
+                        child: Column(
 //                       crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          ListTile(
-                            title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 26.0),),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text('     Time In : ${plateData[index]["dateTimein"]}',style: TextStyle(fontSize: 17.0),),
-                                Text('     Time Out : ${plateData[index]["dateTimeout"]}',style: TextStyle(fontSize: 17.0),),
-                                Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: 17.0),),
-                                Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: 17.0),),
-                                Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 17.0),),
-                                Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: 17.0),),
-                                Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: 17.0),),
-                              ],
-                            ),
+                          children: <Widget>[
+                            ListTile(
+                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 26.0),),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('     Time In : ${plateData[index]["dateTimein"]}',style: TextStyle(fontSize: 17.0),),
+                                  Text('     Time Out : ${plateData[index]["dateTimeout"]}',style: TextStyle(fontSize: 17.0),),
+                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: 17.0),),
+                                  Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: 17.0),),
+                                  Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: 17.0),),
+                                  Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: 17.0),),
+                                  Text('     Location : ${plateData[index]["location"]}',style: TextStyle(fontSize: 17.0),),
+                                  Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 17.0),),
+                                ],
+                              ),
 //                               trailing: Icon(Icons.more_vert),
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
+
             ),
           ),
         ],

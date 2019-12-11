@@ -25,7 +25,7 @@ class _ParkTrans extends State<ParkTrans>{
 
   final db = PayParkingDatabase();
   File pickedImage;
-  bool pressed = true;
+//  bool pressed = true;
   String locationA = "Add Location";
   var wheel = 0;
   Color buttonBackColorA;
@@ -35,7 +35,7 @@ class _ParkTrans extends State<ParkTrans>{
    setWheelA() {
       setState(() {
         buttonBackColorA = Colors.lightBlue;
-        buttonBackColorB = Colors.white;
+        buttonBackColorB = Colors.transparent;
         textColorA = Colors.black45;
         wheel = 50;
       });
@@ -44,96 +44,99 @@ class _ParkTrans extends State<ParkTrans>{
    setWheelB() {
     setState(() {
       buttonBackColorB = Colors.lightBlue;
-      buttonBackColorA = Colors.white;
+      buttonBackColorA = Colors.transparent;
       textColorB = Colors.black45;
       wheel = 100;
     });
   }
 
+  List<Widget> _getList() {
+     String location = widget.location;
+     var locCount = location.split(",").length;
+     var locSplit = location.split(",");
+     var counter  = locCount;
 
+     counter = counter-1;
 
-   addLocation() async{
-    final a =  FlatButton(
-      child: new Text("Location B"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
+     List<Widget> temp = [];
+    for(var q = 0; q < locCount; q++) {
+      temp.add(
+          FlatButton(
+            child: new Text(locSplit[q]),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop('dialog');
+              locationA = locSplit[q];
 
-    bool result = await DataConnectionChecker().hasConnection;
-    if(result == true){
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: Text('Add Location'),
-            actions: <Widget>[
-
-              FlatButton(
-                child: new Text("Location A"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  locationA = 'Location A';
-                },
-              ),
-              FlatButton(
-                child: new Text("Location B"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  locationA = 'Location B';
-                },
-              ),
-              FlatButton(
-                child: new Text("Location C"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  locationA = 'Location C';
-                },
-              ),
-              FlatButton(
-                child: new Text("Location D"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  locationA = 'Location D';
-                },
-              ),
-              FlatButton(
-                child: new Text("Close & Clear"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  locationA = 'Add Location';
-                },
-              ),
-            ],
-          );
-        },
+            },
+          ),
       );
-    }
-    else{
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: new Text("Connection Problem"),
-            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+      if(q >= counter){
 
-            ],
-          );
-        },
-      );
+        temp.add(
+          FlatButton(
+            child: new Text("Close "),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop('dialog');
+              locationA = 'Add Location';
+            },
+          ),
+        );
+      }
     }
+    return temp;
+  }
+
+
+   void addLocation(){
+     showDialog(
+       barrierDismissible: true,
+       context: context,
+       builder: (BuildContext context) {
+         // return object of type Dialog
+         return CupertinoAlertDialog(
+           title: Text('Add Location'),
+           actions:  _getList(),
+//            <Widget>[
+
+//              FlatButton(
+//                child: new Text("Location A"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                  locationA = 'Location A';
+//                },
+//              ),
+//              FlatButton(
+//                child: new Text("Location B"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                  locationA = 'Location B';
+//                },
+//              ),
+//              FlatButton(
+//                child: new Text("Location C"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                  locationA = 'Location C';
+//                },
+//              ),
+//              FlatButton(
+//                child: new Text("Location D"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                  locationA = 'Location D';
+//                },
+//              ),
+//              FlatButton(
+//                child: new Text("Close & Clear"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                  locationA = 'Add Location';
+//                },
+//              ),
+//            ],
+         );
+       },
+     );
   }
 
   Future pickImage() async{
@@ -203,7 +206,6 @@ class _ParkTrans extends State<ParkTrans>{
   TextEditingController plateNoController = TextEditingController();
 
   void confirmed(){
-    print(wheel);
     if(plateNoController.text == "" || locationA == "Add Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
@@ -275,6 +277,7 @@ class _ParkTrans extends State<ParkTrans>{
           textColor: Colors.white,
           fontSize: 16.0
       );
+      locationA = "Add Location";
     }
     else{
       showDialog(
@@ -360,7 +363,7 @@ class _ParkTrans extends State<ParkTrans>{
               child: MaterialButton(
 //                minWidth: 100.0,
                 height: 40.0,
-                onPressed:pickImage,
+                onPressed:(){},
                 child:FlatButton.icon(
                   label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
                   splashColor: Colors.lightBlue,
@@ -371,7 +374,7 @@ class _ParkTrans extends State<ParkTrans>{
                       side: BorderSide(color: Colors.lightBlue)
                   ),
                   onPressed:(){
-//
+                       pickImage();
                   },
                 ),
               ),
@@ -397,19 +400,20 @@ class _ParkTrans extends State<ParkTrans>{
             color: Colors.transparent,
             height: 25.0,
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
-              child:Text('Vehicle Type',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black),),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black45),),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
            child: Row(
              children: <Widget>[
-               FlatButton.icon(
+                 FlatButton.icon(
                  label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorA),),
                  splashColor: Colors.lightBlue,
                  color: buttonBackColorB,
                  icon: Icon(Icons.directions_car, color: textColorA,),
+                   padding: EdgeInsets.all(10.0),
                  shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(18.0),
+                     borderRadius: new BorderRadius.circular(35.0),
                      side: BorderSide(color: Colors.lightBlue)
                  ),
                  onPressed:(){
@@ -422,8 +426,9 @@ class _ParkTrans extends State<ParkTrans>{
                  splashColor: Colors.lightBlue,
                  color: buttonBackColorA,
                  icon: Icon(Icons.motorcycle, color: textColorB,),
+                 padding: EdgeInsets.all(10.0),
                  shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(18.0),
+                     borderRadius: new BorderRadius.circular(35.0),
                      side: BorderSide(color: Colors.lightBlue)
                  ),
                  onPressed:(){
@@ -452,8 +457,9 @@ class _ParkTrans extends State<ParkTrans>{
                  label: Text(locationA.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.black45),),
                  splashColor: Colors.lightBlue,
                  icon: Icon(Icons.location_on, color: Colors.black45,),
+                 padding: EdgeInsets.all(10.0),
                  shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(18.0),
+                     borderRadius: new BorderRadius.circular(35.0),
                      side: BorderSide(color: Colors.lightBlue)
                  ),
                  onPressed: addLocation,
