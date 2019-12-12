@@ -259,9 +259,9 @@ class _ParkTransList extends State<ParkTransList> {
            Expanded(
                child:RefreshIndicator(
                  onRefresh: getTransData,
-                 child:Scrollbar(
-                   child:ListView.builder(
-//                 physics: BouncingScrollPhysics(),
+                   child:Scrollbar(
+                    child:ListView.builder(
+//                   physics: BouncingScrollPhysics(),
                      itemCount: plateData == null ? 0: plateData.length,
                      itemBuilder: (BuildContext context, int index) {
 
@@ -430,7 +430,7 @@ class _ParkTransList extends State<ParkTransList> {
 
                        var totalAmount = penalty + num.parse(vType);
 
-                       return InkWell(
+                       return GestureDetector(
                          onLongPress: (){
                            showDialog(
                              barrierDismissible: true,
@@ -493,59 +493,9 @@ class _ParkTransList extends State<ParkTransList> {
                                       child: new Text("Edit"),
                                       onPressed: (){
                                         Navigator.of(context).pop();
-                                        showDialog(
-                                          barrierDismissible: true,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            // return object of type Dialog
-                                            return CupertinoAlertDialog(
-                                              title: new Text("Update"),
-                                              content: Card(
-                                                color: Colors.transparent,
-                                                elevation: 0.0,
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    TextFormField(
-                                                      initialValue: '${plateData[index]["d_Plate"]}',
-                                                      decoration: InputDecoration(
-                                                        labelText: "Pate Number",
-                                                        contentPadding: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 5.0),
-                                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                                                      ),
-                                                    ),
-                                                    Divider(
-                                                      color: Colors.transparent,
-                                                      height: 20.0,
-                                                    ),
-                                                    DropdownButton<String>(
-                                                      items: <String>['Location A', 'Location B', ' Location C', 'Location D'].map((String value) {
-                                                        return new DropdownMenuItem<String>(
-                                                          value: value,
-                                                          child: new Text(value),
-                                                        );
-                                                      }).toList(),
-                                                      onChanged: (_) {},
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-
-                                              actions: <Widget>[
-                                                new FlatButton(
-                                                  child: new Text("Save"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                new FlatButton(
-                                                  child: new Text("Cancel"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => EditContent(id:plateData[index]["d_id"],plateNo:plateData[index]["d_Plate"],amount:plateData[index]['d_amount'],location:plateData[index]['d_location'])),
                                         );
                                       },
                                    ),
@@ -596,11 +546,243 @@ class _ParkTransList extends State<ParkTransList> {
             ),
           ],
         ),
+    );
+  }
+///////
+  _getContent(index) async{
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return CupertinoAlertDialog(
+          title: new Text("Update"),
+          content: Card(
+            color: Colors.transparent,
+            elevation: 0.0,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  initialValue: '${plateData[index]["d_Plate"]}',
+                  decoration: InputDecoration(
+                    labelText: "Pate Number",
+                    contentPadding: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 5.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                  ),
+                ),
+                Divider(
+                  color: Colors.transparent,
+                  height: 20.0,
+                ),
+            Radio(
+                value: 100,
+                groupValue: selectedRadio,
+                activeColor: Colors.blue,
+                onChanged:(val) {
+                    setSelectedRadio(val);
+                },
+               ),
+               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+               Radio(
+                 value: 50,
+                 groupValue: selectedRadio,
+                 activeColor: Colors.blue,
+                 onChanged:(val) {
+                   setSelectedRadio(val);
+                 },
+               ),
+              ],
+            ),
+          ),
+
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Save"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget editDialog(BuildContext context,index) {
+    return _getContent(index);
+  }
+/////
+}
+
+class EditContent extends StatefulWidget{
+  final String id;
+  final String plateNo;
+  final String amount;
+  final String location;
 
 
+  EditContent({Key key, @required this.id, this.plateNo, this.amount,this.location}) : super(key: key);
+  @override
+  _EditContent createState() => _EditContent();
+}
 
+class _EditContent extends State<EditContent> {
+  TextEditingController _plateNoController = TextEditingController();
+
+  int selectedRadio;
+  @override
+  void initState(){
+    super.initState();
+    _plateNoController.text = widget.plateNo;
+    selectedRadio = 0;
+  }
+
+  void setSelectedRadio(int val){
+    setState(() {
+      selectedRadio = val;
+    });
+  }
+  String dropdownValue = 'Location A';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        centerTitle: true,
+        title: Text('Edit',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+//        actions: <Widget>[
+//          FlatButton(
+//            textColor: Colors.white,
+//            onPressed: () {},
+//            child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
+//            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+//          ),
+//        ],
+      ),
+    body:Column(
+        children: <Widget>[
+          Expanded(
+            child:Scrollbar(
+                 child:ListView(
+                 children: <Widget>[
+                   Divider(
+                     color: Colors.transparent,
+                     height: 40.0,
+                   ),
+                      Padding(padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                          child: new TextFormField(
+                          autofocus: false,
+                          controller: _plateNoController,
+                          style: TextStyle(fontSize: 15.0),
+                          decoration: InputDecoration(
+                              labelText: "Pate Number",
+                              contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 40.0),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                          ),
+                   ),
+                  ),
+
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
+                      child: Row(
+                        children: <Widget>[
+                          new Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black45),),
+                        ],
+                      ),
+                    ),
+
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 0.0),
+                       child: Row(
+                         children: <Widget>[
+
+                           new Text(
+                             '2 wheels',
+                             style: new TextStyle(fontSize: 16.0),
+                           ),
+                           Radio(
+                             value: 50,
+                             groupValue: selectedRadio,
+                             activeColor: Colors.blue,
+                             onChanged:(val) {
+                               setSelectedRadio(val);
+                             },
+                           ),
+                           new Text(
+                             '4 wheels',
+                             style: new TextStyle(fontSize: 16.0),
+                           ),
+                           Radio(
+                             value: 100,
+                             groupValue: selectedRadio,
+                             activeColor: Colors.blue,
+                             onChanged:(val) {
+                               setSelectedRadio(val);
+                             },
+                           ),
+
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                          child: Row(
+                            children: <Widget>[
+                              new Text(
+                                'Location   :  ',
+                                style: new TextStyle(fontSize: 16.0),
+                              ),
+                              DropdownButton<String>(
+                                value: dropdownValue,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 24,
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: Colors.black45
+                                ),
+                                underline: Container(
+                                  height: 1,
+                                  width: 10,
+                                  color: Colors.black,
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue;
+                                  });
+                                },
+                                items: <String>['Location A', 'Location B', 'Location C', 'Location D']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,style: TextStyle(fontSize: 16,color: Colors.black),),
+                                  );
+                                })
+                                    .toList(),
+                              ),
+                            ],
+                          ),
+                      ),
+
+                         ],
+                    ),
+                   ),
+                 ],
+               ),
+            ),
+          ),
+        ],
+     ),
     );
   }
 }
+
+
+
+
 
 

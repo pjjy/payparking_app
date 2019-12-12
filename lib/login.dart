@@ -168,6 +168,7 @@ class _SignInPageState extends State<SignInPage> {
         height: 90.0,
         child: CupertinoButton(
           child: const Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25.0, color: Colors.lightBlue),),
+
           onPressed:(){
 //            Navigator.push(
 //              context,

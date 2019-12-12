@@ -410,9 +410,9 @@ class _ParkTrans extends State<ParkTrans>{
                  label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorA),),
                  splashColor: Colors.lightBlue,
                  color: buttonBackColorB,
-                 icon: Icon(Icons.directions_car, color: textColorA,),
-                   padding: EdgeInsets.all(10.0),
-                 shape: RoundedRectangleBorder(
+                    icon: Icon(Icons.directions_car, color: textColorA,),
+                     padding: EdgeInsets.all(10.0),
+                     shape: RoundedRectangleBorder(
                      borderRadius: new BorderRadius.circular(35.0),
                      side: BorderSide(color: Colors.lightBlue)
                  ),
