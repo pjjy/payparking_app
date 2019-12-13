@@ -26,7 +26,7 @@ class _ParkTrans extends State<ParkTrans>{
   final db = PayParkingDatabase();
   File pickedImage;
 //  bool pressed = true;
-  String locationA = "Add Location";
+  String locationA = "Location";
   var wheel = 0;
   Color buttonBackColorA;
   Color textColorA = Colors.black45;
@@ -77,7 +77,7 @@ class _ParkTrans extends State<ParkTrans>{
             child: new Text("Close "),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pop('dialog');
-              locationA = 'Add Location';
+              locationA = 'Location';
             },
           ),
         );
@@ -206,7 +206,7 @@ class _ParkTrans extends State<ParkTrans>{
   TextEditingController plateNoController = TextEditingController();
 
   void confirmed(){
-    if(plateNoController.text == "" || locationA == "Add Location"){
+    if(plateNoController.text == "" || locationA == "Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
@@ -277,7 +277,7 @@ class _ParkTrans extends State<ParkTrans>{
           textColor: Colors.white,
           fontSize: 16.0
       );
-      locationA = "Add Location";
+      locationA = "Location";
     }
     else{
       showDialog(
@@ -324,17 +324,20 @@ class _ParkTrans extends State<ParkTrans>{
   Widget build(BuildContext context) {
 
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
-        title: Text('Park Me',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+
+        title: Text('Park Me',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/30, color: Colors.black),),
         actions: <Widget>[
           FlatButton(
             textColor: Colors.white,
             onPressed: () {},
-            child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
+            child: Text(widget.name.toString(),style: TextStyle(fontSize: width/36,color: Colors.black),),
           ),
         ],
         textTheme: TextTheme(
@@ -384,14 +387,14 @@ class _ParkTrans extends State<ParkTrans>{
                controller:plateNoController,
                autofocus: false,
 //               enabled: false,
-               style: TextStyle(fontSize: 70.0),
+               style: TextStyle(fontSize: width/15),
                     decoration: InputDecoration(
                     hintText: 'Plate Number',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 40.0, 40.0, 50.0),
+                    contentPadding: EdgeInsets.all(width/15.0),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                       suffixIcon: Padding(
                         padding: const EdgeInsetsDirectional.only(end: 30.0),
-                        child:  Icon(Icons.directions_car, color: Colors.grey,size: 40.0,),
+                        child:  Icon(Icons.format_list_numbered, color: Colors.grey,size: 40.0,),
                       ),
                   ),
             ),
@@ -404,84 +407,87 @@ class _ParkTrans extends State<ParkTrans>{
               child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black45),),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
-           child: Row(
+           child: Column(
+
              children: <Widget>[
+                     FlatButton.icon(
+                       label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: textColorA),),
+                       splashColor: Colors.lightBlue,
+                       color: buttonBackColorB,
+                          icon: Icon(Icons.directions_car, color: textColorA,),
+                           padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
+                           shape: RoundedRectangleBorder(
+                           borderRadius: new BorderRadius.circular(35.0),
+                           side: BorderSide(color: Colors.lightBlue)
+                       ),
+                       onPressed:(){
+                         setWheelB();
+                       },
+                   ),
+                             Text("   "),
+                   FlatButton.icon(
+                       label: Text('2 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: textColorB),),
+                       splashColor: Colors.lightBlue,
+                       color: buttonBackColorA,
+                       icon: Icon(Icons.motorcycle, color: textColorB,),
+                       padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
+                       shape: RoundedRectangleBorder(
+                           borderRadius: new BorderRadius.circular(35.0),
+                           side: BorderSide(color: Colors.lightBlue)
+                       ),
+                       onPressed:(){
+                          setWheelA();
+                       },
+                   ),
+                 Text("   "),
+              //               Radio(
+              //                value: 100,
+              //                groupValue: selectedRadio,
+              //                activeColor: Colors.blue,
+              //                onChanged:(val) {
+              //                    setSelectedRadio(val);
+              //                },
+              //               ),
+              //               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+              //               Radio(
+              //                 value: 50,
+              //                 groupValue: selectedRadio,
+              //                 activeColor: Colors.blue,
+              //                 onChanged:(val) {
+              //                   setSelectedRadio(val);
+              //                 },
+              //               ),
+
+
                  FlatButton.icon(
-                 label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorA),),
-                 splashColor: Colors.lightBlue,
-                 color: buttonBackColorB,
-                    icon: Icon(Icons.directions_car, color: textColorA,),
-                     padding: EdgeInsets.all(10.0),
-                     shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(35.0),
-                     side: BorderSide(color: Colors.lightBlue)
+                   label: Text(locationA.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: Colors.black45),),
+                   splashColor: Colors.lightBlue,
+                   icon: Icon(Icons.location_on, color: Colors.black45,),
+                   padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
+                   shape: RoundedRectangleBorder(
+                       borderRadius: new BorderRadius.circular(35.0),
+                       side: BorderSide(color: Colors.lightBlue)
+                   ),
+                   onPressed: addLocation,
                  ),
-                 onPressed:(){
-                   setWheelB();
-                 },
-               ),
-               Text("   "),
-               FlatButton.icon(
-                 label: Text('2 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: textColorB),),
-                 splashColor: Colors.lightBlue,
-                 color: buttonBackColorA,
-                 icon: Icon(Icons.motorcycle, color: textColorB,),
-                 padding: EdgeInsets.all(10.0),
-                 shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(35.0),
-                     side: BorderSide(color: Colors.lightBlue)
-                 ),
-                 onPressed:(){
-                    setWheelA();
-                 },
-               ),
-               Text("   "),
-//               Radio(
-//                value: 100,
-//                groupValue: selectedRadio,
-//                activeColor: Colors.blue,
-//                onChanged:(val) {
-//                    setSelectedRadio(val);
-//                },
-//               ),
-//               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-//               Radio(
-//                 value: 50,
-//                 groupValue: selectedRadio,
-//                 activeColor: Colors.blue,
-//                 onChanged:(val) {
-//                   setSelectedRadio(val);
-//                 },
-//               ),
-               FlatButton.icon(
-                 label: Text(locationA.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.black45),),
-                 splashColor: Colors.lightBlue,
-                 icon: Icon(Icons.location_on, color: Colors.black45,),
-                 padding: EdgeInsets.all(10.0),
-                 shape: RoundedRectangleBorder(
-                     borderRadius: new BorderRadius.circular(35.0),
-                     side: BorderSide(color: Colors.lightBlue)
-                 ),
-                 onPressed: addLocation,
-               ),
              ]
             ),
           ),
 
 
-          Padding( padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+          Padding( padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20.0),
            child: Container(
 //              width: 400.0,
               child: ConfirmationSlider(
                 shadow:BoxShadow(color: Colors.black38, offset: Offset(1, 0),blurRadius: 1,spreadRadius: 1,),
                 foregroundColor:Colors.blue,
-                height:170.0,
+                height: 120,
                 width : width-60,
                 onConfirmation: () => confirmed(),
             ),),
         ),
-      ],
-     ),
-    );
+       ],
+      ),
+     );
   }
 }

@@ -33,7 +33,6 @@ class _SignInPageState extends State<SignInPage> {
               color: Colors.blueAccent,
               size: 60,
             ),
-
           );
         },
       );
@@ -117,8 +116,12 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
 
     final logoSmall = GradientText("Surface",
           gradient: LinearGradient(colors: [Colors.deepOrangeAccent, Colors.blueAccent, Colors.pink]),
@@ -127,7 +130,7 @@ class _SignInPageState extends State<SignInPage> {
 
     final logo = GradientText("PayParking",
         gradient: LinearGradient(colors: [Colors.deepOrangeAccent, Colors.blue, Colors.pink]),
-        style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 62),
+        style: TextStyle(fontWeight: FontWeight.bold ,fontSize: width/9),
         textAlign: TextAlign.center);
 
 
@@ -140,7 +143,7 @@ class _SignInPageState extends State<SignInPage> {
         controller: _usernameController,
         decoration: InputDecoration(
           labelText: 'Username',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 40.0),
+          contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, width/15.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
         ),
       ),
@@ -155,7 +158,7 @@ class _SignInPageState extends State<SignInPage> {
         obscureText: true,
         decoration: InputDecoration(
           labelText: 'Password',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 40.0),
+          contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, width/15.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
         ),
       ),
@@ -163,11 +166,11 @@ class _SignInPageState extends State<SignInPage> {
 
 
     final loginButton = Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 5.0, top: 10.0),
+      padding:  EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
       child: new Container(
         height: 90.0,
         child: CupertinoButton(
-          child: const Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25.0, color: Colors.lightBlue),),
+          child:  Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/15.0, color: Colors.lightBlue),),
 
           onPressed:(){
 //            Navigator.push(
