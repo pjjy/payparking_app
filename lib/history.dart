@@ -116,12 +116,13 @@ class _HistoryTransList extends State<HistoryTransList> {
 
   @override
    Widget build(BuildContext context){
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
-        title: Text('History',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+        title: Text('History',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
         textTheme: TextTheme(
             title: TextStyle(
                 color: Colors.black,
@@ -168,18 +169,18 @@ class _HistoryTransList extends State<HistoryTransList> {
 //                       crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ListTile(
-                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 26.0),),
+                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('     Time In : ${plateData[index]["dateTimein"]}',style: TextStyle(fontSize: 17.0),),
-                                  Text('     Time Out : ${plateData[index]["dateTimeout"]}',style: TextStyle(fontSize: 17.0),),
-                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: 17.0),),
-                                  Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: 17.0),),
-                                  Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: 17.0),),
-                                  Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: 17.0),),
-                                  Text('     Location : ${plateData[index]["location"]}',style: TextStyle(fontSize: 17.0),),
-                                  Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 17.0),),
+                                  Text('     Time In : ${plateData[index]["dateTimein"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Time Out : ${plateData[index]["dateTimeout"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Location : ${plateData[index]["location"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/30),),
                                 ],
                               ),
 //                               trailing: Icon(Icons.more_vert),

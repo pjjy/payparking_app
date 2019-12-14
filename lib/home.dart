@@ -17,6 +17,7 @@ class _Home extends State<HomeT> {
   List userData;
   String empId;
   String name;
+  String empNameFn;
   String location;
   Future getUserData() async{
     var res =  await db.olFetchUserData(widget.logInData);
@@ -24,6 +25,7 @@ class _Home extends State<HomeT> {
       userData = res["user_details"];
       empId = userData[0]["emp_id"];
       name = userData[0]["emp_name"];
+      empNameFn = userData[0]["emp_namefn"];
       location = userData[0]["location"];
     });
   }
@@ -31,14 +33,16 @@ class _Home extends State<HomeT> {
   @override
   void initState(){
     super.initState();
-    if(empId == null || name == null || location == null)
+    if(empId == null || name == null || location == null || empNameFn == null)
     {
       empId = "";
       name = "";
+      empNameFn = "";
       location = "";
     }else{
       empId = empId;
       name = name;
+      empNameFn = empNameFn;
       location = location;
     }
     getUserData();
@@ -46,31 +50,32 @@ class _Home extends State<HomeT> {
 
   @override
   Widget build(BuildContext context){
+    double width = MediaQuery.of(context).size.width;
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
             title: Text('Park me',style: TextStyle(
-              fontSize: 13.0, // insert your font size here
+              fontSize: 12.0, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.collections),
             title: Text('Transactions',style: TextStyle(
-              fontSize: 13.0, // insert your font size here
+              fontSize:  12.0, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.share_up),
             title: Text('History',style: TextStyle(
-              fontSize: 13.0, // insert your font size here
+              fontSize: 12.0, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.gear_big),
             title: Text('Setting',style: TextStyle(
-              fontSize: 13.0, // insert your font size here
+              fontSize: 12.0, // insert your font size here
             ),),
           ),
         ],
@@ -89,7 +94,7 @@ class _Home extends State<HomeT> {
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ParkTransList(empId:empId, name:name, location:location),
+                child: ParkTransList(empId:empId, name:name, location:location, empNameFn:empNameFn),
               );
             });
           break;

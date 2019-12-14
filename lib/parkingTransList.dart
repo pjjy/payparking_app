@@ -11,8 +11,9 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 class ParkTransList extends StatefulWidget{
   final String empId;
   final String name;
+  final String empNameFn;
   final String location;
-  ParkTransList({Key key, @required this.name, this.location, this.empId}) : super(key: key);
+  ParkTransList({Key key, @required this.name, this.empNameFn, this.location, this.empId}) : super(key: key);
   @override
   _ParkTransList createState() => _ParkTransList();
 }
@@ -193,17 +194,19 @@ class _ParkTransList extends State<ParkTransList> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
-        title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
+        title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28,color: Colors.black),),
         actions: <Widget>[
           FlatButton(
             textColor: Colors.white,
             onPressed: () {},
-            child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
+            child: Text(widget.name.toString(),style: TextStyle(fontSize: width/36,color: Colors.black),),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
@@ -211,15 +214,16 @@ class _ParkTransList extends State<ParkTransList> {
 
         body:Column(
           children: <Widget>[
-          Card(
-            color: Colors.transparent,
-            margin: EdgeInsets.all(5),
-            elevation: 0.0,
+            SingleChildScrollView(
+//            color: Colors.transparent,
+//            margin: EdgeInsets.all(5),
+//            elevation: 0.0,
+              scrollDirection: Axis.horizontal,
               child: Row(
                   children: <Widget>[
-                    Text('Above 2 Hours:'),
+                    Text('  Above 2 Hours:', style: TextStyle(fontSize: width/32,color: Colors.black),),
                     Container(
-                      margin: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(10),
                       height: 20.0,
                       width: 20.0,
                       child:  DecoratedBox(
@@ -229,9 +233,9 @@ class _ParkTransList extends State<ParkTransList> {
                         ),
                       ),
                     ),
-                    Text('Almost 2 Hours:'),
+                    Text('Almost 2 Hours:', style: TextStyle(fontSize: width/32,color: Colors.black),),
                     Container(
-                      margin: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(10),
                       height: 20.0,
                       width: 20.0,
                       child:  DecoratedBox(
@@ -241,9 +245,9 @@ class _ParkTransList extends State<ParkTransList> {
                         ),
                       ),
                     ),
-                    Text('New Entry:'),
+                    Text('New Entry:', style: TextStyle(fontSize: width/32,color: Colors.black),),
                     Container(
-                      margin: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(10),
                       height: 20.0,
                       width: 20.0,
                       child:  DecoratedBox(
@@ -467,10 +471,10 @@ class _ParkTransList extends State<ParkTransList> {
                                                  child: new Text("Yes"),
                                                  onPressed: () {
                                                   if(trigger == 0){
-                                                     passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.name,plateData[index]["d_location"]);
+                                                     passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                    }
                                                    if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.name,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                    }
                                                    Navigator.of(context).pop();
                                                  },
@@ -518,18 +522,17 @@ class _ParkTransList extends State<ParkTransList> {
 //                           crossAxisAlignment: CrossAxisAlignment.start,
                              children: <Widget>[
                                ListTile(
-                                 title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27.0),),
+                                 title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
                                  subtitle: Column(
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                    children: <Widget>[
-                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: 18.0),),
-                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: 18.0),),
-                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: 18.0),),
-                                     Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: 18.0),),
-                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: 18.0),),
-                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: 18.0),),
-                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: 18.0),),
-
+                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/30),),
+                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/30),),
+                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/30),),
+                                     Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: width/30),),
+                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/30),),
+                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/30),),
+                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/30),),
                                    ],
                                  ),
 //                               trailing: Icon(Icons.more_vert),
@@ -540,84 +543,13 @@ class _ParkTransList extends State<ParkTransList> {
                        );
                      },
                    ),
-                 ),
-
+               ),
              ),
-            ),
-          ],
-        ),
+           ),
+         ],
+       ),
     );
   }
-///////
-  _getContent(index) async{
-    showDialog(
-      barrierDismissible: true,
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return CupertinoAlertDialog(
-          title: new Text("Update"),
-          content: Card(
-            color: Colors.transparent,
-            elevation: 0.0,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  initialValue: '${plateData[index]["d_Plate"]}',
-                  decoration: InputDecoration(
-                    labelText: "Pate Number",
-                    contentPadding: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 5.0),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                  ),
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 20.0,
-                ),
-            Radio(
-                value: 100,
-                groupValue: selectedRadio,
-                activeColor: Colors.blue,
-                onChanged:(val) {
-                    setSelectedRadio(val);
-                },
-               ),
-               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-               Radio(
-                 value: 50,
-                 groupValue: selectedRadio,
-                 activeColor: Colors.blue,
-                 onChanged:(val) {
-                   setSelectedRadio(val);
-                 },
-               ),
-              ],
-            ),
-          ),
-
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Save"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget editDialog(BuildContext context,index) {
-    return _getContent(index);
-  }
-/////
 }
 
 class EditContent extends StatefulWidget{

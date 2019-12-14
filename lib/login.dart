@@ -125,12 +125,12 @@ class _SignInPageState extends State<SignInPage> {
 
     final logoSmall = GradientText("Surface",
           gradient: LinearGradient(colors: [Colors.deepOrangeAccent, Colors.blueAccent, Colors.pink]),
-          style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 25),
+          style: TextStyle(fontWeight: FontWeight.bold ,fontSize: width/17),
           textAlign: TextAlign.center);
 
     final logo = GradientText("PayParking",
         gradient: LinearGradient(colors: [Colors.deepOrangeAccent, Colors.blue, Colors.pink]),
-        style: TextStyle(fontWeight: FontWeight.bold ,fontSize: width/9),
+        style: TextStyle(fontWeight: FontWeight.bold ,fontSize: width/13),
         textAlign: TextAlign.center);
 
 
@@ -170,7 +170,7 @@ class _SignInPageState extends State<SignInPage> {
       child: new Container(
         height: 90.0,
         child: CupertinoButton(
-          child:  Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/15.0, color: Colors.lightBlue),),
+          child:  Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/20.0, color: Colors.lightBlue),),
 
           onPressed:(){
 //            Navigator.push(
@@ -215,7 +215,7 @@ class _SignInPageState extends State<SignInPage> {
                 username,
                 SizedBox(height: 20.0),
                 password,
-                SizedBox(height: 20.0),
+                SizedBox(height: 5.0),
                 loginButton,
                 SizedBox(height: 20.0),
               ],
