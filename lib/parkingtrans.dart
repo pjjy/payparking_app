@@ -65,7 +65,7 @@ class _ParkTrans extends State<ParkTrans>{
             child: new Text(locSplit[q]),
             onPressed: () {
               setState(() {
-                Navigator.of(context, rootNavigator: true).pop('dialog');
+                Navigator.of(context, rootNavigator: true).pop();
                 locationA = locSplit[q];
               });
             },
@@ -311,7 +311,7 @@ class _ParkTrans extends State<ParkTrans>{
   void initState(){
     super.initState();
     selectedRadio = 0;
-    //mo prompt if na setupan na ug location or naay internet
+    //mo prompt if wala pa na setupan na ug location
   }
 
   void setSelectedRadio(int val){
@@ -322,14 +322,12 @@ class _ParkTrans extends State<ParkTrans>{
 
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context){
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
 

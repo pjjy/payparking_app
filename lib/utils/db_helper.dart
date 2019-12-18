@@ -155,10 +155,10 @@ class PayParkingDatabase {
     });
   }
 
-  Future olFetchAll() async{
+  Future olFetchAll(location) async{
     Map dataUser;
     final response = await http.post("http://172.16.46.130/e_parking/appGetTransaction",body:{
-
+          'location':location.toString()
     });
     dataUser = jsonDecode(response.body);
     return dataUser;

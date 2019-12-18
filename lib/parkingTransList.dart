@@ -34,8 +34,8 @@ class _ParkTransList extends State<ParkTransList> {
 
   Future getTransData() async {
     bool result = await DataConnectionChecker().hasConnection;
-    if (result == true) {
-      var res = await db.olFetchAll(); //tiwason pa ugma pa ma filter ang location
+    if (result == true){
+      var res = await db.olFetchAll(widget.location);
       setState((){
         plateData = res["user_details"];
       });
@@ -195,10 +195,9 @@ class _ParkTransList extends State<ParkTransList> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
         title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28,color: Colors.black),),

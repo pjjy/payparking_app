@@ -119,7 +119,7 @@ class _HistoryTransList extends State<HistoryTransList> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
         title: Text('History',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
@@ -149,7 +149,6 @@ class _HistoryTransList extends State<HistoryTransList> {
       body:Column(
         children: <Widget>[
           Expanded(
-
             child:RefreshIndicator(
               onRefresh: getHistoryTransData,
               child:Scrollbar(

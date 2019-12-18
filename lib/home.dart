@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'parkingtrans.dart';
 import 'parkingTransList.dart';
 import 'history.dart';
+import  'settings.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 
 class HomeT extends StatefulWidget {
@@ -19,6 +20,7 @@ class _Home extends State<HomeT> {
   String name;
   String empNameFn;
   String location;
+  String userImage;
   Future getUserData() async{
     var res =  await db.olFetchUserData(widget.logInData);
     setState((){
@@ -27,23 +29,26 @@ class _Home extends State<HomeT> {
       name = userData[0]["emp_name"];
       empNameFn = userData[0]["emp_namefn"];
       location = userData[0]["location"];
+      userImage = userData[0]["user_image"];
     });
   }
 
   @override
   void initState(){
     super.initState();
-    if(empId == null || name == null || location == null || empNameFn == null)
+    if(empId == null || name == null || location == null || empNameFn == null || userImage == null)
     {
       empId = "";
       name = "";
       empNameFn = "";
       location = "";
+      userImage = "";
     }else{
       empId = empId;
       name = name;
       empNameFn = empNameFn;
       location = location;
+      userImage = userImage;
     }
     getUserData();
   }
@@ -52,7 +57,7 @@ class _Home extends State<HomeT> {
   Widget build(BuildContext context){
     double width = MediaQuery.of(context).size.width;
     var  defFontSize = 12.0;
-    if(width<=400){
+    if(width <= 400){
       defFontSize = 10.0;
     }
     else{
@@ -115,7 +120,7 @@ class _Home extends State<HomeT> {
           case 3:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: Text("settings ne"),
+                child: Settings(empNameFn:empNameFn, userImage:userImage, location:location),
               );
             });
           break;
