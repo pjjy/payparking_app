@@ -64,9 +64,10 @@ class _ParkTrans extends State<ParkTrans>{
           FlatButton(
             child: new Text(locSplit[q]),
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop('dialog');
-              locationA = locSplit[q];
-
+              setState(() {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                locationA = locSplit[q];
+              });
             },
           ),
       );
@@ -350,7 +351,7 @@ class _ParkTrans extends State<ParkTrans>{
       body: ListView(
 //          physics: BouncingScrollPhysics(),
           children: <Widget>[
-            Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
 //             child:NiceButton(
 //                width: 255,
 //                elevation: 0.0,
@@ -401,91 +402,93 @@ class _ParkTrans extends State<ParkTrans>{
          ),
           Divider(
             color: Colors.transparent,
-            height: 25.0,
+            height: 15.0,
+          ),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
+              child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black45),),
-          ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
-           child: Column(
 
-             children: <Widget>[
-                     FlatButton.icon(
-                       label: Text('4 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: textColorA),),
-                       splashColor: Colors.lightBlue,
-                       color: buttonBackColorB,
-                          icon: Icon(Icons.directions_car, color: textColorA,),
-                           padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
-                           shape: RoundedRectangleBorder(
-                           borderRadius: new BorderRadius.circular(35.0),
-                           side: BorderSide(color: Colors.lightBlue)
-                       ),
-                       onPressed:(){
-                         setWheelB();
-                       },
-                   ),
-                             Text("   "),
-                   FlatButton.icon(
-                       label: Text('2 wheels'.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: textColorB),),
-                       splashColor: Colors.lightBlue,
-                       color: buttonBackColorA,
-                       icon: Icon(Icons.motorcycle, color: textColorB,),
-                       padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
-                       shape: RoundedRectangleBorder(
-                           borderRadius: new BorderRadius.circular(35.0),
-                           side: BorderSide(color: Colors.lightBlue)
-                       ),
-                       onPressed:(){
-                          setWheelA();
-                       },
-                   ),
-                 Text("   "),
-              //               Radio(
-              //                value: 100,
-              //                groupValue: selectedRadio,
-              //                activeColor: Colors.blue,
-              //                onChanged:(val) {
-              //                    setSelectedRadio(val);
-              //                },
-              //               ),
-              //               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-              //               Radio(
-              //                 value: 50,
-              //                 groupValue: selectedRadio,
-              //                 activeColor: Colors.blue,
-              //                 onChanged:(val) {
-              //                   setSelectedRadio(val);
-              //                 },
-              //               ),
+           child: SingleChildScrollView(
+             scrollDirection: Axis.horizontal,
+              child:Row(
+                children: <Widget>[
+                  FlatButton.icon(
+                    label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
+                    splashColor: Colors.lightBlue,
+                    color: buttonBackColorB,
+                    icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
+                    padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 5.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    onPressed:(){
+                      setWheelB();
+                    },
+                  ),
+                Text("   "),
+                  FlatButton.icon(
+                    label: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorB),),
+                    splashColor: Colors.lightBlue,
+                    color: buttonBackColorA,
+                    icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
+                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    onPressed:(){
+                      setWheelA();
+                    },
+                  ),
+                Text("   "),
+                //               Radio(
+                //                value: 100,
+                //                groupValue: selectedRadio,
+                //                activeColor: Colors.blue,
+                //                onChanged:(val) {
+                //                    setSelectedRadio(val);
+                //                },
+                //               ),
+                //               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                //               Radio(
+                //                 value: 50,
+                //                 groupValue: selectedRadio,
+                //                 activeColor: Colors.blue,
+                //                 onChanged:(val) {
+                //                   setSelectedRadio(val);
+                //                 },
+                //               ),
 
 
-                 FlatButton.icon(
-                   label: Text(locationA.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11.0, color: Colors.black45),),
-                   splashColor: Colors.lightBlue,
-                   icon: Icon(Icons.location_on, color: Colors.black45,),
-                   padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 20.0),
-                   shape: RoundedRectangleBorder(
-                       borderRadius: new BorderRadius.circular(35.0),
-                       side: BorderSide(color: Colors.lightBlue)
-                   ),
-                   onPressed: addLocation,
-                 ),
-             ]
+                  FlatButton.icon(
+                    label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
+                    splashColor: Colors.lightBlue,
+                    icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
+                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    onPressed: addLocation,
+                  ),
+              ]),
             ),
           ),
 
 
-          Padding( padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20.0),
-           child: Container(
+            Padding( padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20.0),
+              child: Container(
 //              width: 400.0,
-              child: ConfirmationSlider(
-                shadow:BoxShadow(color: Colors.black38, offset: Offset(1, 0),blurRadius: 1,spreadRadius: 1,),
-                foregroundColor:Colors.blue,
-                height: 120,
-                width : width-60,
-                onConfirmation: () => confirmed(),
-            ),),
-        ),
+                child: ConfirmationSlider(
+                  shadow:BoxShadow(color: Colors.black38, offset: Offset(1, 0),blurRadius: 1,spreadRadius: 1,),
+                  foregroundColor:Colors.blue,
+                  height: height/6,
+                  width : width-50,
+                  onConfirmation: () => confirmed(),
+                ),),
+            ),
        ],
       ),
      );

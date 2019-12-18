@@ -122,8 +122,6 @@ class PayParkingDatabase {
  //mysql query code
 
   Future mysqlLogin(username,password) async{
-    bool result = await DataConnectionChecker().hasConnection;
-    if(result == true){
       final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
         "username": username,
         "password": password,
@@ -133,10 +131,6 @@ class PayParkingDatabase {
       }else{
         return 'error';
       }
-    }
-    else{
-        // walay connecttion
-    }
   }
 
   Future olFetchUserData(userId) async{
@@ -184,6 +178,14 @@ class PayParkingDatabase {
     });
   }
 
+  Future olUpdateTransaction(id,plateNumber,wheel,locationA) async{
+    await http.post("http://172.16.46.130/e_parking/appUpdateTrans",body:{
+          'id':id.toString(),
+          'plateNumber':plateNumber.toString(),
+          'wheel':wheel.toString(),
+          'locationA':locationA.toString(),
+    });
+  }
 //  Future<Car> fetchCar(int id) async {
 //    var client = await db;
 //    final Future<List<Map<String, dynamic>>> futureMaps = client.query('car', where: 'id = ?', whereArgs: [id]);

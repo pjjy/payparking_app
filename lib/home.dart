@@ -51,31 +51,38 @@ class _Home extends State<HomeT> {
   @override
   Widget build(BuildContext context){
     double width = MediaQuery.of(context).size.width;
+    var  defFontSize = 12.0;
+    if(width<=400){
+      defFontSize = 10.0;
+    }
+    else{
+      defFontSize = 12.0;
+    }
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
+            icon: Icon(CupertinoIcons.home,size: 25.0),
             title: Text('Park me',style: TextStyle(
-              fontSize: 12.0, // insert your font size here
+              fontSize: defFontSize, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.collections),
+            icon: Icon(CupertinoIcons.collections,size: 25.0),
             title: Text('Transactions',style: TextStyle(
-              fontSize:  12.0, // insert your font size here
+              fontSize:  defFontSize, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.share_up),
+            icon: Icon(CupertinoIcons.share_up,size: 25.0),
             title: Text('History',style: TextStyle(
-              fontSize: 12.0, // insert your font size here
+              fontSize: defFontSize, // insert your font size here
             ),),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.gear_big),
+            icon: Icon(CupertinoIcons.gear_big,size: 25.0),
             title: Text('Setting',style: TextStyle(
-              fontSize: 12.0, // insert your font size here
+              fontSize: defFontSize, // insert your font size here
             ),),
           ),
         ],

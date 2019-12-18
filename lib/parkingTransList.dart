@@ -6,7 +6,7 @@ import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 import 'package:data_connection_checker/data_connection_checker.dart';
-
+import 'update.dart';
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -485,8 +485,6 @@ class _ParkTransList extends State<ParkTransList> {
                                                    Navigator.of(context).pop();
                                                  },
                                                ),
-
-
                                              ],
                                            );
                                          },
@@ -499,7 +497,7 @@ class _ParkTransList extends State<ParkTransList> {
                                         Navigator.of(context).pop();
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => EditContent(id:plateData[index]["d_id"],plateNo:plateData[index]["d_Plate"],amount:plateData[index]['d_amount'],location:plateData[index]['d_location'])),
+                                          MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData[index]["d_id"],plateNo:plateData[index]["d_Plate"],amount:plateData[index]['d_amount'],location:widget.location,username:widget.name)),
                                         );
                                       },
                                    ),
@@ -526,13 +524,13 @@ class _ParkTransList extends State<ParkTransList> {
                                  subtitle: Column(
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                    children: <Widget>[
-                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/30),),
-                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/30),),
-                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/30),),
-                                     Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: width/30),),
-                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/30),),
-                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/30),),
-                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/30),),
+                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/32),),
+                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
+                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
+                                     Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
+                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/32),),
+                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/32),),
+                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
                                    ],
                                  ),
 //                               trailing: Icon(Icons.more_vert),
@@ -636,7 +634,6 @@ class _EditContent extends State<EditContent> {
                     Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 0.0),
                        child: Row(
                          children: <Widget>[
-
                            new Text(
                              '2 wheels',
                              style: new TextStyle(fontSize: 16.0),
