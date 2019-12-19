@@ -75,8 +75,10 @@ class _UpdateTrans extends State<UpdateTrans>{
           FlatButton(
             child: new Text("Close "),
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop('dialog');
-              locationA = 'Location';
+              setState(() {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                locationA = 'Location';
+              });
             },
           ),
         );
@@ -301,14 +303,12 @@ class _UpdateTrans extends State<UpdateTrans>{
             color: Colors.transparent,
             height:15.0,
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
             child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child:Row(
+              child:Column(
                   children: <Widget>[
                     FlatButton.icon(
                       label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
@@ -352,7 +352,7 @@ class _UpdateTrans extends State<UpdateTrans>{
                       onPressed: addLocation,
                     ),
                   ]),
-            ),
+
           ),
 
 

@@ -14,17 +14,21 @@ class _Settings extends State<Settings>{
   String image;
   String name;
   String location;
-  getData() {
+  Future getData() async{
       image = widget.userImage;
       name = widget.empNameFn;
       location = widget.location;
-      print(image);
   }
 
   @override
   void initState(){
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -43,37 +47,77 @@ class _Settings extends State<Settings>{
               )
         ),
       ),
-      body:ListView(
-        children: <Widget>[
-            Divider(
-              color: Colors.transparent,
-              height: 40.0,
-            ),
-           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Container(
-                  width: 190.0,
-                  height: 190.0,
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(image)
+      body:Column(
+          children: <Widget>[
+            Expanded(
+              child:RefreshIndicator(
+                  onRefresh:getData,
+                  child:ListView(
+                    children: <Widget>[
+                      Divider(
+                        color: Colors.transparent,
+                        height: 100.0,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          new Container(
+                              width: 190.0,
+                              height: 190.0,
+                              decoration: new BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: new NetworkImage(image)
+                                  )
+                              )),
+                          Divider(
+                            color: Colors.transparent,
+                            height: 40.0,
+                          ),
+                          new Text(name,textScaleFactor: 1.5),
+                          new Text(location,textScaleFactor: 1.1),
+                          Divider(
+                            color: Colors.transparent,
+                            height: 60.0,
+                          ),
+                          FlatButton(
+                            child: new Text('Log Out'.toString(),style: TextStyle(fontSize: width/30.0, color: Colors.grey),),
+//                            Text: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.white),),
+//                            splashColor: Colors.lightBlue,
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(35.0),
+                                side: BorderSide(color: Colors.lightBlue)
+                            ),
+                            onPressed:(){
+//                              setWheelA();
+                            },
+                          ),
+                          FlatButton(
+                            child: new Text('172.16.46.130'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
+//                            Text: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.white),),
+//                            splashColor: Colors.lightBlue,
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(35.0),
+                                side: BorderSide(color: Colors.lightBlue)
+                            ),
+                            onPressed:(){
+//                              setWheelA();
+                            },
+                          ),
+                        ],
                       )
-                  )),
-              Divider(
-                color: Colors.transparent,
-                height: 40.0,
+                    ],
+                  )
               ),
-              new Text(name,textScaleFactor: 1.5),
-              new Text(location,textScaleFactor: 1.1)
-            ],
-          )
-        ],
-
-      )
+            ),
+          ],
+      ),
     );
   }
 }
