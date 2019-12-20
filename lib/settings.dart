@@ -18,6 +18,7 @@ class _Settings extends State<Settings>{
       image = widget.userImage;
       name = widget.empNameFn;
       location = widget.location;
+      print(image);
   }
 
   @override
