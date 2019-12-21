@@ -25,7 +25,7 @@ class _ParkTrans extends State<ParkTrans>{
 
   final db = PayParkingDatabase();
   File pickedImage;
-//  bool pressed = true;
+  bool _isEnabled = true;
   String locationA = "Location";
   var wheel = 0;
   Color buttonBackColorA;
@@ -72,7 +72,6 @@ class _ParkTrans extends State<ParkTrans>{
           ),
       );
       if(q >= counter){
-
         temp.add(
           FlatButton(
             child: new Text("Close "),
@@ -87,57 +86,46 @@ class _ParkTrans extends State<ParkTrans>{
     return temp;
   }
 
+  Future trapLocation() async{
+    var res = await db.trapLocation(widget.empId);
 
-   void addLocation(){
-     showDialog(
-       barrierDismissible: true,
-       context: context,
-       builder: (BuildContext context) {
-         // return object of type Dialog
-         return CupertinoAlertDialog(
-           title: Text('Add Location'),
-           actions:  _getList(),
-//            <Widget>[
+    if(res == true){
+       _isEnabled = false;
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Location Problem"),
+            content: new Text("This user has no location yet please contact your admin for location setup"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed:(){
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
-//              FlatButton(
-//                child: new Text("Location A"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location A';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location B"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location B';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location C"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location C';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location D"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location D';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Close & Clear"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Add Location';
-//                },
-//              ),
-//            ],
-         );
-       },
-     );
+   void addLocation() async{
+       showDialog(
+         barrierDismissible: true,
+         context: context,
+         builder: (BuildContext context) {
+           // return object of type Dialog
+           return CupertinoAlertDialog(
+             title: Text('Add Location'),
+             actions: _getList(),
+           );
+         },
+       );
   }
 
   Future pickImage() async{
@@ -305,20 +293,14 @@ class _ParkTrans extends State<ParkTrans>{
     }
   }
 
-  int selectedRadio;
+
   String name;
   @override
   void initState(){
     super.initState();
-    selectedRadio = 0;
-    //mo prompt if wala pa na setupan na ug location
+    trapLocation();
   }
 
-  void setSelectedRadio(int val){
-    setState(() {
-      selectedRadio = val;
-    });
-  }
 
 
   @override
@@ -385,7 +367,7 @@ class _ParkTrans extends State<ParkTrans>{
               child: new TextFormField(
                controller:plateNoController,
                autofocus: false,
-//               enabled: false,
+               enabled: _isEnabled,
                style: TextStyle(fontSize: width/15),
                     decoration: InputDecoration(
                     hintText: 'Plate Number',
@@ -479,6 +461,7 @@ class _ParkTrans extends State<ParkTrans>{
               child: Container(
 //              width: 400.0,
                 child: ConfirmationSlider(
+
                   shadow:BoxShadow(color: Colors.black38, offset: Offset(1, 0),blurRadius: 1,spreadRadius: 1,),
                   foregroundColor:Colors.blue,
                   height: height/6,

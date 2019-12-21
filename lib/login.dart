@@ -16,6 +16,7 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool isLoggedIn = false;
 
   Future createDatabase() async{
      await db.init();
@@ -44,6 +45,7 @@ class _SignInPageState extends State<SignInPage> {
     var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
+
       if(res.length >= 1 && res != 'error'){
         Navigator.of(context).pop();
 

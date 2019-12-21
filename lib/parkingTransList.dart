@@ -289,19 +289,16 @@ class _ParkTransList extends State<ParkTransList> {
                        final timeAg = timeAgo.format(fifteenAgo);
 
                        if(difference <= 90){
-
                          alertButton = "Logout";
                          trigger = 0;
                          cardColor = Colors.white;
                        }
-                       if(difference >= 90 && difference <= 119){
-
+                       if(difference >= 70 && difference <= 100){
                          alertButton = "Logout";
                          trigger = 0;
                          cardColor = Colors.blueAccent.withOpacity(.3);
                        }
-                       if(difference >= 120){
-
+                       if(difference >= 101){
                          alertButton = "Logout & Print";
                          trigger = 1;
                          cardColor = Colors.redAccent.withOpacity(.3);

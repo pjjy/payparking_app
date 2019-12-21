@@ -18,7 +18,6 @@ class _Settings extends State<Settings>{
       image = widget.userImage;
       name = widget.empNameFn;
       location = widget.location;
-      print(image);
   }
 
   @override
@@ -85,8 +84,6 @@ class _Settings extends State<Settings>{
                           ),
                           FlatButton(
                             child: new Text('Log Out'.toString(),style: TextStyle(fontSize: width/30.0, color: Colors.grey),),
-//                            Text: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.white),),
-//                            splashColor: Colors.lightBlue,
                             color: Colors.transparent,
                             padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
                             shape: RoundedRectangleBorder(
@@ -99,8 +96,18 @@ class _Settings extends State<Settings>{
                           ),
                           FlatButton(
                             child: new Text('172.16.46.130'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
-//                            Text: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.white),),
-//                            splashColor: Colors.lightBlue,
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(35.0),
+                                side: BorderSide(color: Colors.lightBlue)
+                            ),
+                            onPressed:(){
+//                              setWheelA();
+                            },
+                          ),
+                          FlatButton(
+                            child: new Text('Connect to a Printer'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
                             color: Colors.transparent,
                             padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
                             shape: RoundedRectangleBorder(
