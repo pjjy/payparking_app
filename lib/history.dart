@@ -123,6 +123,37 @@ class _HistoryTransList extends State<HistoryTransList> {
         elevation: 0.0,
         centerTitle: true,
         title: Text('History',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
+        leading: new IconButton(
+          icon: new Icon(Icons.search, color: Colors.black),
+          onPressed: () {
+            showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return CupertinoAlertDialog(
+                  title: new Text("Search Plate#"),
+                  content: new CupertinoTextField(),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text("Search"),
+                      onPressed:() {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    new FlatButton(
+                      child: new Text("Close"),
+                      onPressed:() {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+
+                  ],
+                );
+              },
+            );
+          },
+        ),
         textTheme: TextTheme(
             title: TextStyle(
                 color: Colors.black,

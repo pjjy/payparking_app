@@ -312,7 +312,6 @@ class _ParkTrans extends State<ParkTrans>{
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
-
         title: Text('Park Me',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
         actions: <Widget>[
           FlatButton(

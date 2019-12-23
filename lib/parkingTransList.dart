@@ -22,6 +22,7 @@ class _ParkTransList extends State<ParkTransList> {
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
   List plateData;
+  TextEditingController _textController;
 
 
 
@@ -38,6 +39,7 @@ class _ParkTransList extends State<ParkTransList> {
       var res = await db.olFetchAll(widget.location);
       setState((){
         plateData = res["user_details"];
+
       });
     }
     else{
@@ -177,19 +179,15 @@ class _ParkTransList extends State<ParkTransList> {
     }
   }
 
-  int selectedRadio;
+
   @override
   void initState(){
     super.initState();
     getTransData();
-    selectedRadio = 0;
+    _textController = TextEditingController();
+
   }
 
-  void setSelectedRadio(int val){
-    setState(() {
-      selectedRadio = val;
-    });
-  }
 
 
   @override
@@ -201,10 +199,48 @@ class _ParkTransList extends State<ParkTransList> {
         elevation: 0.0,
         centerTitle: true,
         title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28,color: Colors.black),),
+        leading: new IconButton(
+          icon: new Icon(Icons.search, color: Colors.black),
+         onPressed: () {
+           showDialog(
+             barrierDismissible: true,
+             context: context,
+             builder: (BuildContext context) {
+               // return object of type Dialog
+               return CupertinoAlertDialog(
+                 title: new Text("Search Plate#"),
+                 content: new CupertinoTextField(
+                   controller: _textController,
+                   autofocus: true,
+//                   onChanged: _onChanged,
+                 ),
+                 actions: <Widget>[
+//                   new FlatButton(
+//                     child: new Text("Search"),
+//                     onPressed:() {
+//                       print(_textController.text);
+//                       _textController.clear();
+//                       _onChanged(_textController.text);
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+                   new FlatButton(
+                     child: new Text("Close"),
+                     onPressed:() {
+                       Navigator.of(context).pop();
+                     },
+                   ),
+                 ],
+               );
+             },
+           );
+         },
+        ),
+
         actions: <Widget>[
           FlatButton(
             textColor: Colors.white,
-            onPressed: () {},
+            onPressed: (){},
             child: Text(widget.name.toString(),style: TextStyle(fontSize: width/36,color: Colors.black),),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
@@ -259,7 +295,7 @@ class _ParkTransList extends State<ParkTransList> {
             ],
            ),
           ),
-           Expanded(
+            Expanded(
                child:RefreshIndicator(
                  onRefresh: getTransData,
                    child:Scrollbar(
@@ -513,7 +549,7 @@ class _ParkTransList extends State<ParkTransList> {
                            margin: EdgeInsets.all(5),
                            elevation: 0.0,
                            child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           crossAxisAlignment: CrossAxisAlignment.center,
                              children: <Widget>[
                                ListTile(
                                  title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
@@ -537,174 +573,14 @@ class _ParkTransList extends State<ParkTransList> {
                        );
                      },
                    ),
+                 ),
                ),
              ),
-           ),
-         ],
-       ),
-    );
+           ],
+         ),
+      );
+    }
   }
-}
-
-class EditContent extends StatefulWidget{
-  final String id;
-  final String plateNo;
-  final String amount;
-  final String location;
-
-
-  EditContent({Key key, @required this.id, this.plateNo, this.amount,this.location}) : super(key: key);
-  @override
-  _EditContent createState() => _EditContent();
-}
-
-class _EditContent extends State<EditContent> {
-  TextEditingController _plateNoController = TextEditingController();
-
-  int selectedRadio;
-  @override
-  void initState(){
-    super.initState();
-    _plateNoController.text = widget.plateNo;
-    selectedRadio = 0;
-  }
-
-  void setSelectedRadio(int val){
-    setState(() {
-      selectedRadio = val;
-    });
-  }
-  String dropdownValue = 'Location A';
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: true,
-        title: Text('Edit',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black),),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-//        actions: <Widget>[
-//          FlatButton(
-//            textColor: Colors.white,
-//            onPressed: () {},
-//            child: Text(widget.name.toString(),style: TextStyle(fontSize: 14,color: Colors.black),),
-//            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-//          ),
-//        ],
-      ),
-    body:Column(
-        children: <Widget>[
-          Expanded(
-            child:Scrollbar(
-                 child:ListView(
-                 children: <Widget>[
-                   Divider(
-                     color: Colors.transparent,
-                     height: 40.0,
-                   ),
-                      Padding(padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-                          child: new TextFormField(
-                          autofocus: false,
-                          controller: _plateNoController,
-                          style: TextStyle(fontSize: 15.0),
-                          decoration: InputDecoration(
-                              labelText: "Pate Number",
-                              contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 40.0),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                          ),
-                   ),
-                  ),
-
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
-                      child: Row(
-                        children: <Widget>[
-                          new Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17,color: Colors.black45),),
-                        ],
-                      ),
-                    ),
-
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 0.0),
-                       child: Row(
-                         children: <Widget>[
-                           new Text(
-                             '2 wheels',
-                             style: new TextStyle(fontSize: 16.0),
-                           ),
-                           Radio(
-                             value: 50,
-                             groupValue: selectedRadio,
-                             activeColor: Colors.blue,
-                             onChanged:(val) {
-                               setSelectedRadio(val);
-                             },
-                           ),
-                           new Text(
-                             '4 wheels',
-                             style: new TextStyle(fontSize: 16.0),
-                           ),
-                           Radio(
-                             value: 100,
-                             groupValue: selectedRadio,
-                             activeColor: Colors.blue,
-                             onChanged:(val) {
-                               setSelectedRadio(val);
-                             },
-                           ),
-
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-                          child: Row(
-                            children: <Widget>[
-                              new Text(
-                                'Location   :  ',
-                                style: new TextStyle(fontSize: 16.0),
-                              ),
-                              DropdownButton<String>(
-                                value: dropdownValue,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 24,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black45
-                                ),
-                                underline: Container(
-                                  height: 1,
-                                  width: 10,
-                                  color: Colors.black,
-                                ),
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    dropdownValue = newValue;
-                                  });
-                                },
-                                items: <String>['Location A', 'Location B', 'Location C', 'Location D']
-                                    .map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value,style: TextStyle(fontSize: 16,color: Colors.black),),
-                                  );
-                                })
-                                    .toList(),
-                              ),
-                            ],
-                          ),
-                      ),
-
-                         ],
-                    ),
-                   ),
-                 ],
-               ),
-            ),
-          ),
-        ],
-     ),
-    );
-  }
-}
 
 
 
