@@ -197,6 +197,27 @@ class PayParkingDatabase {
       return false;
     }
   }
+  Future olFetchSearch(text,location) async{
+    Map dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/olFetchSearch",body:{
+      "text": text.toString(),
+      "location":location.toString(),
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+  Future olFetchSearchHistory(text,location) async{
+    Map dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/olFetchSearchHistory",body:{
+      "text": text.toString(),
+      "location":location.toString(),
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+
 //  Future<Car> fetchCar(int id) async {
 //    var client = await db;
 //    final Future<List<Map<String, dynamic>>> futureMaps = client.query('car', where: 'id = ?', whereArgs: [id]);

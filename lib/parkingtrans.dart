@@ -293,14 +293,20 @@ class _ParkTrans extends State<ParkTrans>{
     }
   }
 
+  checkForNewSharedLists() async{
+    print('asd');
+  }
 
-  String name;
   @override
   void initState(){
     super.initState();
     trapLocation();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
 
   @override

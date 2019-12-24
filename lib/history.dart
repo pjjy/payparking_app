@@ -8,6 +8,9 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 
 
 class HistoryTransList extends StatefulWidget {
+  final String location;
+
+  HistoryTransList({Key key, @required this.location}) : super(key: key);
   @override
   _HistoryTransList createState() => _HistoryTransList();
 }
@@ -18,6 +21,8 @@ class _HistoryTransList extends State<HistoryTransList> {
   List plateData;
   List syncData;
   String alert;
+  List plateData2;
+  TextEditingController _textController;
 
   Future getSyncDate() async{
     var res = await db.fetchSync();
@@ -40,6 +45,7 @@ class _HistoryTransList extends State<HistoryTransList> {
   }
 
    Future getHistoryTransData() async {
+     listStat = false;
     var res = await db.fetchAllHistory();
     setState((){
       plateData = res;
@@ -107,11 +113,46 @@ class _HistoryTransList extends State<HistoryTransList> {
     }
   }
 
+  bool listStat = false;
+  Future _onChanged(text) async {
+    listStat = true;
+    bool result = await DataConnectionChecker().hasConnection;
+    if (result == true){
+      var res = await db.olFetchSearchHistory(text,widget.location);
+      setState((){
+        plateData2 = res["user_details"];
+      });
+    }
+    else{
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Connection Problem"),
+            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed:() {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   void initState(){
     super.initState();
     getHistoryTransData();
     getSyncDate();
+    _textController = TextEditingController();
   }
 
   @override
@@ -133,11 +174,17 @@ class _HistoryTransList extends State<HistoryTransList> {
                 // return object of type Dialog
                 return CupertinoAlertDialog(
                   title: new Text("Search Plate#"),
-                  content: new CupertinoTextField(),
+                  content: new CupertinoTextField(
+                    controller: _textController,
+                    autofocus: true,
+//                    onChanged: _onChanged,
+                  ),
                   actions: <Widget>[
                     new FlatButton(
                       child: new Text("Search"),
                       onPressed:() {
+                        _onChanged(_textController.text);
+                        _textController.clear();
                         Navigator.of(context).pop();
                       },
                     ),
@@ -147,7 +194,6 @@ class _HistoryTransList extends State<HistoryTransList> {
                         Navigator.of(context).pop();
                       },
                     ),
-
                   ],
                 );
               },
@@ -183,7 +229,47 @@ class _HistoryTransList extends State<HistoryTransList> {
             child:RefreshIndicator(
               onRefresh: getHistoryTransData,
               child:Scrollbar(
-                child:ListView.builder(
+                child: listStat == true ?
+                ListView.builder(
+//                 physics: BouncingScrollPhysics(),
+                  itemCount: plateData2 == null ? 0: plateData2.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var f = index;
+                    f++;
+                    var totalAmount = int.parse(plateData2[index]["d_penalty"]) + int.parse(plateData2[index]["d_amount"]);
+                    return GestureDetector(
+                      onLongPress: (){},
+                      child: Card(
+                        margin: EdgeInsets.all(5),
+                        elevation: 0.0,
+                        child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ListTile(
+                              title:Text('$f.Plt No : ${plateData2[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('     Time In : ${plateData2[index]["d_dateTimeIn"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Time Out : ${plateData2[index]["d_dateTimeout"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData2[index]["d_amount"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Penalty : '+oCcy.format(int.parse(plateData2[index]["d_penalty"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     In By : ${plateData2[index]["d_name_in"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Out By : ${plateData2[index]["d_name_out"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Location : ${plateData2[index]["d_location"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/30),),
+                                ],
+                              ),
+//                               trailing: Icon(Icons.more_vert),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
+
+                :ListView.builder(
 //                 physics: BouncingScrollPhysics(),
                   itemCount: plateData == null ? 0: plateData.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -222,7 +308,6 @@ class _HistoryTransList extends State<HistoryTransList> {
                   },
                 ),
               ),
-
             ),
           ),
         ],
