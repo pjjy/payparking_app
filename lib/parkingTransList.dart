@@ -72,8 +72,8 @@ class _ParkTransList extends State<ParkTransList> {
   Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
-    final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
-    final dateNow = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeNow);
+    final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
+    final dateNow = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeNow);
     var amountPay = amount;
     var penalty = 0;
 
@@ -129,8 +129,8 @@ class _ParkTransList extends State<ParkTransList> {
   Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
-    final dateIn = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeIn);
-    final dateNow = DateFormat("yyyy-MM-dd : hh:mm a").format(dateTimeNow);
+    final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
+    final dateNow = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeNow);
     var amountPay = amount;
 
     bool result = await DataConnectionChecker().hasConnection;
