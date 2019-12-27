@@ -37,15 +37,17 @@ class _SignInPageState extends State<SignInPage> {
           );
         },
       );
+
     });
     logInAttempt();
   }
 
   Future logInAttempt() async{
-    var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
-    bool result = await DataConnectionChecker().hasConnection;
-    if(result == true){
 
+    bool result = await DataConnectionChecker().hasConnection;
+    print(result);
+    if(result == true){
+      var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
       if(res.length >= 1 && res != 'error'){
         Navigator.of(context).pop();
 
