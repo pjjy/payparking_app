@@ -10,6 +10,10 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+
+import 'package:flutter/services.dart';
+
 
 class ParkTrans extends StatefulWidget {
   final String empId;
@@ -23,10 +27,12 @@ class ParkTrans extends StatefulWidget {
 class _ParkTrans extends State<ParkTrans>{
 
 
+
   final db = PayParkingDatabase();
   File pickedImage;
   bool _isEnabled = true;
   String locationA = "Location";
+  String btName = "Find Printer";
   var wheel = 0;
   Color buttonBackColorA;
   Color textColorA = Colors.black45;
@@ -213,6 +219,171 @@ class _ParkTrans extends State<ParkTrans>{
      }
    }
 
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice _device;
+  bool _connected = false;
+  bool _pressed = false;
+  String pathImage;
+
+  Future<void> initPlatformState() async {
+    List<BluetoothDevice> devices = [];
+
+    try {
+      devices = await bluetooth.getBondedDevices();
+    } on PlatformException {
+      // TODO - Error
+    }
+
+    bluetooth.onStateChanged().listen((state) {
+      switch (state) {
+        case BlueThermalPrinter.CONNECTED:
+          setState(() {
+            _connected = true;
+            _pressed = false;
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECTED:
+          setState(() {
+            _connected = false;
+            _pressed = false;
+          });
+          break;
+        default:
+          print(state);
+          break;
+      }
+    });
+
+    if (!mounted) return;
+    setState(() {
+      _devices = devices;
+    });
+  }
+
+
+  List<Widget> _getDeviceName() {
+
+    List<Widget> temp = [];
+    _devices.forEach((device) {
+
+      temp.add(
+        FlatButton(
+          child: new Text(device.name),
+          onPressed: () {
+            setState(() {
+//              Navigator.of(context, rootNavigator: true).pop();
+              _connect();
+              btName = device.name;
+              print(device.name);
+            });
+          },
+        ),
+      );
+    });
+
+    temp.add(
+      FlatButton(
+        child: new Text("Close "),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop('dialog');
+        },
+      ),
+    );
+
+    return temp;
+  }
+
+  _getDeviceItems(){
+    List<DropdownMenuItem<BluetoothDevice>> items = [];
+    if (btName != "Find Printer") {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: Text('Disconnect Printer?'),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Disconnect"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _disconnect();
+                  btName = "Find Printer";
+                },
+              ),
+              new FlatButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: Text('Add Printer'),
+            actions: _getDeviceName(),
+          );
+        },
+      );
+    }
+    return items;
+  }
+
+  void _connect() {
+//    if (_device == null) {
+////      show('No device selected.');
+//    } else {
+      bluetooth.isConnected.then((isConnected) {
+        if (!isConnected) {
+          bluetooth.connect(_device).catchError((error) {
+            setState(() => _pressed = false);
+          });
+          setState(() => _pressed = true);
+          print('wala');
+        }
+      });
+      print('naa');
+//    }
+
+  }
+
+//  Future show(
+//      String message, {
+//        Duration duration: const Duration(seconds: 3),
+//      }) async {
+//    await new Future.delayed(new Duration(milliseconds: 100));
+//    Scaffold.of(context).showSnackBar(
+//      new SnackBar(
+//        content: new Text(
+//          message,
+//          style: new TextStyle(
+//            color: Colors.white,
+//          ),
+//        ),
+//        duration: duration,
+//      ),
+//    );
+//  }
+
+
+  void _disconnect() {
+    bluetooth.disconnect();
+    setState(() => _pressed = true);
+  }
+
   void saveData() async{
 
       bool result = await DataConnectionChecker().hasConnection;
@@ -293,13 +464,10 @@ class _ParkTrans extends State<ParkTrans>{
     }
   }
 
-  checkForNewSharedLists() async{
-    print('asd');
-  }
-
   @override
   void initState(){
     super.initState();
+    initPlatformState();
     trapLocation();
   }
 
@@ -336,38 +504,55 @@ class _ParkTrans extends State<ParkTrans>{
       body: ListView(
 //          physics: BouncingScrollPhysics(),
           children: <Widget>[
-            Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-//             child:NiceButton(
-//                width: 255,
-//                elevation: 0.0,
-//                radius: 52.0,
-//                fontSize: 18.0,
-//                text: "Open Camera",
-//                icon: Icons.camera_alt,
-//                padding: const EdgeInsets.all(15),
-//                background: Colors.blue,
-//                onPressed:pickImage,
-//             ),
-
-              child: MaterialButton(
-//                minWidth: 100.0,
-                height: 40.0,
-                onPressed:(){},
-                child:FlatButton.icon(
-                  label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
-                  splashColor: Colors.lightBlue,
-                  icon: Icon(Icons.camera_alt, color: Colors.lightBlue,),
-                  padding: EdgeInsets.all(14.0),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(35.0),
-                      side: BorderSide(color: Colors.lightBlue)
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 30.0),
+                child: MaterialButton(
+                  height: 40.0,
+                  onPressed:(){},
+                  child:FlatButton.icon(
+                    label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+                    splashColor: Colors.lightBlue,
+                    icon: Icon(Icons.camera_alt, color: Colors.lightBlue,),
+                    padding: EdgeInsets.all(14.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    onPressed:(){
+                      pickImage();
+                    },
                   ),
-                  onPressed:(){
-                       pickImage();
-                  },
                 ),
               ),
-          ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
+                child: MaterialButton(
+                  height: 40.0,
+                  onPressed:(){},
+                  child:FlatButton.icon(
+                    label: Text(btName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+                    splashColor: Colors.lightBlue,
+                    icon: Icon(Icons.local_printshop, color: Colors.lightBlue,),
+                    padding: EdgeInsets.all(14.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    onPressed:(){
+                      _getDeviceItems();
+                    },
+                  ),
+                ),
+              ),
+            ],
+        ),
+
+      ),
+
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
               child: new TextFormField(
                controller:plateNoController,

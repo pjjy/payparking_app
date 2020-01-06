@@ -20,11 +20,17 @@ class _Settings extends State<Settings>{
       location = widget.location;
   }
 
+
   @override
   void initState(){
     super.initState();
     getData();
   }
+
+  _getDeviceItems(){
+
+  }
+
 
   @override
   void dispose() {
@@ -115,7 +121,7 @@ class _Settings extends State<Settings>{
                                 side: BorderSide(color: Colors.lightBlue)
                             ),
                             onPressed:(){
-//                              setWheelA();
+                              _getDeviceItems();
                             },
                           ),
                         ],

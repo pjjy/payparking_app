@@ -45,12 +45,10 @@ class _SignInPageState extends State<SignInPage> {
   Future logInAttempt() async{
 
     bool result = await DataConnectionChecker().hasConnection;
-    print(result);
     if(result == true){
       var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
       if(res.length >= 1 && res != 'error'){
         Navigator.of(context).pop();
-
         Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomeT(logInData:res)),
