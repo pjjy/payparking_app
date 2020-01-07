@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'login.dart';
 
 class Settings extends StatefulWidget {
   final String empNameFn;
@@ -27,10 +28,6 @@ class _Settings extends State<Settings>{
     getData();
   }
 
-  _getDeviceItems(){
-
-  }
-
 
   @override
   void dispose() {
@@ -40,6 +37,11 @@ class _Settings extends State<Settings>{
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    new MaterialApp(
+      routes: <String, WidgetBuilder> {
+        '/login': (BuildContext context) => new SignInPage(),
+      },
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -97,7 +99,10 @@ class _Settings extends State<Settings>{
                                 side: BorderSide(color: Colors.lightBlue)
                             ),
                             onPressed:(){
-//                              setWheelA();
+//                              Navigator.push(
+//                                context,
+//                                MaterialPageRoute(builder: (context) => SignInPage()),
+//                              );
                             },
                           ),
                           FlatButton(
@@ -109,21 +114,22 @@ class _Settings extends State<Settings>{
                                 side: BorderSide(color: Colors.lightBlue)
                             ),
                             onPressed:(){
-//                              setWheelA();
+//                              Navigator.popUntil(context, ModalRoute.withName('/login'));
+//                              Navigator.popUntil(context, ModalRoute.withName('/SignInPage'));
                             },
                           ),
-                          FlatButton(
-                            child: new Text('Connect to a Printer'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
-                            color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(35.0),
-                                side: BorderSide(color: Colors.lightBlue)
-                            ),
-                            onPressed:(){
-                              _getDeviceItems();
-                            },
-                          ),
+//                          FlatButton(
+//                            child: new Text('Connect to a Printer'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
+//                            color: Colors.transparent,
+//                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+//                            shape: RoundedRectangleBorder(
+//                                borderRadius: new BorderRadius.circular(35.0),
+//                                side: BorderSide(color: Colors.lightBlue)
+//                            ),
+//                            onPressed:(){
+//                              _getDeviceItems();
+//                            },
+//                          ),
                         ],
                       )
                     ],

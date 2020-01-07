@@ -85,8 +85,8 @@ class _Home extends State<HomeT> {
             ),),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.gear_big,size: 25.0),
-            title: Text('Setting',style: TextStyle(
+            icon: Icon(CupertinoIcons.person,size: 25.0),
+            title: Text('User',style: TextStyle(
               fontSize: defFontSize, // insert your font size here
             ),),
           ),

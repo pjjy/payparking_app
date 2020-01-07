@@ -11,8 +11,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-
 import 'package:flutter/services.dart';
+import 'couponPrint.dart';
+
+
 
 
 class ParkTrans extends StatefulWidget {
@@ -26,13 +28,19 @@ class ParkTrans extends StatefulWidget {
 }
 class _ParkTrans extends State<ParkTrans>{
 
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice _device;
+  bool _connected = false;
+  bool _pressed = false;
+  CouponPrint testPrint;
+
 
 
   final db = PayParkingDatabase();
   File pickedImage;
   bool _isEnabled = true;
   String locationA = "Location";
-  String btName = "Find Printer";
   var wheel = 0;
   Color buttonBackColorA;
   Color textColorA = Colors.black45;
@@ -94,7 +102,6 @@ class _ParkTrans extends State<ParkTrans>{
 
   Future trapLocation() async{
     var res = await db.trapLocation(widget.empId);
-
     if(res == true){
        _isEnabled = false;
       showDialog(
@@ -201,6 +208,7 @@ class _ParkTrans extends State<ParkTrans>{
   TextEditingController plateNoController = TextEditingController();
 
   void confirmed(){
+
     if(plateNoController.text == "" || locationA == "Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
@@ -209,9 +217,33 @@ class _ParkTrans extends State<ParkTrans>{
 //      print(dateUntil);
 //      print(selectedRadio);
     }
+
     else {
       if(wheel == 0){
 
+      }
+      if(_connected == false){
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return CupertinoAlertDialog(
+              title: new Text("Connection Problem"),
+              content: new Text("Plese turn the bluetooth on"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    plateNoController.text = "";
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
       else{
         saveData();
@@ -219,13 +251,6 @@ class _ParkTrans extends State<ParkTrans>{
      }
    }
 
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
-
-  List<BluetoothDevice> _devices = [];
-  BluetoothDevice _device;
-  bool _connected = false;
-  bool _pressed = false;
-  String pathImage;
 
   Future<void> initPlatformState() async {
     List<BluetoothDevice> devices = [];
@@ -262,90 +287,29 @@ class _ParkTrans extends State<ParkTrans>{
     });
   }
 
-
-  List<Widget> _getDeviceName() {
-
-    List<Widget> temp = [];
-    _devices.forEach((device) {
-
-      temp.add(
-        FlatButton(
-          child: new Text(device.name),
-          onPressed: () {
-            setState(() {
-//              Navigator.of(context, rootNavigator: true).pop();
-              _connect();
-              btName = device.name;
-              print(device.name);
-            });
-          },
-        ),
-      );
-    });
-
-    temp.add(
-      FlatButton(
-        child: new Text("Close "),
-        onPressed: () {
-          Navigator.of(context, rootNavigator: true).pop('dialog');
-        },
-      ),
-    );
-
-    return temp;
-  }
-
-  _getDeviceItems(){
+  List<DropdownMenuItem<BluetoothDevice>> _getDeviceItemsDropDown() {
     List<DropdownMenuItem<BluetoothDevice>> items = [];
-    if (btName != "Find Printer") {
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: Text('Disconnect Printer?'),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Disconnect"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _disconnect();
-                  btName = "Find Printer";
-                },
-              ),
-              new FlatButton(
-                child: new Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-
-                },
-              ),
-            ],
-          );
-        },
-      );
+    if (_devices.isEmpty) {
+      items.add(DropdownMenuItem(
+        child: Text('NONE'),
+      ));
     } else {
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: Text('Add Printer'),
-            actions: _getDeviceName(),
-          );
-        },
-      );
+      _devices.forEach((device) {
+        items.add(DropdownMenuItem(
+          child: Text(device.name),
+          value: device,
+        ));
+      });
     }
     return items;
   }
 
+
+
   void _connect() {
-//    if (_device == null) {
-////      show('No device selected.');
-//    } else {
+    if (_device == null) {
+//      show('No device selected.');
+    } else {
       bluetooth.isConnected.then((isConnected) {
         if (!isConnected) {
           bluetooth.connect(_device).catchError((error) {
@@ -356,27 +320,8 @@ class _ParkTrans extends State<ParkTrans>{
         }
       });
       print('naa');
-//    }
-
+    }
   }
-
-//  Future show(
-//      String message, {
-//        Duration duration: const Duration(seconds: 3),
-//      }) async {
-//    await new Future.delayed(new Duration(milliseconds: 100));
-//    Scaffold.of(context).showSnackBar(
-//      new SnackBar(
-//        content: new Text(
-//          message,
-//          style: new TextStyle(
-//            color: Colors.white,
-//          ),
-//        ),
-//        duration: duration,
-//      ),
-//    );
-//  }
 
 
   void _disconnect() {
@@ -396,7 +341,9 @@ class _ParkTrans extends State<ParkTrans>{
       var stat = 1;
       var user = widget.empId;
 
-
+      var dateTodayP = DateFormat("yMMMMd").format(new DateTime.now());
+      var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
+      var dateUntilP = DateFormat("yMMMMd").format(today.add(new Duration(days: 7)));
 //      print(plateNumber);
 //      print(dateToday);
 //      print(dateTimeToday);
@@ -426,6 +373,7 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
+      testPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
       await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
@@ -469,6 +417,7 @@ class _ParkTrans extends State<ParkTrans>{
     super.initState();
     initPlatformState();
     trapLocation();
+    testPrint = CouponPrint();
   }
 
   @override
@@ -530,11 +479,36 @@ class _ParkTrans extends State<ParkTrans>{
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
+//                child: MaterialButton(
+//                  height: 40.0,
+//                  onPressed:(){},
+//                  child:FlatButton.icon(
+//                    label: Text(btName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+//                    splashColor: Colors.lightBlue,
+//                    icon: Icon(Icons.local_printshop, color: Colors.lightBlue,),
+//                    padding: EdgeInsets.all(14.0),
+//                    shape: RoundedRectangleBorder(
+//                        borderRadius: new BorderRadius.circular(35.0),
+//                        side: BorderSide(color: Colors.lightBlue)
+//                    ),
+//                    onPressed:(){
+//                      _getDeviceItems();
+//                    },
+//                  ),
+//                ),
+               child: DropdownButton(
+                  items: _getDeviceItemsDropDown(),
+                  onChanged: (value) => setState(() => _device = value),
+                  value: _device,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
                 child: MaterialButton(
                   height: 40.0,
                   onPressed:(){},
                   child:FlatButton.icon(
-                    label: Text(btName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+                    label: Text(_connected ? 'Disconnect' : 'Connect',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
                     splashColor: Colors.lightBlue,
                     icon: Icon(Icons.local_printshop, color: Colors.lightBlue,),
                     padding: EdgeInsets.all(14.0),
@@ -542,15 +516,13 @@ class _ParkTrans extends State<ParkTrans>{
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
                     ),
-                    onPressed:(){
-                      _getDeviceItems();
-                    },
+                    onPressed:
+                    _pressed ? null : _connected ? _disconnect : _connect,
                   ),
                 ),
               ),
             ],
         ),
-
       ),
 
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
@@ -612,25 +584,6 @@ class _ParkTrans extends State<ParkTrans>{
                     },
                   ),
                 Text("   "),
-                //               Radio(
-                //                value: 100,
-                //                groupValue: selectedRadio,
-                //                activeColor: Colors.blue,
-                //                onChanged:(val) {
-                //                    setSelectedRadio(val);
-                //                },
-                //               ),
-                //               Text("2 Wheels(50)",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                //               Radio(
-                //                 value: 50,
-                //                 groupValue: selectedRadio,
-                //                 activeColor: Colors.blue,
-                //                 onChanged:(val) {
-                //                   setSelectedRadio(val);
-                //                 },
-                //               ),
-
-
                   FlatButton.icon(
                     label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
                     splashColor: Colors.lightBlue,
@@ -643,15 +596,12 @@ class _ParkTrans extends State<ParkTrans>{
                     onPressed: addLocation,
                   ),
               ]),
-
-          ),
-
+            ),
 
             Padding( padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20.0),
               child: Container(
 //              width: 400.0,
                 child: ConfirmationSlider(
-
                   shadow:BoxShadow(color: Colors.black38, offset: Offset(1, 0),blurRadius: 1,spreadRadius: 1,),
                   foregroundColor:Colors.blue,
                   height: height/6,

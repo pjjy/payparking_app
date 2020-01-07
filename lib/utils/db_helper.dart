@@ -4,7 +4,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'dart:convert';
 
 

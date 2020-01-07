@@ -56,6 +56,9 @@ class _SignInPageState extends State<SignInPage> {
       }
       if(res == 'error'){
         Navigator.of(context).pop();
+        setState((){
+
+        });
         showDialog(
           barrierDismissible: true,
           context: context,
