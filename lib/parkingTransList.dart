@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'update.dart';
+import 'delinquent.dart';
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -566,6 +567,16 @@ class _ParkTransList extends State<ParkTransList> {
                                     },
                                   ),
                                   new FlatButton(
+                                    child: new Text("Takas ni!"),
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+//                                      Navigator.push(
+//                                        context,
+//                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
+//                                      );
+                                    },
+                                  ),
+                                  new FlatButton(
                                     child: new Text("Close"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
@@ -837,6 +848,17 @@ class _ParkTransList extends State<ParkTransList> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData[index]["d_id"],plateNo:plateData[index]["d_Plate"],amount:plateData[index]['d_amount'],location:widget.location,username:widget.name)),
+                                      );
+                                    },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text("Takas ni!"),
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                        context,
+//                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
+                                        MaterialPageRoute(builder: (context) => Delinquent(username:widget.name,plateNo:plateData[index]["d_Plate"])),
                                       );
                                     },
                                   ),

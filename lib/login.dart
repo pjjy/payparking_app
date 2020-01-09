@@ -148,8 +148,8 @@ class _SignInPageState extends State<SignInPage> {
         controller: _usernameController,
         decoration: InputDecoration(
           labelText: 'Username',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, width/15.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
+//          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, width/15.0),
+//          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
         ),
       ),
     );
@@ -163,8 +163,8 @@ class _SignInPageState extends State<SignInPage> {
         obscureText: true,
         decoration: InputDecoration(
           labelText: 'Password',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, width/15.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
+//          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, width/15.0),
+//          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
         ),
       ),
     );

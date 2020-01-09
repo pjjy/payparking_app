@@ -222,29 +222,29 @@ class _ParkTrans extends State<ParkTrans>{
       if(wheel == 0){
 
       }
-      if(_connected == false){
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return CupertinoAlertDialog(
-              title: new Text("Connection Problem"),
-              content: new Text("Plese turn the bluetooth on"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    plateNoController.text = "";
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
+//      if(_connected == false){
+//        showDialog(
+//          barrierDismissible: false,
+//          context: context,
+//          builder: (BuildContext context) {
+//            // return object of type Dialog
+//            return CupertinoAlertDialog(
+//              title: new Text("Connection Problem"),
+//              content: new Text("Plese turn the bluetooth on"),
+//              actions: <Widget>[
+//                // usually buttons at the bottom of the dialog
+//                new FlatButton(
+//                  child: new Text("Close"),
+//                  onPressed: () {
+//                    Navigator.of(context).pop();
+//                    plateNoController.text = "";
+//                  },
+//                ),
+//              ],
+//            );
+//          },
+//        );
+//      }
       else{
         saveData();
        }
@@ -330,7 +330,6 @@ class _ParkTrans extends State<ParkTrans>{
   }
 
   void saveData() async{
-
       bool result = await DataConnectionChecker().hasConnection;
       String plateNumber = plateNoController.text;
       var today = new DateTime.now();
@@ -373,7 +372,7 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-      testPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
+//      testPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
       await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
@@ -547,7 +546,7 @@ class _ParkTrans extends State<ParkTrans>{
             height: 15.0,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
               child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
           ),
           Padding(
@@ -559,7 +558,7 @@ class _ParkTrans extends State<ParkTrans>{
                     splashColor: Colors.lightBlue,
                     color: buttonBackColorB,
                     icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 15.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
@@ -574,7 +573,7 @@ class _ParkTrans extends State<ParkTrans>{
                     splashColor: Colors.lightBlue,
                     color: buttonBackColorA,
                     icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 15.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
@@ -588,7 +587,7 @@ class _ParkTrans extends State<ParkTrans>{
                     label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
                     splashColor: Colors.lightBlue,
                     icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 15.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
