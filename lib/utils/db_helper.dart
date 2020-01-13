@@ -50,6 +50,7 @@ class PayParkingDatabase {
     db.execute('''
       CREATE TABLE payparhistory(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uid TEXT,
         plateNumber TEXT,
         dateTimein TEXT,
         dateTimeout TEXT,
@@ -108,9 +109,9 @@ class PayParkingDatabase {
     }
   }
 
-  Future<int> addTransHistory(String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
+  Future<int> addTransHistory(String uid,String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
     var client = await db;
-    return client.insert('payparhistory', {'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
+    return client.insert('payparhistory', {'uid':uid,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
   }
 
   Future<int> updatePayTranStat(int id) async{
@@ -141,8 +142,9 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,location) async{
+  Future olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,location) async{
      await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
+      'uid':uid.toString(),
       'plateNumber':plateNumber.toString(),
       'dateToday':dateToday.toString(),
       'dateTimeToday':dateTimeToday.toString(),
@@ -163,9 +165,10 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy,location) async{
+  Future olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy,location) async{
     await http.post("http://172.16.46.130/e_parking/appSaveToHistory",body:{
           'id':id.toString(),
+          'uid':uid.toString(),
           'plateNumber':plateNumber.toString(),
           'dateIn':dateIn.toString(),
           'dateNow':dateNow.toString(),

@@ -16,7 +16,6 @@ import 'couponPrint.dart';
 
 
 
-
 class ParkTrans extends StatefulWidget {
   final String empId;
   final String name;
@@ -34,6 +33,7 @@ class _ParkTrans extends State<ParkTrans>{
   bool _connected = false;
   bool _pressed = false;
   CouponPrint testPrint;
+
 
 
 
@@ -330,6 +330,9 @@ class _ParkTrans extends State<ParkTrans>{
   }
 
   void saveData() async{
+
+      var uid = DateFormat("yyMdHms").format(new DateTime.now());
+
       bool result = await DataConnectionChecker().hasConnection;
       String plateNumber = plateNoController.text;
       var today = new DateTime.now();
@@ -350,6 +353,8 @@ class _ParkTrans extends State<ParkTrans>{
 //      print(amount);
 //      print(stat);
 //      print(user);
+//        print(uid);
+//        print(uid);
     if(result == true){
       showDialog(
         barrierDismissible: false,
@@ -373,7 +378,7 @@ class _ParkTrans extends State<ParkTrans>{
         },
       );
 //      testPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
-      await db.olSaveTransaction(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
+      await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",

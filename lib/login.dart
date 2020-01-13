@@ -89,7 +89,7 @@ class _SignInPageState extends State<SignInPage> {
           // return object of type Dialog
           return CupertinoAlertDialog(
             title: new Text("Connection Problem"),
-            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
+            content: new Text("Please Connect to the wifi hotspot or turn your wifi on"),
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
               new FlatButton(

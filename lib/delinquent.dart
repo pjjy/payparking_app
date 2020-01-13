@@ -1,16 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert';
+
 
 class Delinquent extends StatefulWidget {
 //  final String id;
   final String plateNo;
 //  final String amount;
-//  final String location;
+  final String fullName;
   final String username;
+  final String uid;
 //
 //  Delinquent({Key key, @required this.id, this.plateNo, this.amount,this.location,this.username}) : super(key: key);
-  Delinquent({Key key, @required this.plateNo,this.username}) : super(key: key);
+  Delinquent({Key key, @required this.fullName, this.uid, this.plateNo, this.username}) : super(key: key);
   @override
   _Delinquent createState() => _Delinquent();
 }
@@ -18,10 +22,13 @@ class _Delinquent extends State<Delinquent>{
 
 
   final _secNameController = TextEditingController();
+  var dateToday = DateFormat("yyyy-MM-dd H:mm").format(new DateTime.now());
+
 
   @override
   void initState(){
     super.initState();
+
   }
 
   @override
@@ -36,11 +43,19 @@ class _Delinquent extends State<Delinquent>{
 
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    var _signatureCanvas = Signature(
-      height: height/2.5,
+    var _guardSignature = Signature(
+      height: 150,
       backgroundColor: Colors.blueGrey,
       onChanged: (points) {
-        print(points);
+//        print(points);
+      },
+    );
+
+    var _empSignature = Signature(
+      height: 150,
+      backgroundColor: Colors.blueGrey,
+      onChanged: (points) {
+//        print(points);
       },
     );
     return Scaffold(
@@ -88,17 +103,25 @@ class _Delinquent extends State<Delinquent>{
               ),
             ),
           ),
-
+          Divider(
+            height: 10,
+            color: Colors.transparent,
+          ),
           Padding(
-            padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
-            child: Text("Signature Pad"),
+            padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Text("Security Signature"),
           ),
 
           Divider(
             height: height/1000,
             color: Colors.transparent,
           ),
-          _signatureCanvas,
+          _guardSignature,
+          Padding(
+            padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Text("Your Signature"),
+          ),
+          _empSignature,
           Divider(
             height: height/25,
             color: Colors.transparent,
@@ -112,29 +135,37 @@ class _Delinquent extends State<Delinquent>{
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   //SHOW EXPORTED IMAGE IN NEW ROUTE
-
                   IconButton(
                     icon: const Icon(Icons.check),
                     color: Colors.blue,
                     onPressed: () async {
-                      print(_secNameController.text);
-                      if (_signatureCanvas.isNotEmpty) {
 
-                        var data = await _signatureCanvas.exportBytes();
-                        print(data);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return Scaffold(
-                                appBar: AppBar(),
-                                body: Container(
-                                  color: Colors.grey[300],
-                                  child: Image.memory(data),
-                                ),
-                              );
-                            },
-                          ),
-                        );
+                      if (_guardSignature.isNotEmpty && _empSignature.isNotEmpty) {
+
+                        var guardData = await _guardSignature.exportBytes();
+                        var imgGuard = base64.encode(guardData);
+                        var empData = await _empSignature.exportBytes();
+                        var imgEmp = base64.encode(empData);
+                        print(_secNameController.text);
+                        print(widget.uid);
+                        print(widget.fullName);
+                        print(dateToday);
+                        print(widget.plateNo);
+//                        print(img);
+//                        print(data);
+//                        Navigator.of(context).push(
+//                          MaterialPageRoute(
+//                            builder: (BuildContext context) {
+//                              return Scaffold(
+//                                appBar: AppBar(),
+//                                body: Container(
+//                                  color: Colors.grey[300],
+//                                  child: Image.memory(data),
+//                                ),
+//                              );
+//                            },
+//                          ),
+//                        );
                       }
                     },
                   ),
@@ -144,7 +175,7 @@ class _Delinquent extends State<Delinquent>{
                     color: Colors.blue,
                     onPressed: () {
                       setState(() {
-                        return _signatureCanvas.clear();
+                        return _guardSignature.clear();
                       });
                     },
                   ),

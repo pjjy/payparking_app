@@ -70,7 +70,7 @@ class _ParkTransList extends State<ParkTransList> {
 
 
 
-  Future passDataToHistoryWithOutPay(id,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut,location) async{
+  Future passDataToHistoryWithOutPay(id,uid,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
@@ -81,9 +81,9 @@ class _ParkTransList extends State<ParkTransList> {
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+      await db.olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       //insert to history tbl
-      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
+      await db.addTransHistory(uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       //code for mysql
       //update  status to 0
       //await db.updatePayTranStat(id);
@@ -127,7 +127,7 @@ class _ParkTransList extends State<ParkTransList> {
 
   }
 
-  Future passDataToHistoryWithPay(id,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
+  Future passDataToHistoryWithPay(id,uid,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
@@ -137,9 +137,9 @@ class _ParkTransList extends State<ParkTransList> {
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(id,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+      await db.olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       //insert to history tbl
-      await db.addTransHistory(plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
+      await db.addTransHistory(uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       //code for mysql
       //await db.updatePayTranStat(id);
       getTransData();
@@ -536,10 +536,10 @@ class _ParkTransList extends State<ParkTransList> {
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -570,10 +570,10 @@ class _ParkTransList extends State<ParkTransList> {
                                     child: new Text("Takas ni!"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
-//                                      Navigator.push(
-//                                        context,
-//                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
-//                                      );
+                                      Navigator.push(
+                                        context,
+                                          MaterialPageRoute(builder: (context) => Delinquent(fullName:widget.empNameFn,username:widget.name,uid:plateData2[index]["d_uid"],plateNo:plateData2[index]["d_Plate"])),
+                                      );
                                     },
                                   ),
                                   new FlatButton(
@@ -821,10 +821,10 @@ class _ParkTransList extends State<ParkTransList> {
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -858,7 +858,7 @@ class _ParkTransList extends State<ParkTransList> {
                                       Navigator.push(
                                         context,
 //                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
-                                        MaterialPageRoute(builder: (context) => Delinquent(username:widget.name,plateNo:plateData[index]["d_Plate"])),
+                                        MaterialPageRoute(builder: (context) => Delinquent(fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
                                       );
                                     },
                                   ),
