@@ -19,15 +19,13 @@ class ParkTransList extends StatefulWidget{
   _ParkTransList createState() => _ParkTransList();
 }
 
-class _ParkTransList extends State<ParkTransList> {
+class _ParkTransList extends State<ParkTransList>{
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
   List plateData;
   List plateData2;
   TextEditingController _textController;
-
-
-
+//  Timer timer;
 //  Future getTransData() async {
 //    var res = await db.fetchAll();
 //    setState((){
@@ -36,6 +34,7 @@ class _ParkTransList extends State<ParkTransList> {
 //  }
 
   Future getTransData() async {
+    print("hello");
     listStat = false;
     bool result = await DataConnectionChecker().hasConnection;
     if (result == true){
@@ -219,11 +218,24 @@ class _ParkTransList extends State<ParkTransList> {
   void initState(){
     super.initState();
     getTransData();
+//    Timer.periodic(Duration(seconds: 1), (timer) {
+//      getTransData();
+//    });
     _textController = TextEditingController();
   }
 
   @override
+  void dispose() {
+//    timer?.cancel();
+//    Timer.periodic(Duration(seconds: 1), (timer) {
+//      getTransData();
+//    });
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -572,7 +584,7 @@ class _ParkTransList extends State<ParkTransList> {
                                       Navigator.of(context).pop();
                                       Navigator.push(
                                         context,
-                                          MaterialPageRoute(builder: (context) => Delinquent(fullName:widget.empNameFn,username:widget.name,uid:plateData2[index]["d_uid"],plateNo:plateData2[index]["d_Plate"])),
+                                          MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData2[index]["d_uid"],plateNo:plateData2[index]["d_Plate"])),
                                       );
                                     },
                                   ),
@@ -858,7 +870,7 @@ class _ParkTransList extends State<ParkTransList> {
                                       Navigator.push(
                                         context,
 //                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
-                                        MaterialPageRoute(builder: (context) => Delinquent(fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
                                       );
                                     },
                                   ),

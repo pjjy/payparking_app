@@ -3,39 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'utils/db_helper.dart';
 
 
 class Delinquent extends StatefulWidget {
-//  final String id;
+  final String id;
   final String plateNo;
-//  final String amount;
   final String fullName;
   final String username;
   final String uid;
-//
-//  Delinquent({Key key, @required this.id, this.plateNo, this.amount,this.location,this.username}) : super(key: key);
-  Delinquent({Key key, @required this.fullName, this.uid, this.plateNo, this.username}) : super(key: key);
+
+  Delinquent({Key key, @required this.id,this.fullName, this.uid, this.plateNo, this.username}) : super(key: key);
   @override
   _Delinquent createState() => _Delinquent();
 }
 class _Delinquent extends State<Delinquent>{
-
-
+  final db = PayParkingDatabase();
   final _secNameController = TextEditingController();
-  var dateToday = DateFormat("yyyy-MM-dd H:mm").format(new DateTime.now());
 
 
   @override
   void initState(){
     super.initState();
-
   }
 
   @override
-  void dispose() {
-    // Clean up the controller when the Widget is disposed
+  void dispose(){
     _secNameController.dispose();
     super.dispose();
+  }
+
+  Future saveDelinquent(id,uid,plateNo,dateToday,fullName,secNameC,imgEmp,imgGuard) async{
+    await db.olSaveDelinquent(id,uid,plateNo,dateToday,fullName,secNameC,imgEmp,imgGuard);
   }
 
   @override
@@ -59,12 +58,10 @@ class _Delinquent extends State<Delinquent>{
       },
     );
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
-
         title: Text('Delinquent',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
         leading: new IconButton(
           icon: new Icon(Icons.arrow_back, color: Colors.black),
@@ -85,7 +82,7 @@ class _Delinquent extends State<Delinquent>{
         ),
       ),
       body: ListView(
-          physics: BouncingScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Padding(
             padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
@@ -139,9 +136,8 @@ class _Delinquent extends State<Delinquent>{
                     icon: const Icon(Icons.check),
                     color: Colors.blue,
                     onPressed: () async {
-
-                      if (_guardSignature.isNotEmpty && _empSignature.isNotEmpty) {
-
+                      if(_guardSignature.isNotEmpty && _empSignature.isNotEmpty && _secNameController.text.isNotEmpty) {
+                        var dateToday = DateFormat("yyyy-MM-dd H:mm:ss").format(new DateTime.now());
                         var guardData = await _guardSignature.exportBytes();
                         var imgGuard = base64.encode(guardData);
                         var empData = await _empSignature.exportBytes();
@@ -151,6 +147,7 @@ class _Delinquent extends State<Delinquent>{
                         print(widget.fullName);
                         print(dateToday);
                         print(widget.plateNo);
+                        saveDelinquent(widget.id,widget.uid,widget.plateNo,dateToday,widget.fullName,_secNameController.text,imgEmp,imgGuard);
 //                        print(img);
 //                        print(data);
 //                        Navigator.of(context).push(
@@ -166,6 +163,28 @@ class _Delinquent extends State<Delinquent>{
 //                            },
 //                          ),
 //                        );
+                      }
+                      else{
+                        showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return CupertinoAlertDialog(
+                              title: new Text("Empty fields"),
+                              content: new Text("Please check security field and the sign pad "),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: new Text("Close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     },
                   ),

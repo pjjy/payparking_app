@@ -219,6 +219,18 @@ class PayParkingDatabase {
     return dataUser;
   }
 
+  Future olSaveDelinquent(id,uid,plateNo,dateToday,fullName,secNameC,imgEmp,imgGuard) async{
+    await http.post("http://172.16.46.130/e_parking/olSaveDelinquent",body:{
+      "id":id.toString(),
+      "uid":uid.toString(),
+      "plateNo":plateNo.toString(),
+      "dateToday":dateToday.toString(),
+      "fullName":fullName.toString(),
+      "secNameC":secNameC.toString(),
+      "imgEmp":imgEmp.toString(),
+      "imgGuard":imgGuard.toString(),
+    });
+  }
 
 //  Future<Car> fetchCar(int id) async {
 //    var client = await db;
