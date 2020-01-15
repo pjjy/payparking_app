@@ -8,6 +8,9 @@ import 'dart:async';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'update.dart';
 import 'delinquent.dart';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'couponPrint.dart';
+import 'reprint.dart';
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -20,11 +23,14 @@ class ParkTransList extends StatefulWidget{
 }
 
 class _ParkTransList extends State<ParkTransList>{
+
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
   List plateData;
   List plateData2;
   TextEditingController _textController;
+  CouponPrint couponPrint;
 //  Timer timer;
 //  Future getTransData() async {
 //    var res = await db.fetchAll();
@@ -32,6 +38,8 @@ class _ParkTransList extends State<ParkTransList>{
 //      plateData = res;
 //    });
 //  }
+
+
 
   Future getTransData() async {
     print("hello");
@@ -218,18 +226,12 @@ class _ParkTransList extends State<ParkTransList>{
   void initState(){
     super.initState();
     getTransData();
-//    Timer.periodic(Duration(seconds: 1), (timer) {
-//      getTransData();
-//    });
+    couponPrint = CouponPrint();
     _textController = TextEditingController();
   }
 
   @override
   void dispose() {
-//    timer?.cancel();
-//    Timer.periodic(Duration(seconds: 1), (timer) {
-//      getTransData();
-//    });
     super.dispose();
   }
 
@@ -245,7 +247,7 @@ class _ParkTransList extends State<ParkTransList>{
         title: Text('Transactions List',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28,color: Colors.black),),
         leading: new IconButton(
           icon: new Icon(Icons.search, color: Colors.black),
-         onPressed: () {
+         onPressed:(){
            showDialog(
              barrierDismissible: true,
              context: context,
@@ -589,6 +591,13 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
+                                    child: new Text("Reprint"),
+                                    onPressed: (){
+//                                      Navigator.of(context).pop();
+                                      couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+                                    },
+                                  ),
+                                  new FlatButton(
                                     child: new Text("Close"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
@@ -607,7 +616,7 @@ class _ParkTransList extends State<ParkTransList>{
 //                           crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               ListTile(
-                                title:Text('$f.Plt No : ${plateData2[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
+                                title:Text('$f.Plt No : ${plateData2[index]["d_Plate"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
@@ -653,6 +662,10 @@ class _ParkTransList extends State<ParkTransList>{
                       final difference = dateTimeNow.difference(dateTimeIn).inMinutes;
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
+                      bool enabled = true;
+                      if(difference >= 6){
+                         enabled = false;
+                      }
 
                       if(difference <= 90){
                         alertButton = "Logout";
@@ -871,8 +884,55 @@ class _ParkTransList extends State<ParkTransList>{
                                         context,
 //                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
                                         MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+
                                       );
                                     },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text("Reprint"),
+                                    onPressed: (){
+                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+                                    },
+                                  ),
+
+                                  new FlatButton(
+                                    child: new Text("Cancellation"),
+
+                                    onPressed: enabled ? () {
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          String plateNumber = plateData[index]['d_Plate'];
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Hello "+widget.name+","),
+                                            content: new Text("Are you sure you want to remove this plate # "+plateNumber.toUpperCase()),
+//                                              '$f.Plt No : ${plateData[index]["d_Plate"]}'.toUpperCase()
+//
+                                          actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("proceed"),
+                                                onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                    );
+                                                  },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } : null,
                                   ),
                                   new FlatButton(
                                     child: new Text("Close"),
@@ -893,7 +953,7 @@ class _ParkTransList extends State<ParkTransList>{
 //                           crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               ListTile(
-                                title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
+                                title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
@@ -906,7 +966,6 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
                                   ],
                                 ),
-//                               trailing: Icon(Icons.more_vert),
                               ),
                             ],
                           ),
@@ -914,7 +973,6 @@ class _ParkTransList extends State<ParkTransList>{
                       );
                     },
                   ),
-
                 ),
               ),
             ),

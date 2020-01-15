@@ -246,7 +246,7 @@ class _HistoryTransList extends State<HistoryTransList> {
 //                       crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ListTile(
-                              title:Text('$f.Plt No : ${plateData2[index]["d_Plate"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
+                              title:Text('$f.Plt No : ${plateData2[index]["d_Plate"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -268,7 +268,6 @@ class _HistoryTransList extends State<HistoryTransList> {
                     );
                   },
                 )
-
                 :ListView.builder(
 //                 physics: BouncingScrollPhysics(),
                   itemCount: plateData == null ? 0: plateData.length,
@@ -285,7 +284,7 @@ class _HistoryTransList extends State<HistoryTransList> {
 //                       crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ListTile(
-                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}',style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
+                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[

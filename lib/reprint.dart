@@ -6,18 +6,18 @@ import 'dart:convert';
 import 'utils/db_helper.dart';
 
 
-class Delinquent extends StatefulWidget {
+class Reprint extends StatefulWidget {
   final String id;
   final String plateNo;
   final String fullName;
   final String username;
   final String uid;
 
-  Delinquent({Key key, @required this.id,this.fullName, this.uid, this.plateNo, this.username}) : super(key: key);
+  Reprint({Key key, @required this.id,this.fullName, this.uid, this.plateNo, this.username}) : super(key: key);
   @override
   _Delinquent createState() => _Delinquent();
 }
-class _Delinquent extends State<Delinquent>{
+class _Delinquent extends State<Reprint>{
   final db = PayParkingDatabase();
   final _secNameController = TextEditingController();
 
@@ -38,31 +38,23 @@ class _Delinquent extends State<Delinquent>{
   }
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context){
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     var _guardSignature = Signature(
       height: 150,
       backgroundColor: Colors.blueGrey,
       onChanged: (points) {
-//        print(points);
+      //print(points);
       },
     );
 
-    var _empSignature = Signature(
-      height: 150,
-      backgroundColor: Colors.blueGrey,
-      onChanged: (points) {
-//        print(points);
-      },
-    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
-        title: Text('Delinquent',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
+        title: Text('Reprint',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
         leading: new IconButton(
           icon: new Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -118,7 +110,7 @@ class _Delinquent extends State<Delinquent>{
             padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Text("Your Signature"),
           ),
-          _empSignature,
+
           Divider(
             height: height/25,
             color: Colors.transparent,
@@ -136,26 +128,24 @@ class _Delinquent extends State<Delinquent>{
                     icon: const Icon(Icons.check),
                     color: Colors.blue,
                     onPressed: () async {
-                      if(_guardSignature.isNotEmpty && _empSignature.isNotEmpty && _secNameController.text.isNotEmpty) {
+                      if(_guardSignature.isNotEmpty && _secNameController.text.isNotEmpty) {
                         var dateToday = DateFormat("yyyy-MM-dd H:mm:ss").format(new DateTime.now());
                         var guardData = await _guardSignature.exportBytes();
                         var imgGuard = base64.encode(guardData);
-                        var empData = await _empSignature.exportBytes();
-                        var imgEmp = base64.encode(empData);
                         print(_secNameController.text);
                         print(widget.uid);
                         print(widget.fullName);
                         print(dateToday);
                         print(widget.plateNo);
-                        saveDelinquent(widget.id,widget.uid,widget.plateNo,dateToday,widget.fullName,_secNameController.text,imgEmp,imgGuard);
+//                        saveDelinquent(widget.id,widget.uid,widget.plateNo,dateToday,widget.fullName,_secNameController.text,imgGuard);
                         showDialog(
                           barrierDismissible: true,
                           context: context,
                           builder: (BuildContext context) {
                             // return object of type Dialog
                             return CupertinoAlertDialog(
-                              title: new Text("Success"),
-                              content: new Text("Plate # mark as delinquent"),
+                              title: new Text("Empty fields"),
+                              content: new Text("Please check security field and the sign pad"),
                               actions: <Widget>[
                                 // usually buttons at the bottom of the dialog
                                 new FlatButton(

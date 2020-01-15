@@ -14,8 +14,6 @@ import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'couponPrint.dart';
 
-
-
 class ParkTrans extends StatefulWidget {
   final String empId;
   final String name;
@@ -32,7 +30,7 @@ class _ParkTrans extends State<ParkTrans>{
   BluetoothDevice _device;
   bool _connected = false;
   bool _pressed = false;
-  CouponPrint testPrint;
+  CouponPrint couponPrint;
 
 
 
@@ -222,29 +220,29 @@ class _ParkTrans extends State<ParkTrans>{
       if(wheel == 0){
 
       }
-//      if(_connected == false){
-//        showDialog(
-//          barrierDismissible: false,
-//          context: context,
-//          builder: (BuildContext context) {
-//            // return object of type Dialog
-//            return CupertinoAlertDialog(
-//              title: new Text("Connection Problem"),
-//              content: new Text("Plese turn the bluetooth on"),
-//              actions: <Widget>[
-//                // usually buttons at the bottom of the dialog
-//                new FlatButton(
-//                  child: new Text("Close"),
-//                  onPressed: () {
-//                    Navigator.of(context).pop();
-//                    plateNoController.text = "";
-//                  },
-//                ),
-//              ],
-//            );
-//          },
-//        );
-//      }
+      if(_connected == false){
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return CupertinoAlertDialog(
+              title: new Text("Connection Problem"),
+              content: new Text("Plese turn the bluetooth on"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    plateNoController.text = "";
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
       else{
         saveData();
        }
@@ -343,9 +341,9 @@ class _ParkTrans extends State<ParkTrans>{
       var stat = 1;
       var user = widget.empId;
 
-      var dateTodayP = DateFormat("yMMMMd").format(new DateTime.now());
+      var dateTodayP = DateFormat("yyyy-MM-dd").format(new DateTime.now());
       var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
-      var dateUntilP = DateFormat("yMMMMd").format(today.add(new Duration(days: 7)));
+      var dateUntilP = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
 //      print(plateNumber);
 //      print(dateToday);
 //      print(dateTimeToday);
@@ -377,7 +375,7 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-//      testPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
+      couponPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
       await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
@@ -421,7 +419,7 @@ class _ParkTrans extends State<ParkTrans>{
     super.initState();
     initPlatformState();
     trapLocation();
-    testPrint = CouponPrint();
+    couponPrint = CouponPrint();
   }
 
   @override

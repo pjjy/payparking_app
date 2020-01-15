@@ -146,7 +146,7 @@ class _UpdateTrans extends State<UpdateTrans>{
   TextEditingController plateNoController = TextEditingController();
 
   void confirmed(){
-    if(plateNoController.text == "" || locationA == "Location"){
+    if(plateNoController.text == "" ){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
@@ -155,12 +155,7 @@ class _UpdateTrans extends State<UpdateTrans>{
 //      print(selectedRadio);
     }
     else {
-      if(wheel == 0){
-
-      }
-      else{
         saveData();
-      }
     }
   }
 
@@ -169,7 +164,6 @@ class _UpdateTrans extends State<UpdateTrans>{
     bool result = await DataConnectionChecker().hasConnection;
     String plateNumber = plateNoController.text;
     var id = widget.id;
-
 
     if(result == true){
       showDialog(
@@ -299,61 +293,62 @@ class _UpdateTrans extends State<UpdateTrans>{
               ),
             ),
           ),
-          Divider(
-            color: Colors.transparent,
-            height:15.0,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
-            child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
-          ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              child:Column(
-                  children: <Widget>[
-                    FlatButton.icon(
-                      label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
-                      splashColor: Colors.lightBlue,
-                      color: buttonBackColorB,
-                      icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
-                      padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 5.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(35.0),
-                          side: BorderSide(color: Colors.lightBlue)
-                      ),
-                      onPressed:(){
-                        setWheelB();
-                      },
-                    ),
-                    Text("   "),
-                    FlatButton.icon(
-                      label: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorB),),
-                      splashColor: Colors.lightBlue,
-                      color: buttonBackColorA,
-                      icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
-                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(35.0),
-                          side: BorderSide(color: Colors.lightBlue)
-                      ),
-                      onPressed:(){
-                        setWheelA();
-                      },
-                    ),
-                    Text("   "),
-                    FlatButton.icon(
-                      label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
-                      splashColor: Colors.lightBlue,
-                      icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
-                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(35.0),
-                          side: BorderSide(color: Colors.lightBlue)
-                      ),
-                      onPressed: addLocation,
-                    ),
-                  ]),
-
-          ),
+//          Divider(
+//            color: Colors.transparent,
+//            height:15.0,
+//          ),
+//          Padding(
+//            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
+//            child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
+//          ),
+//          Padding(
+//              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+//              child:Column(
+//                  children: <Widget>[
+//                    FlatButton.icon(
+//                      label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
+//                      splashColor: Colors.lightBlue,
+//                      color: buttonBackColorB,
+//                      icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
+//                      padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 5.0),
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: new BorderRadius.circular(35.0),
+//                          side: BorderSide(color: Colors.lightBlue)
+//                      ),
+//                      onPressed:(){
+//                        setWheelB();
+//                      },
+//                    ),
+//                    Text("   "),
+//                    FlatButton.icon(
+//                      label: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorB),),
+//                      splashColor: Colors.lightBlue,
+//                      color: buttonBackColorA,
+//                      icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
+//                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: new BorderRadius.circular(35.0),
+//                          side: BorderSide(color: Colors.lightBlue)
+//                      ),
+//                      onPressed:(){
+//                        setWheelA();
+//                      },
+//                    ),
+//                    Text("   "),
+//                    FlatButton.icon(
+//                      label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
+//                      splashColor: Colors.lightBlue,
+//                      icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
+//                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: new BorderRadius.circular(35.0),
+//                          side: BorderSide(color: Colors.lightBlue)
+//                      ),
+//                      onPressed: addLocation,
+//                    ),
+//                  ]),
+//
+//          ),
 
 
           Padding( padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20.0),

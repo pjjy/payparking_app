@@ -18,11 +18,11 @@ class CouponPrint {
         bluetooth.printNewLine();
 //        bluetooth.printImage(pathImage);
         bluetooth.printLeftRight("", "     Ticket #: 001221",3);
-        bluetooth.printLeftRight("", "                      Date:" +dateTodayP+"  @  "+dateTimeTodayP,3);
-        bluetooth.printLeftRight("","     Validity:" +dateUntilP,3);
+        bluetooth.printLeftRight("", "                      Date:" +dateTodayP+" @ "+dateTimeTodayP,3);
+        bluetooth.printLeftRight("","            Validity:" +dateUntilP,3);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
-        bluetooth.printCustom("                                         CONSUMABLE COUPON",3,0);
+        bluetooth.printCustom("                                               CONSUMABLE COUPON",3,0);
         bluetooth.printCustom("                                          Php "+amount+".00",3,0);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
