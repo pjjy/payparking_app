@@ -13,6 +13,7 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'couponPrint.dart';
+import 'payParkingTicketPrint.dart';
 
 class ParkTrans extends StatefulWidget {
   final String empId;
@@ -31,6 +32,7 @@ class _ParkTrans extends State<ParkTrans>{
   bool _connected = false;
   bool _pressed = false;
   CouponPrint couponPrint;
+  PayParkingTicketPrint payParkingTicketPrint;
 
 
 
@@ -375,7 +377,8 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-      couponPrint.sample(plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
+      payParkingTicketPrint.sample(uid,plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
+//      couponPrint.sample(uid,plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
       await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
@@ -420,6 +423,7 @@ class _ParkTrans extends State<ParkTrans>{
     initPlatformState();
     trapLocation();
     couponPrint = CouponPrint();
+    payParkingTicketPrint = PayParkingTicketPrint();
   }
 
   @override

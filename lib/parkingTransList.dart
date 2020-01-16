@@ -11,6 +11,7 @@ import 'delinquent.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'couponPrint.dart';
 import 'reprint.dart';
+import 'penaltyPrint.dart';
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -31,6 +32,7 @@ class _ParkTransList extends State<ParkTransList>{
   List plateData2;
   TextEditingController _textController;
   CouponPrint couponPrint;
+  PenaltyPrint penaltyPrint;
 //  Timer timer;
 //  Future getTransData() async {
 //    var res = await db.fetchAll();
@@ -227,6 +229,7 @@ class _ParkTransList extends State<ParkTransList>{
     super.initState();
     getTransData();
     couponPrint = CouponPrint();
+    penaltyPrint = PenaltyPrint();
     _textController = TextEditingController();
   }
 
@@ -594,7 +597,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Reprint"),
                                     onPressed: (){
 //                                      Navigator.of(context).pop();
-                                      couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+                                      couponPrint.sample(plateData[index]["d_uid"],plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
                                     },
                                   ),
                                   new FlatButton(
@@ -636,21 +639,18 @@ class _ParkTransList extends State<ParkTransList>{
                         ),
                       );
                     },
-                  )
+                  ) //folded
 
                   :ListView.builder(
 //                   physics: BouncingScrollPhysics(),
                     itemCount: plateData == null ? 0: plateData.length,
                     itemBuilder: (BuildContext context, int index) {
-
                       var f = index;
                       f++;
                       var trigger;
                       var penalty = 0;
-
                       String alertButton;
-                      Color  cardColor;
-
+                      Color cardColor;
                       var dateString = plateData[index]["d_dateToday"]; //getting time
                       var date = dateString.split("-"); //split time
                       var hrString = plateData[index]["d_dateTimeToday"]; //getting time
@@ -849,7 +849,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                     passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+//                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    penaltyPrint.sample();
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -880,18 +881,79 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Takas ni!"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
-                                      Navigator.push(
-                                        context,
-//                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
-                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
-
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _textController,
+                                              autofocus: true,
+                                            ),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("Proceed"),
+                                                onPressed:(){
+                                                  Navigator.push(
+                                                  context,
+                                                  //MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
+                                                  MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                  );
+                                                },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       );
                                     },
                                   ),
                                   new FlatButton(
                                     child: new Text("Reprint"),
                                     onPressed: (){
-                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+//                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+//                                          Navigator.push(
+//                                             context,
+//                                             MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+//                                          );
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _textController,
+                                              autofocus: true,
+                                            ),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("Proceed"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
 
@@ -909,17 +971,44 @@ class _ParkTransList extends State<ParkTransList>{
                                           return CupertinoAlertDialog(
                                             title: new Text("Hello "+widget.name+","),
                                             content: new Text("Are you sure you want to remove this plate # "+plateNumber.toUpperCase()),
-//                                              '$f.Plt No : ${plateData[index]["d_Plate"]}'.toUpperCase()
-//
-                                          actions: <Widget>[
+                                            actions: <Widget>[
                                               new FlatButton(
-                                                child: new Text("proceed"),
+                                                child: new Text("Proceed"),
                                                 onPressed: () {
                                                     Navigator.of(context).pop();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                    showDialog(
+                                                      barrierDismissible: true,
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        // return object of type Dialog
+                                                        return CupertinoAlertDialog(
+                                                          title: new Text("Manager's key"),
+                                                          content: CupertinoTextField(
+                                                            obscureText: true,
+                                                            controller: _textController,
+                                                            autofocus: true,
+                                                          ),
+                                                          actions: <Widget>[
+                                                            new FlatButton(
+                                                              child: new Text("Proceed"),
+                                                              onPressed:(){
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                            ),
+                                                            new FlatButton(
+                                                              child: new Text("Close"),
+                                                              onPressed:(){
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
                                                     );
+//                                                    Navigator.push(
+//                                                      context,
+//                                                      MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+//                                                    );
                                                   },
                                               ),
                                               new FlatButton(

@@ -198,7 +198,7 @@ class _Delinquent extends State<Delinquent>{
                                 // usually buttons at the bottom of the dialog
                                 new FlatButton(
                                   child: new Text("Close"),
-                                  onPressed: () {
+                                  onPressed:(){
                                     Navigator.of(context).pop();
                                   },
                                 ),

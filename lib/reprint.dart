@@ -106,11 +106,6 @@ class _Delinquent extends State<Reprint>{
             color: Colors.transparent,
           ),
           _guardSignature,
-          Padding(
-            padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Text("Your Signature"),
-          ),
-
           Divider(
             height: height/25,
             color: Colors.transparent,
