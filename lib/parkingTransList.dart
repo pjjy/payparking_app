@@ -30,7 +30,8 @@ class _ParkTransList extends State<ParkTransList>{
   final db = PayParkingDatabase();
   List plateData;
   List plateData2;
-  TextEditingController _textController;
+  TextEditingController _managerKey;
+  TextEditingController  _textController;
   CouponPrint couponPrint;
   PenaltyPrint penaltyPrint;
 //  Timer timer;
@@ -40,6 +41,7 @@ class _ParkTransList extends State<ParkTransList>{
 //      plateData = res;
 //    });
 //  }
+
 
 
 
@@ -189,7 +191,6 @@ class _ParkTransList extends State<ParkTransList>{
   }
 
 
-
  bool listStat = false;
   Future _onChanged(text) async {
     listStat = true;
@@ -224,12 +225,84 @@ class _ParkTransList extends State<ParkTransList>{
     }
   }
 
+  Future managerLoginReprint() async{
+
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true){
+      var res = await db.olManagerLogin(_managerKey.text);
+      if(res == 'true'){
+        _managerKey.clear();
+       print("reprinting receipt ");
+      }
+      if(res == 'false'){
+        _managerKey.clear();
+        showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return CupertinoAlertDialog(
+              title: new Text("Wrong credentials"),
+              content: new Text("Please check your password"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
+
+  Future managerCancel() async{
+
+    bool result = await DataConnectionChecker().hasConnection;
+    if(result == true){
+      var res = await db.olManagerLogin(_managerKey.text);
+      if(res == 'true'){
+        _managerKey.clear();
+        print("Canceling receipt ");
+      }
+      if(res == 'false'){
+        _managerKey.clear();
+        showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return CupertinoAlertDialog(
+              title: new Text("Wrong credentials"),
+              content: new Text("Please check your password"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
   @override
   void initState(){
     super.initState();
     getTransData();
     couponPrint = CouponPrint();
     penaltyPrint = PenaltyPrint();
+    _managerKey = TextEditingController();
     _textController = TextEditingController();
   }
 
@@ -587,6 +660,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Takas ni!"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
+
                                       Navigator.push(
                                         context,
                                           MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData2[index]["d_uid"],plateNo:plateData2[index]["d_Plate"])),
@@ -849,8 +923,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                     passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-//                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
-                                                    penaltyPrint.sample();
+                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+//                                                    penaltyPrint.sample();
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -890,18 +964,50 @@ class _ParkTransList extends State<ParkTransList>{
                                             title: new Text("Manager's key"),
                                             content: CupertinoTextField(
                                               obscureText: true,
-                                              controller: _textController,
+                                              controller: _managerKey,
                                               autofocus: true,
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
                                                 child: new Text("Proceed"),
-                                                onPressed:(){
-                                                  Navigator.push(
-                                                  context,
-                                                  //MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
-                                                  MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
-                                                  );
+                                                onPressed:() async{
+                                                  bool result = await DataConnectionChecker().hasConnection;
+                                                  if(result == true){
+                                                    var res = await db.olManagerLogin(_managerKey.text);
+                                                    print(res);
+                                                    if(res == 'true'){
+                                                      _managerKey.clear();
+                                                      Navigator.of(context).pop();
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                      );
+                                                    }
+                                                    if(res == 'false'){
+                                                      _managerKey.clear();
+                                                      Navigator.of(context).pop();
+                                                      showDialog(
+                                                        barrierDismissible: true,
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          // return object of type Dialog
+                                                          return CupertinoAlertDialog(
+                                                            title: new Text("Wrong credentials"),
+                                                            content: new Text("Please check your password"),
+                                                            actions: <Widget>[
+                                                              // usually buttons at the bottom of the dialog
+                                                              new FlatButton(
+                                                                child: new Text("Close"),
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  }
                                                 },
                                               ),
                                               new FlatButton(
@@ -934,7 +1040,7 @@ class _ParkTransList extends State<ParkTransList>{
                                             title: new Text("Manager's key"),
                                             content: CupertinoTextField(
                                               obscureText: true,
-                                              controller: _textController,
+                                              controller: _managerKey,
                                               autofocus: true,
                                             ),
                                             actions: <Widget>[
@@ -942,6 +1048,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
+                                                  managerLoginReprint();
                                                 },
                                               ),
                                               new FlatButton(
@@ -956,10 +1063,8 @@ class _ParkTransList extends State<ParkTransList>{
                                       );
                                     },
                                   ),
-
                                   new FlatButton(
                                     child: new Text("Cancellation"),
-
                                     onPressed: enabled ? () {
                                       Navigator.of(context).pop();
                                       showDialog(
@@ -967,53 +1072,24 @@ class _ParkTransList extends State<ParkTransList>{
                                         context: context,
                                         builder: (BuildContext context) {
                                           // return object of type Dialog
-                                          String plateNumber = plateData[index]['d_Plate'];
                                           return CupertinoAlertDialog(
-                                            title: new Text("Hello "+widget.name+","),
-                                            content: new Text("Are you sure you want to remove this plate # "+plateNumber.toUpperCase()),
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _managerKey,
+                                              autofocus: true,
+                                            ),
                                             actions: <Widget>[
                                               new FlatButton(
                                                 child: new Text("Proceed"),
-                                                onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                    showDialog(
-                                                      barrierDismissible: true,
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        // return object of type Dialog
-                                                        return CupertinoAlertDialog(
-                                                          title: new Text("Manager's key"),
-                                                          content: CupertinoTextField(
-                                                            obscureText: true,
-                                                            controller: _textController,
-                                                            autofocus: true,
-                                                          ),
-                                                          actions: <Widget>[
-                                                            new FlatButton(
-                                                              child: new Text("Proceed"),
-                                                              onPressed:(){
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                            ),
-                                                            new FlatButton(
-                                                              child: new Text("Close"),
-                                                              onPressed:(){
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-//                                                    Navigator.push(
-//                                                      context,
-//                                                      MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
-//                                                    );
-                                                  },
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                  managerCancel();
+                                                },
                                               ),
                                               new FlatButton(
                                                 child: new Text("Close"),
-                                                onPressed: () {
+                                                onPressed:(){
                                                   Navigator.of(context).pop();
                                                 },
                                               ),

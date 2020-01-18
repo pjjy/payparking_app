@@ -128,7 +128,8 @@ class PayParkingDatabase {
       });
       if(response.body.length >=1  && response.statusCode == 200){
         return response.body;
-      }else{
+      }
+      else{
         return 'error';
       }
   }
@@ -230,6 +231,18 @@ class PayParkingDatabase {
       "imgEmp":imgEmp.toString(),
       "imgGuard":imgGuard.toString(),
     });
+  }
+
+  Future olManagerLogin(password) async{
+    final response = await http.post("http://172.16.46.130/e_parking/olManagerKey",body:{
+      "password": password,
+    });
+    if(response.body.length >=1  && response.statusCode == 200){
+      return response.body;
+    }
+    else{
+      return 'error';
+    }
   }
 
 //  Future<Car> fetchCar(int id) async {
