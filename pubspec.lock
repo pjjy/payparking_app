@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
-  blue_thermal_printer:
-    dependency: "direct main"
-    description:
-      name: blue_thermal_printer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.9"
   boolean_selector:
     dependency: transitive
     description:
@@ -97,6 +90,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_appavailability:
+    dependency: "direct main"
+    description:
+      name: flutter_appavailability
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.21"
   flutter_spinkit:
     dependency: "direct main"
     description:

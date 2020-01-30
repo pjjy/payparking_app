@@ -10,10 +10,9 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'package:flutter/services.dart';
-import 'couponPrint.dart';
-import 'payParkingTicketPrint.dart';
+import 'package:flutter_appavailability/flutter_appavailability.dart';
+
+
 
 class ParkTrans extends StatefulWidget {
   final String empId;
@@ -25,17 +24,6 @@ class ParkTrans extends StatefulWidget {
   _ParkTrans createState() => _ParkTrans();
 }
 class _ParkTrans extends State<ParkTrans>{
-
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
-  List<BluetoothDevice> _devices = [];
-  BluetoothDevice _device;
-  bool _connected = false;
-  bool _pressed = false;
-  CouponPrint couponPrint;
-  PayParkingTicketPrint payParkingTicketPrint;
-
-
-
 
   final db = PayParkingDatabase();
   File pickedImage;
@@ -147,8 +135,6 @@ class _ParkTrans extends State<ParkTrans>{
 //    String platePattern =  r"([A-Z|\d]+[\s|-][0-9]+)";
     RegExp regEx = RegExp(platePattern);
     String platePatternNew;
-
-
     var _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       pickedImage = _imageFile;
@@ -201,14 +187,10 @@ class _ParkTrans extends State<ParkTrans>{
     }else{
       print('No image');
     }
-
   }
 
-
   TextEditingController plateNoController = TextEditingController();
-
   void confirmed(){
-
     if(plateNoController.text == "" || locationA == "Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
@@ -221,120 +203,74 @@ class _ParkTrans extends State<ParkTrans>{
     else {
       if(wheel == 0){
 
-      }
-      if(_connected == false){
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return CupertinoAlertDialog(
-              title: new Text("Connection Problem"),
-              content: new Text("Plese turn the bluetooth on"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    plateNoController.text = "";
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
-      else{
+      }else{
         saveData();
        }
      }
    }
 
-
-  Future<void> initPlatformState() async {
-    List<BluetoothDevice> devices = [];
-
-    try {
-      devices = await bluetooth.getBondedDevices();
-    } on PlatformException {
-      // TODO - Error
-    }
-
-    bluetooth.onStateChanged().listen((state) {
-      switch (state) {
-        case BlueThermalPrinter.CONNECTED:
-          setState(() {
-            _connected = true;
-            _pressed = false;
-          });
-          break;
-        case BlueThermalPrinter.DISCONNECTED:
-          setState(() {
-            _connected = false;
-            _pressed = false;
-          });
-          break;
-        default:
-          print(state);
-          break;
+  create(int x){
+    var arr= [];
+    var y=x.toString();
+    y.runes.forEach((int rune) {
+      var character=new String.fromCharCode(rune);
+      arr.add(character);
+    });
+    odd(){
+      int size= arr.length;
+      var arr1=[];
+      int i=1;
+      int sum = 0;
+      while(i<size){
+        arr1.add(arr[i]);
+        i+=2;
       }
-    });
-
-    if (!mounted) return;
-    setState(() {
-      _devices = devices;
-    });
-  }
-
-  List<DropdownMenuItem<BluetoothDevice>> _getDeviceItemsDropDown() {
-    List<DropdownMenuItem<BluetoothDevice>> items = [];
-    if (_devices.isEmpty) {
-      items.add(DropdownMenuItem(
-        child: Text('NONE'),
-      ));
-    } else {
-      _devices.forEach((device) {
-        items.add(DropdownMenuItem(
-          child: Text(device.name),
-          value: device,
-        ));
-      });
+      for(int p=0;p<arr1.length;p++){
+        sum+=int.parse(arr1[p]);
+      }
+      return(sum*3);
     }
-    return items;
-  }
-
-
-
-  void _connect() {
-    if (_device == null) {
-//      show('No device selected.');
-    } else {
-      bluetooth.isConnected.then((isConnected) {
-        if (!isConnected) {
-          bluetooth.connect(_device).catchError((error) {
-            setState(() => _pressed = false);
-          });
-          setState(() => _pressed = true);
-          print('wala');
-        }
-      });
-      print('naa');
+    even(){
+      int size= arr.length;
+      var arr1=[];
+      int i=0;
+      int sum = 0;
+      while(i<size){
+        arr1.add(arr[i]);
+        i+=2;
+      }
+      for(int p=0;p<arr1.length;p++){
+        sum+=int.parse(arr1[p]);
+      }
+      return(sum);
     }
-  }
-
-
-  void _disconnect() {
-    bluetooth.disconnect();
-    setState(() => _pressed = true);
+    int total=odd()+even();
+    int cv1=0;
+    int cv2=0;
+    while (cv1<=total)
+    {
+      cv1+=10;
+      if (cv1>=total)
+      {
+        cv2=cv1;
+      }
+    }
+    int n=cv2-total;
+    return x.toString()+""+n.toString();
   }
 
   void saveData() async{
-
-      var uid = DateFormat("yyMdHms").format(new DateTime.now());
-
+      var uid = DateFormat("yyMMdHms").format(new DateTime.now());
       bool result = await DataConnectionChecker().hasConnection;
       String plateNumber = plateNoController.text;
+      var year = new DateFormat("yy").format(new DateTime.now());
+      var month = new DateFormat("MM").format(new DateTime.now());
+      var day = DateFormat("dd").format(new DateTime.now());
+      var hour = DateFormat("H").format(new DateTime.now());
+      var minute = DateFormat("mm").format(new DateTime.now());
+      var second = DateFormat("s").format(new DateTime.now());
+
+
       var today = new DateTime.now();
       var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
       var dateTimeToday = DateFormat("H:mm").format(new DateTime.now());
@@ -346,40 +282,46 @@ class _ParkTrans extends State<ParkTrans>{
       var dateTodayP = DateFormat("yyyy-MM-dd").format(new DateTime.now());
       var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
       var dateUntilP = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
-//      print(plateNumber);
-//      print(dateToday);
-//      print(dateTimeToday);
-//      print(dateUntil);
-//      print(amount);
-//      print(stat);
-//      print(user);
-//        print(uid);
-//        print(uid);
-    if(result == true){
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
+
+
+      //check digit
+      var checkDigitNum = int.parse('$year$month$day$hour$minute$second');
+      var checkDigitResult = create(checkDigitNum);
+      //check digit
+
+      if(result == true){
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
           // return object of type Dialog
           return CupertinoAlertDialog(
-            title: new Text(plateNoController.text),
-            content: new Text("Successfully Added ,Printing the Receipt"),
+            title: new Text("Hello"),
+            content: new Text("Press Proceed to print Coupon and ticket"),
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Proceed"),
+                onPressed: () async{
+                  Navigator.of(context).pop();
+                  plateNoController.text = "";
+                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
+                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+                  });
+                },
+              ),
               new FlatButton(
                 child: new Text("Close"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  plateNoController.text = "";
+//                  plateNoController.text = "";
                 },
               ),
             ],
           );
         },
       );
-      payParkingTicketPrint.sample(uid,plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
-//      couponPrint.sample(uid,plateNumber,dateTodayP,dateTimeTodayP,dateUntilP,amount,user,stat,locationA);
-      await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
+//      await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       Fluttertoast.showToast(
           msg: "Successfully Added to Transactions",
@@ -420,10 +362,7 @@ class _ParkTrans extends State<ParkTrans>{
   @override
   void initState(){
     super.initState();
-    initPlatformState();
     trapLocation();
-    couponPrint = CouponPrint();
-    payParkingTicketPrint = PayParkingTicketPrint();
   }
 
   @override
@@ -480,50 +419,6 @@ class _ParkTrans extends State<ParkTrans>{
                     onPressed:(){
                       pickImage();
                     },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
-//                child: MaterialButton(
-//                  height: 40.0,
-//                  onPressed:(){},
-//                  child:FlatButton.icon(
-//                    label: Text(btName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
-//                    splashColor: Colors.lightBlue,
-//                    icon: Icon(Icons.local_printshop, color: Colors.lightBlue,),
-//                    padding: EdgeInsets.all(14.0),
-//                    shape: RoundedRectangleBorder(
-//                        borderRadius: new BorderRadius.circular(35.0),
-//                        side: BorderSide(color: Colors.lightBlue)
-//                    ),
-//                    onPressed:(){
-//                      _getDeviceItems();
-//                    },
-//                  ),
-//                ),
-               child: DropdownButton(
-                  items: _getDeviceItemsDropDown(),
-                  onChanged: (value) => setState(() => _device = value),
-                  value: _device,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
-                child: MaterialButton(
-                  height: 40.0,
-                  onPressed:(){},
-                  child:FlatButton.icon(
-                    label: Text(_connected ? 'Disconnect' : 'Connect',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
-                    splashColor: Colors.lightBlue,
-                    icon: Icon(Icons.local_printshop, color: Colors.lightBlue,),
-                    padding: EdgeInsets.all(14.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(35.0),
-                        side: BorderSide(color: Colors.lightBlue)
-                    ),
-                    onPressed:
-                    _pressed ? null : _connected ? _disconnect : _connect,
                   ),
                 ),
               ),

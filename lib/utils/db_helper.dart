@@ -30,10 +30,12 @@ class PayParkingDatabase {
   Future<Database> init() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String dbPath = join(directory.path, 'payparking.db');
+
     var database = openDatabase(dbPath, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
 
     return database;
   }
+
 
   void _onCreate(Database db, int version) {
     db.execute('''
@@ -143,9 +145,10 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,location) async{
+  Future olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,location) async{
      await http.post("http://172.16.46.130/e_parking/olSaveTransaction",body:{
       'uid':uid.toString(),
+      'checkDigitResult':checkDigitResult.toString(),
       'plateNumber':plateNumber.toString(),
       'dateToday':dateToday.toString(),
       'dateTimeToday':dateTimeToday.toString(),

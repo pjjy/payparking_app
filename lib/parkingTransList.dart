@@ -8,10 +8,7 @@ import 'dart:async';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'update.dart';
 import 'delinquent.dart';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'couponPrint.dart';
-import 'reprint.dart';
-import 'penaltyPrint.dart';
+
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -24,16 +21,12 @@ class ParkTransList extends StatefulWidget{
 }
 
 class _ParkTransList extends State<ParkTransList>{
-
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
   List plateData;
   List plateData2;
   TextEditingController _managerKey;
   TextEditingController  _textController;
-  CouponPrint couponPrint;
-  PenaltyPrint penaltyPrint;
 //  Timer timer;
 //  Future getTransData() async {
 //    var res = await db.fetchAll();
@@ -41,12 +34,7 @@ class _ParkTransList extends State<ParkTransList>{
 //      plateData = res;
 //    });
 //  }
-
-
-
-
   Future getTransData() async {
-    print("hello");
     listStat = false;
     bool result = await DataConnectionChecker().hasConnection;
     if (result == true){
@@ -59,7 +47,7 @@ class _ParkTransList extends State<ParkTransList>{
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext context){
           // return object of type Dialog
           return CupertinoAlertDialog(
             title: new Text("Connection Problem"),
@@ -104,7 +92,7 @@ class _ParkTransList extends State<ParkTransList>{
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext context){
           // return object of type Dialog
           return CupertinoAlertDialog(
             title: new Text("Connection Problem"),
@@ -123,8 +111,6 @@ class _ParkTransList extends State<ParkTransList>{
         },
       );
    }
-
-
     //code for print
     Fluttertoast.showToast(
         msg: "Successfully added to history",
@@ -135,7 +121,6 @@ class _ParkTransList extends State<ParkTransList>{
         textColor: Colors.white,
         fontSize: 16.0
     );
-
   }
 
   Future passDataToHistoryWithPay(id,uid,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
@@ -300,8 +285,7 @@ class _ParkTransList extends State<ParkTransList>{
   void initState(){
     super.initState();
     getTransData();
-    couponPrint = CouponPrint();
-    penaltyPrint = PenaltyPrint();
+
     _managerKey = TextEditingController();
     _textController = TextEditingController();
   }
@@ -599,7 +583,7 @@ class _ParkTransList extends State<ParkTransList>{
                               return CupertinoAlertDialog(
 //                                 title: new Text(plateData[index]["d_Plate"]),
 //                                 content: new Text(alertText),
-                                title: new Text("Please choose an action"),
+                                title: new Text(plateData[index]["d_Plate"]),
                                 actions: <Widget>[
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
@@ -671,8 +655,9 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Reprint"),
                                     onPressed: (){
 //                                      Navigator.of(context).pop();
-                                      couponPrint.sample(plateData[index]["d_uid"],plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
-                                    },
+//                                      couponPrint.sample(plateData[index]["d_uid"],plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+
+                                      },
                                   ),
                                   new FlatButton(
                                     child: new Text("Close"),
@@ -700,7 +685,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/32),),
                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData2[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
-                                    Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
+                                    Text('     Charge : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
                                     Text('     In By : '+plateData2[index]["d_user"],style: TextStyle(fontSize: width/32),),
                                     Text('     Location : '+plateData2[index]["d_location"],style: TextStyle(fontSize: width/32),),
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
@@ -893,7 +878,7 @@ class _ParkTransList extends State<ParkTransList>{
                               return CupertinoAlertDialog(
 //                                 title: new Text(plateData[index]["d_Plate"]),
 //                                 content: new Text(alertText),
-                                title: new Text("Please choose an action"),
+                                title: new Text(plateData[index]["d_Plate"]),
                                 actions: <Widget>[
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
@@ -1125,7 +1110,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/32),),
                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
-                                    Text('     Penalty : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
+                                    Text('     Charge : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/32),),
                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/32),),
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
