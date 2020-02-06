@@ -407,18 +407,15 @@ class _ParkTransList extends State<ParkTransList>{
                 child:Scrollbar(
                   child: listStat == true ?
                   ListView.builder(
-//                   physics: BouncingScrollPhysics(),
+                    //physics: BouncingScrollPhysics(),
                     itemCount: plateData2 == null ? 0: plateData2.length,
                     itemBuilder: (BuildContext context, int index) {
-
                       var f = index;
                       f++;
                       var trigger;
                       var penalty = 0;
-
                       String alertButton;
-                      Color  cardColor;
-
+                      Color cardColor;
                       var dateString = plateData2[index]["d_dateToday"]; //getting time
                       var date = dateString.split("-"); //split time
                       var hrString = plateData2[index]["d_dateTimeToday"]; //getting time
@@ -430,6 +427,10 @@ class _ParkTransList extends State<ParkTransList>{
                       final difference = dateTimeNow.difference(dateTimeIn).inMinutes;
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
+                      bool enabled = true;
+                      if(difference >= 4){
+                        enabled = false;
+                      }
 
                       if(difference <= 90){
                         alertButton = "Logout";
@@ -583,7 +584,7 @@ class _ParkTransList extends State<ParkTransList>{
                               return CupertinoAlertDialog(
 //                                 title: new Text(plateData[index]["d_Plate"]),
 //                                 content: new Text(alertText),
-                                title: new Text(plateData[index]["d_Plate"]),
+                                title: new Text(plateData2[index]["d_Plate"]),
                                 actions: <Widget>[
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
@@ -603,17 +604,18 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Are you sure?"),
-                                            content: new Text("Do you want to log out this plate # ${plateData[index]["d_Plate"]}"),
+                                            content: new Text("Do you want to log out this plate # ${plateData2[index]["d_Plate"]}"),
                                             actions: <Widget>[
                                               // usually buttons at the bottom of the dialog
                                               new FlatButton(
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
+//                                                    penaltyPrint.sample();
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -644,20 +646,149 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Takas ni!"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
-
-                                      Navigator.push(
-                                        context,
-                                          MaterialPageRoute(builder: (context) => Delinquent(id:plateData2[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData2[index]["d_uid"],plateNo:plateData2[index]["d_Plate"])),
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _managerKey,
+                                              autofocus: true,
+                                            ),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("Proceed"),
+                                                onPressed:() async{
+                                                  bool result = await DataConnectionChecker().hasConnection;
+                                                  if(result == true){
+                                                    var res = await db.olManagerLogin(_managerKey.text);
+                                                    print(res);
+                                                    if(res == 'true'){
+                                                      _managerKey.clear();
+                                                      Navigator.of(context).pop();
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                      );
+                                                    }
+                                                    if(res == 'false'){
+                                                      _managerKey.clear();
+                                                      Navigator.of(context).pop();
+                                                      showDialog(
+                                                        barrierDismissible: true,
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          // return object of type Dialog
+                                                          return CupertinoAlertDialog(
+                                                            title: new Text("Wrong credentials"),
+                                                            content: new Text("Please check your password"),
+                                                            actions: <Widget>[
+                                                              // usually buttons at the bottom of the dialog
+                                                              new FlatButton(
+                                                                child: new Text("Close"),
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       );
                                     },
                                   ),
                                   new FlatButton(
                                     child: new Text("Reprint"),
                                     onPressed: (){
-//                                      Navigator.of(context).pop();
-//                                      couponPrint.sample(plateData[index]["d_uid"],plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
-
-                                      },
+//                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
+//                                          Navigator.push(
+//                                             context,
+//                                             MaterialPageRoute(builder: (context) => Reprint(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+//                                          );
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _managerKey,
+                                              autofocus: true,
+                                            ),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("Proceed"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                  managerLoginReprint();
+                                                },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text("Cancellation"),
+                                    onPressed: enabled ? () {
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          // return object of type Dialog
+                                          return CupertinoAlertDialog(
+                                            title: new Text("Manager's key"),
+                                            content: CupertinoTextField(
+                                              obscureText: true,
+                                              controller: _managerKey,
+                                              autofocus: true,
+                                            ),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                child: new Text("Proceed"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                  managerCancel();
+                                                },
+                                              ),
+                                              new FlatButton(
+                                                child: new Text("Close"),
+                                                onPressed:(){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } : null,
                                   ),
                                   new FlatButton(
                                     child: new Text("Close"),
@@ -691,7 +822,6 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
                                   ],
                                 ),
-//                               trailing: Icon(Icons.more_vert),
                               ),
                             ],
                           ),
@@ -722,10 +852,9 @@ class _ParkTransList extends State<ParkTransList>{
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
                       bool enabled = true;
-                      if(difference >= 6){
+                      if(difference >= 4){
                          enabled = false;
                       }
-
                       if(difference <= 90){
                         alertButton = "Logout";
                         trigger = 0;
@@ -865,9 +994,7 @@ class _ParkTransList extends State<ParkTransList>{
 //                    if(DateFormat("H:mm").format(new DateTime.now()) == 18 && vType == '50'){
 //                      violation = 500;
 //                    }
-
                       var totalAmount = penalty + num.parse(vType);
-
                       return GestureDetector(
                         onLongPress: (){
                           showDialog(

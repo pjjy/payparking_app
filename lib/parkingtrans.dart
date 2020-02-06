@@ -69,6 +69,7 @@ class _ParkTrans extends State<ParkTrans>{
               setState(() {
                 Navigator.of(context, rootNavigator: true).pop();
                 locationA = locSplit[q];
+                print(locationA);
               });
             },
           ),
@@ -290,6 +291,7 @@ class _ParkTrans extends State<ParkTrans>{
       //check digit
 
       if(result == true){
+        String locationAnew = locationA;
         showDialog(
           barrierDismissible: false,
           context: context,
@@ -305,9 +307,20 @@ class _ParkTrans extends State<ParkTrans>{
                 onPressed: () async{
                   Navigator.of(context).pop();
                   plateNoController.text = "";
-                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
+                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
+                  print(locationAnew);
                   AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                   });
+                  Fluttertoast.showToast(
+                      msg: "Successfully Added to Transactions",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 2,
+                      backgroundColor: Colors.black54,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                  Navigator.of(context).pop();
                 },
               ),
               new FlatButton(
@@ -323,15 +336,6 @@ class _ParkTrans extends State<ParkTrans>{
       );
 //      await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
-      Fluttertoast.showToast(
-          msg: "Successfully Added to Transactions",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 2,
-          backgroundColor: Colors.black54,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
       locationA = "Location";
     }
     else{
