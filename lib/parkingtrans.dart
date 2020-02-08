@@ -308,7 +308,7 @@ class _ParkTrans extends State<ParkTrans>{
                   Navigator.of(context).pop();
                   plateNoController.text = "";
                   await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
-                  print(locationAnew);
+                  await db.olSendTransType(widget.empId,'ticket');
                   AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                   });
                   Fluttertoast.showToast(
@@ -434,6 +434,7 @@ class _ParkTrans extends State<ParkTrans>{
               child: new TextFormField(
                controller:plateNoController,
                autofocus: false,
+               textCapitalization: TextCapitalization.sentences,
                enabled: _isEnabled,
                style: TextStyle(fontSize: width/15),
                     decoration: InputDecoration(

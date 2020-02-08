@@ -248,6 +248,15 @@ class PayParkingDatabase {
     }
   }
 
+  Future olSendTransType(empId,type) async{
+    await http.post("http://172.16.46.130/e_parking/olSendTransType",body:{
+      "empId": empId,
+      "type":type,
+    });
+    print(empId);
+    print(type);
+  }
+
 //  Future<Car> fetchCar(int id) async {
 //    var client = await db;
 //    final Future<List<Map<String, dynamic>>> futureMaps = client.query('car', where: 'id = ?', whereArgs: [id]);

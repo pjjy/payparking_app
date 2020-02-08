@@ -8,7 +8,7 @@ import 'dart:async';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'update.dart';
 import 'delinquent.dart';
-
+import 'package:flutter_appavailability/flutter_appavailability.dart';
 
 class ParkTransList extends StatefulWidget{
   final String empId;
@@ -140,6 +140,10 @@ class _ParkTransList extends State<ParkTransList>{
       //await db.updatePayTranStat(id);
       getTransData();
       //code for print here
+      await db.olSendTransType(widget.empId,'penalty');
+      AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+      });
+
       Fluttertoast.showToast(
           msg: "Successfully added to history",
           toastLength: Toast.LENGTH_LONG ,
@@ -215,9 +219,12 @@ class _ParkTransList extends State<ParkTransList>{
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       var res = await db.olManagerLogin(_managerKey.text);
+
       if(res == 'true'){
         _managerKey.clear();
-       print("reprinting receipt ");
+        await db.olSendTransType(widget.empId,'reprint');
+        AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+        });
       }
       if(res == 'false'){
         _managerKey.clear();
