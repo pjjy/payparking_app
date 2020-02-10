@@ -69,7 +69,7 @@ class _ParkTransList extends State<ParkTransList>{
 
 
 
-  Future passDataToHistoryWithOutPay(id,uid,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut,location) async{
+  Future passDataToHistoryWithOutPay(id,uid,checkDigit,plateNo,dateTimeIn,dateTimeNow,amount,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
@@ -80,9 +80,9 @@ class _ParkTransList extends State<ParkTransList>{
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+      await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       //insert to history tbl
-      await db.addTransHistory(uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
+      await db.addTransHistory(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       //code for mysql
       //update  status to 0
       //await db.updatePayTranStat(id);
@@ -123,7 +123,7 @@ class _ParkTransList extends State<ParkTransList>{
     );
   }
 
-  Future passDataToHistoryWithPay(id,uid,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
+  Future passDataToHistoryWithPay(id,uid,checkDigit,plateNo,dateTimeIn,dateTimeNow,amount,penalty,user,empNameIn,outBy,empNameOut,location) async{
 
     String plateNumber = plateNo;
     final dateIn = DateFormat("yyyy-MM-dd : H:mm").format(dateTimeIn);
@@ -133,9 +133,9 @@ class _ParkTransList extends State<ParkTransList>{
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       //code for mysql
-      await db.olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+      await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       //insert to history tbl
-      await db.addTransHistory(uid,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
+      await db.addTransHistory(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       //code for mysql
       //await db.updatePayTranStat(id);
       getTransData();
@@ -214,7 +214,7 @@ class _ParkTransList extends State<ParkTransList>{
     }
   }
 
-  Future managerLoginReprint() async{
+  Future managerLoginReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,dUser,empId,empNameFn,dLocation) async{
 
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
@@ -223,6 +223,8 @@ class _ParkTransList extends State<ParkTransList>{
       if(res == 'true'){
         _managerKey.clear();
         await db.olSendTransType(widget.empId,'reprint');
+
+        await db.olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,empId,dLocation);
         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
         });
       }
@@ -253,14 +255,35 @@ class _ParkTransList extends State<ParkTransList>{
   }
 
 
-  Future managerCancel() async{
+  Future managerCancel(id) async{
 
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       var res = await db.olManagerLogin(_managerKey.text);
       if(res == 'true'){
         _managerKey.clear();
-        print("Canceling receipt ");
+        await db.olCancel(id);
+        showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return CupertinoAlertDialog(
+              title: new Text("Successfully Cancelled"),
+              content: new Text("Plate # successfully removed"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    getTransData();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
       if(res == 'false'){
         _managerKey.clear();
@@ -516,63 +539,63 @@ class _ParkTransList extends State<ParkTransList>{
                       }
                       //for 2 wheels
                       if(difference >= 120 && vType == '50'){
-                        penalty = 20;
+                        penalty = 10;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 240 && vType == '50'){
-                        penalty = 40;
+                        penalty = 20;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 300 && vType == '50'){
-                        penalty = 60;
+                        penalty = 30;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 360 && vType == '50'){
-                        penalty = 80;
+                        penalty = 40;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 420 && vType == '50'){
-                        penalty = 100;
+                        penalty = 50;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 480 && vType == '50'){
-                        penalty = 120;
+                        penalty = 60;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 540 && vType == '50'){
-                        penalty = 140;
+                        penalty = 70;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 600 && vType == '50'){
-                        penalty = 160;
+                        penalty = 80;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 660 && vType == '50'){
-                        penalty = 180;
+                        penalty = 90;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 720 && vType == '50'){
-                        penalty = 200;
+                        penalty = 100;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 780 && vType == '50'){
-                        penalty = 220;
+                        penalty = 110;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 840 && vType == '50'){
-                        penalty = 240;
+                        penalty = 120;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 900 && vType == '50'){
-                        penalty = 260;
+                        penalty = 130;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 960 && vType == '50'){
-                        penalty = 280;
+                        penalty = 140;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 1020 && vType == '50'){
-                        penalty = 300;
+                        penalty = 150;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
 //                    if(DateFormat("H:mm").format(new DateTime.now()) == 18 && vType == '50'){
@@ -618,10 +641,10 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_chkdigit"],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData2[index]["d_id"]),plateData2[index]['d_uid'],plateData2[index]["d_chkdigit"],plateData2[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData2[index]["d_amount"],penalty,plateData2[index]["d_emp_id"],plateData2[index]['d_user'],widget.empId,widget.empNameFn,plateData2[index]["d_location"]);
 //                                                    penaltyPrint.sample();
                                                   }
                                                   Navigator.of(context).pop();
@@ -650,7 +673,6 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
-                                    child: new Text("Takas ni!"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
                                       showDialog(
@@ -746,7 +768,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint();
+                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -782,7 +804,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel();
+                                                  managerCancel(plateData[index]["d_id"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -824,6 +846,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData2[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
                                     Text('     Charge : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
+                                    Text('     Barcode : '+plateData2[index]["d_chkdigit"],style: TextStyle(fontSize: width/32),),
                                     Text('     In By : '+plateData2[index]["d_user"],style: TextStyle(fontSize: width/32),),
                                     Text('     Location : '+plateData2[index]["d_location"],style: TextStyle(fontSize: width/32),),
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
@@ -939,63 +962,63 @@ class _ParkTransList extends State<ParkTransList>{
                       }
                       //for 2 wheels
                       if(difference >= 120 && vType == '50'){
-                        penalty = 20;
+                        penalty = 10;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 240 && vType == '50'){
-                        penalty = 40;
+                        penalty = 20;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 300 && vType == '50'){
-                        penalty = 60;
+                        penalty = 30;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 360 && vType == '50'){
-                        penalty = 80;
+                        penalty = 40;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 420 && vType == '50'){
-                        penalty = 100;
+                        penalty = 50;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 480 && vType == '50'){
-                        penalty = 120;
+                        penalty = 60;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 540 && vType == '50'){
-                        penalty = 140;
+                        penalty = 70;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 600 && vType == '50'){
-                        penalty = 160;
+                        penalty = 80;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 660 && vType == '50'){
-                        penalty = 180;
+                        penalty = 90;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 720 && vType == '50'){
-                        penalty = 200;
+                        penalty = 100;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 780 && vType == '50'){
-                        penalty = 220;
+                        penalty = 110;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 840 && vType == '50'){
-                        penalty = 240;
+                        penalty = 120;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 900 && vType == '50'){
-                        penalty = 260;
+                        penalty = 130;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 960 && vType == '50'){
-                        penalty = 280;
+                        penalty = 140;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 1020 && vType == '50'){
-                        penalty = 300;
+                        penalty = 150;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
 //                    if(DateFormat("H:mm").format(new DateTime.now()) == 18 && vType == '50'){
@@ -1039,10 +1062,10 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
 //                                                    penaltyPrint.sample();
                                                   }
                                                   Navigator.of(context).pop();
@@ -1071,7 +1094,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
-                                    child: new Text("Takas ni!"),
+                                    child: new Text("Escapee"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
                                       showDialog(
@@ -1167,7 +1190,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint();
+
+                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -1203,7 +1227,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel();
+                                                  managerCancel(plateData[index]["d_id"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -1245,6 +1269,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
                                     Text('     Charge : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
+                                    Text('     Barcode : '+plateData[index]["d_chkdigit"],style: TextStyle(fontSize: width/32),),
                                     Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/32),),
                                     Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/32),),
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),

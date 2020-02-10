@@ -53,6 +53,7 @@ class PayParkingDatabase {
       CREATE TABLE payparhistory(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         uid TEXT,
+        checkDigit TEXT,
         plateNumber TEXT,
         dateTimein TEXT,
         dateTimeout TEXT,
@@ -111,9 +112,9 @@ class PayParkingDatabase {
     }
   }
 
-  Future<int> addTransHistory(String uid,String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
+  Future<int> addTransHistory(String uid,checkDigit,String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
     var client = await db;
-    return client.insert('payparhistory', {'uid':uid,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
+    return client.insert('payparhistory', {'uid':uid,'checkDigit':checkDigit,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
   }
 
   Future<int> updatePayTranStat(int id) async{
@@ -169,10 +170,11 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-  Future olAddTransHistory(id,uid,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy,location) async{
+  Future olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay,penalty,user,outBy,location) async{
     await http.post("http://172.16.46.130/e_parking/appSaveToHistory",body:{
           'id':id.toString(),
           'uid':uid.toString(),
+          'checkDigit':checkDigit.toString(),
           'plateNumber':plateNumber.toString(),
           'dateIn':dateIn.toString(),
           'dateNow':dateNow.toString(),
@@ -253,8 +255,26 @@ class PayParkingDatabase {
       "empId": empId,
       "type":type,
     });
-    print(empId);
-    print(type);
+  }
+
+  Future olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,outBy,dLocation) async{
+    await http.post("http://172.16.46.130/e_parking/olSendReprint",body:{
+      'id':id.toString(),
+      'uid':uid.toString(),
+      'plateNumber':dPlate.toString(),
+      'dateIn':dateTimeIn.toString(),
+      'dateNow':dateTimeNow.toString(),
+      'amountPay':dAmount.toString(),
+      'penalty':penalty.toString(),
+      'user':dEmpId.toString(),
+      'outBy':outBy.toString(),
+      'location':dLocation.toString(),
+    });
+  }
+  Future olCancel(id) async{
+    await http.post("http://172.16.46.130/e_parking/olCancel",body:{
+      'id':id.toString(),
+    });
   }
 
 //  Future<Car> fetchCar(int id) async {

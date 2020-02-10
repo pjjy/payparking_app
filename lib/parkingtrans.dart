@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+//import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 
@@ -130,65 +130,65 @@ class _ParkTrans extends State<ParkTrans>{
        );
   }
 
-  Future pickImage() async{
-    plateNoController.clear();
-    String platePattern = r"([A-Z|\d]+[\s|-][A-Z\d]+)"; //platenumber regex
-//    String platePattern =  r"([A-Z|\d]+[\s|-][0-9]+)";
-    RegExp regEx = RegExp(platePattern);
-    String platePatternNew;
-    var _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      pickedImage = _imageFile;
-    });
-    if(_imageFile!=null){
-      File croppedFile = await ImageCropper.cropImage(
-          sourcePath: _imageFile.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio3x2,
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.ratio4x3,
-            CropAspectRatioPreset.ratio16x9
-          ],
-          androidUiSettings: AndroidUiSettings(
-              toolbarTitle: 'Cropper',
-              toolbarColor: Colors.white,
-              toolbarWidgetColor: Colors.black,
-              initAspectRatio: CropAspectRatioPreset.ratio16x9,
-              lockAspectRatio: false),
-          iosUiSettings: IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-      );
-
-      setState(() {
-        _imageFile = croppedFile ?? _imageFile;
-      });
-      if(croppedFile!=null){
-      final image = FirebaseVisionImage.fromFile(croppedFile);
-        TextRecognizer recognizedText = FirebaseVision.instance.textRecognizer();
-        VisionText readText = await recognizedText.processImage(image);
-        if(regEx.hasMatch(readText.text)){
-//          print(true);
-          platePatternNew = readText.text;
-          if(this.mounted){
-            setState(() {
-//              print(regEx.firstMatch(platePatternNew).group(0));
-              plateNoController.text = regEx.firstMatch(platePatternNew).group(0);
-              recognizedText.close();
-            });
-          }
-        }
-        else{
-          print(false);
-        }
-      }else{
-        print('No cropped image');
-      }
-    }else{
-      print('No image');
-    }
-  }
+//  Future pickImage() async{
+//    plateNoController.clear();
+//    String platePattern = r"([A-Z|\d]+[\s|-][A-Z\d]+)"; //platenumber regex
+////    String platePattern =  r"([A-Z|\d]+[\s|-][0-9]+)";
+//    RegExp regEx = RegExp(platePattern);
+//    String platePatternNew;
+//    var _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+//    setState(() {
+//      pickedImage = _imageFile;
+//    });
+//    if(_imageFile!=null){
+//      File croppedFile = await ImageCropper.cropImage(
+//          sourcePath: _imageFile.path,
+//          aspectRatioPresets: [
+//            CropAspectRatioPreset.square,
+//            CropAspectRatioPreset.ratio3x2,
+//            CropAspectRatioPreset.original,
+//            CropAspectRatioPreset.ratio4x3,
+//            CropAspectRatioPreset.ratio16x9
+//          ],
+//          androidUiSettings: AndroidUiSettings(
+//              toolbarTitle: 'Cropper',
+//              toolbarColor: Colors.white,
+//              toolbarWidgetColor: Colors.black,
+//              initAspectRatio: CropAspectRatioPreset.ratio16x9,
+//              lockAspectRatio: false),
+//          iosUiSettings: IOSUiSettings(
+//            minimumAspectRatio: 1.0,
+//          )
+//      );
+//
+//      setState(() {
+//        _imageFile = croppedFile ?? _imageFile;
+//      });
+//      if(croppedFile!=null){
+//      final image = FirebaseVisionImage.fromFile(croppedFile);
+//        TextRecognizer recognizedText = FirebaseVision.instance.textRecognizer();
+//        VisionText readText = await recognizedText.processImage(image);
+//        if(regEx.hasMatch(readText.text)){
+////          print(true);
+//          platePatternNew = readText.text;
+//          if(this.mounted){
+//            setState(() {
+////              print(regEx.firstMatch(platePatternNew).group(0));
+//              plateNoController.text = regEx.firstMatch(platePatternNew).group(0);
+//              recognizedText.close();
+//            });
+//          }
+//        }
+//        else{
+//          print(false);
+//        }
+//      }else{
+//        print('No cropped image');
+//      }
+//    }else{
+//      print('No image');
+//    }
+//  }
 
   TextEditingController plateNoController = TextEditingController();
   void confirmed(){
@@ -402,33 +402,33 @@ class _ParkTrans extends State<ParkTrans>{
       body: ListView(
 //          physics: BouncingScrollPhysics(),
           children: <Widget>[
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 30.0),
-                child: MaterialButton(
-                  height: 40.0,
-                  onPressed:(){},
-                  child:FlatButton.icon(
-                    label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
-                    splashColor: Colors.lightBlue,
-                    icon: Icon(Icons.camera_alt, color: Colors.lightBlue,),
-                    padding: EdgeInsets.all(14.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(35.0),
-                        side: BorderSide(color: Colors.lightBlue)
-                    ),
-                    onPressed:(){
-                      pickImage();
-                    },
-                  ),
-                ),
-              ),
-            ],
-        ),
-      ),
+//      SingleChildScrollView(
+//        scrollDirection: Axis.horizontal,
+//        child: Row(
+//            children: <Widget>[
+//              Padding(
+//                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 30.0),
+//                child: MaterialButton(
+//                  height: 40.0,
+//                  onPressed:(){},
+//                  child:FlatButton.icon(
+//                    label: Text('Open Camera',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0, color: Colors.lightBlue),),
+//                    splashColor: Colors.lightBlue,
+//                    icon: Icon(Icons.camera_alt, color: Colors.lightBlue,),
+//                    padding: EdgeInsets.all(14.0),
+//                    shape: RoundedRectangleBorder(
+//                        borderRadius: new BorderRadius.circular(35.0),
+//                        side: BorderSide(color: Colors.lightBlue)
+//                    ),
+//                    onPressed:(){
+//                      pickImage();
+//                    },
+//                  ),
+//                ),
+//              ),
+//            ],
+//        ),
+//      ),
 
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
               child: new TextFormField(

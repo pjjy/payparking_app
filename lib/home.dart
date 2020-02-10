@@ -7,7 +7,6 @@ import  'settings.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 class HomeT extends StatefulWidget {
   final logInData;
@@ -27,20 +26,7 @@ class _Home extends State<HomeT> {
 
   String data;
 
-  Future<String> get _localPath async {
-    final directory = await getExternalStorageDirectory();
-    print(directory.path);
-    return directory.path;
-  }
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/user.txt');
-  }
-//  Future<File> writeContent() async {
-//    final file = await _localFile;
-//    // Write the file
-//    return file.writeAsString(empId);
-//  }
+
 
   Future<File> getUserData() async{
     var res =  await db.olFetchUserData(widget.logInData);
@@ -52,9 +38,7 @@ class _Home extends State<HomeT> {
       location = userData[0]["location"];
       userImage = userData[0]["user_image"];
     });
-    final file = await _localFile;
-    // Write the file
-    return file.writeAsString(empId);
+
   }
 
   @override
