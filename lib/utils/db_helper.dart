@@ -238,8 +238,9 @@ class PayParkingDatabase {
     });
   }
 
-  Future olManagerLogin(password) async{
+  Future olManagerLogin(username,password) async{
     final response = await http.post("http://172.16.46.130/e_parking/olManagerKey",body:{
+      "username":username,
       "password": password,
     });
     if(response.body.length >=1  && response.statusCode == 200){

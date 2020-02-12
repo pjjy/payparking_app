@@ -28,8 +28,8 @@ class _Home extends State<HomeT> {
 
 
 
-  Future<File> getUserData() async{
-    var res =  await db.olFetchUserData(widget.logInData);
+  Future getUserData() async{
+    var res = await db.olFetchUserData(widget.logInData);
     setState((){
       userData = res["user_details"];
       empId = userData[0]["emp_id"];
@@ -38,14 +38,11 @@ class _Home extends State<HomeT> {
       location = userData[0]["location"];
       userImage = userData[0]["user_image"];
     });
-
   }
 
   @override
   void initState(){
     super.initState();
-
-//    writeContent();
     if(empId == null || name == null || location == null || empNameFn == null || userImage == null)
     {
       empId = "";

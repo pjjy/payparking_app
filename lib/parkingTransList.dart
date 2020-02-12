@@ -25,7 +25,8 @@ class _ParkTransList extends State<ParkTransList>{
   final db = PayParkingDatabase();
   List plateData;
   List plateData2;
-  TextEditingController _managerKey;
+  TextEditingController _managerKeyUserPass;
+  TextEditingController _managerKeyUser;
   TextEditingController  _textController;
 //  Timer timer;
 //  Future getTransData() async {
@@ -214,22 +215,25 @@ class _ParkTransList extends State<ParkTransList>{
     }
   }
 
-  Future managerLoginReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,dUser,empId,empNameFn,dLocation) async{
-
+  Future managerLoginReprint(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay,penalty,user,empNameIn,outBy,empNameOut,location) async{
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
-      var res = await db.olManagerLogin(_managerKey.text);
-
+      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+      print(res);
       if(res == 'true'){
-        _managerKey.clear();
+        _managerKeyUser.clear();
+        _managerKeyUserPass.clear();
         await db.olSendTransType(widget.empId,'reprint');
 
-        await db.olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,empId,dLocation);
+//        await db.olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,empId,dLocation);
+//        await db.olSendReprint(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+
         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
         });
       }
       if(res == 'false'){
-        _managerKey.clear();
+        _managerKeyUser.clear();
+        _managerKeyUserPass.clear();
         showDialog(
           barrierDismissible: true,
           context: context,
@@ -259,9 +263,11 @@ class _ParkTransList extends State<ParkTransList>{
 
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
-      var res = await db.olManagerLogin(_managerKey.text);
+
+      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
       if(res == 'true'){
-        _managerKey.clear();
+        _managerKeyUser.clear();
+        _managerKeyUserPass.clear();
         await db.olCancel(id);
         showDialog(
           barrierDismissible: true,
@@ -286,7 +292,8 @@ class _ParkTransList extends State<ParkTransList>{
         );
       }
       if(res == 'false'){
-        _managerKey.clear();
+        _managerKeyUser.clear();
+        _managerKeyUserPass.clear();
         showDialog(
           barrierDismissible: true,
           context: context,
@@ -315,8 +322,8 @@ class _ParkTransList extends State<ParkTransList>{
   void initState(){
     super.initState();
     getTransData();
-
-    _managerKey = TextEditingController();
+    _managerKeyUser = TextEditingController();
+    _managerKeyUserPass = TextEditingController();
     _textController = TextEditingController();
   }
 
@@ -682,10 +689,21 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+                                            content: new Column(
+                                              children: <Widget>[
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
@@ -693,10 +711,10 @@ class _ParkTransList extends State<ParkTransList>{
                                                 onPressed:() async{
                                                   bool result = await DataConnectionChecker().hasConnection;
                                                   if(result == true){
-                                                    var res = await db.olManagerLogin(_managerKey.text);
-                                                    print(res);
+                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
                                                     if(res == 'true'){
-                                                      _managerKey.clear();
+                                                      _managerKeyUser.clear();
+                                                      _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
                                                       Navigator.push(
                                                         context,
@@ -704,7 +722,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                       );
                                                     }
                                                     if(res == 'false'){
-                                                      _managerKey.clear();
+                                                      _managerKeyUser.clear();
+                                                      _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
                                                       showDialog(
                                                         barrierDismissible: true,
@@ -743,7 +762,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
-                                    child: new Text("Reprint"),
+                                    child: new Text("Reprinst"),
                                     onPressed: (){
 //                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
 //                                          Navigator.push(
@@ -758,18 +777,29 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+                                            content: new Column(
+                                              children: <Widget>[
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
-                                                },
+                                                    managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                  }
                                               ),
                                               new FlatButton(
                                                 child: new Text("Close"),
@@ -794,10 +824,21 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+                                            content: new Column(
+                                              children: <Widget>[
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
@@ -1104,10 +1145,21 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+                                            content: new Column(
+                                              children: <Widget>[
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
@@ -1115,10 +1167,11 @@ class _ParkTransList extends State<ParkTransList>{
                                                 onPressed:() async{
                                                   bool result = await DataConnectionChecker().hasConnection;
                                                   if(result == true){
-                                                    var res = await db.olManagerLogin(_managerKey.text);
+                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
                                                     print(res);
                                                     if(res == 'true'){
-                                                      _managerKey.clear();
+                                                      _managerKeyUser.clear();
+                                                      _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
                                                       Navigator.push(
                                                         context,
@@ -1126,7 +1179,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                       );
                                                     }
                                                     if(res == 'false'){
-                                                      _managerKey.clear();
+                                                      _managerKeyUser.clear();
+                                                      _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
                                                       showDialog(
                                                         barrierDismissible: true,
@@ -1180,18 +1234,35 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+//                                            content: CupertinoTextField(
+//                                              obscureText: true,
+//                                              controller: _managerKey,
+//                                              autofocus: true,
+//                                            )
+                                            content: new Column(
+                                              children: <Widget>[
+
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-
-                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -1217,10 +1288,23 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Manager's key"),
-                                            content: CupertinoTextField(
-                                              obscureText: true,
-                                              controller: _managerKey,
-                                              autofocus: true,
+                                            content: new Column(
+                                              children: <Widget>[
+
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Username",
+                                                  controller: _managerKeyUser,
+                                                ),
+                                                Divider(),
+                                                new CupertinoTextField(
+                                                  autofocus: true,
+                                                  placeholder: "Password",
+                                                  controller: _managerKeyUserPass,
+                                                  obscureText: true,
+                                                ),
+
+                                              ],
                                             ),
                                             actions: <Widget>[
                                               new FlatButton(
