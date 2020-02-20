@@ -5,12 +5,13 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'syncing.dart';
 import 'constants.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-
+import 'package:flutter_appavailability/flutter_appavailability.dart';
+import 'dart:async';
 
 class HistoryTransList extends StatefulWidget {
   final String location;
-
-  HistoryTransList({Key key, @required this.location}) : super(key: key);
+ final String empId;
+  HistoryTransList({Key key, @required this.location,this.empId}) : super(key: key);
   @override
   _HistoryTransList createState() => _HistoryTransList();
 }
@@ -231,14 +232,56 @@ class _HistoryTransList extends State<HistoryTransList> {
               child:Scrollbar(
                 child: listStat == true ?
                 ListView.builder(
-//                 physics: BouncingScrollPhysics(),
+
                   itemCount: plateData2 == null ? 0: plateData2.length,
                   itemBuilder: (BuildContext context, int index) {
                     var f = index;
                     f++;
                     var totalAmount = int.parse(plateData2[index]["d_penalty"]) + int.parse(plateData2[index]["d_amount"]);
                     return GestureDetector(
-                      onLongPress: (){},
+                      onLongPress: (){
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return CupertinoAlertDialog(
+                              title: new Text("Manager's key"),
+                              content: new Column(
+                                children: <Widget>[
+                                  new CupertinoTextField(
+                                    autofocus: true,
+                                    placeholder: "Username",
+
+                                  ),
+                                  Divider(),
+                                  new CupertinoTextField(
+                                    autofocus: true,
+                                    placeholder: "Password",
+
+                                    obscureText: true,
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                new FlatButton(
+                                    child: new Text("Proceed"),
+                                    onPressed:(){
+                                      Navigator.of(context).pop();
+
+                                    }
+                                ),
+                                new FlatButton(
+                                  child: new Text("Close"),
+                                  onPressed:(){
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                       child: Card(
                         margin: EdgeInsets.all(5),
                         elevation: 0.0,
@@ -273,11 +316,52 @@ class _HistoryTransList extends State<HistoryTransList> {
                   itemCount: plateData == null ? 0: plateData.length,
                   itemBuilder: (BuildContext context, int index) {
                     var f = index;
+                    Color cardColor;
                     f++;
+                    if(int.parse(plateData[index]["penalty"]) > 0){
+                      cardColor = Colors.redAccent.withOpacity(.2);
+                    }else{
+                      cardColor = Colors.white;
+                    }
                     var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
                     return GestureDetector(
-                      onLongPress: (){},
+                      onLongPress: (){
+                        if(int.parse(plateData[index]["penalty"])!=0){
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              // return object of type Dialog
+                              return CupertinoAlertDialog(
+                                title: new Text("Info"),
+                                content: new Text("Press proceed to reprint"),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new FlatButton(
+                                    child: new Text("Proceed"),
+                                    onPressed: () async{
+                                      Navigator.of(context).pop();
+                                      print(widget.empId);
+                                      print('reprint_penalty');
+                                      await db.olSendTransType(widget.empId,'reprint_penalty');
+                                      AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+                                      });
+                                    },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text("Close"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
                       child: Card(
+                        color: cardColor,
                         margin: EdgeInsets.all(5),
                         elevation: 0.0,
                         child: Column(

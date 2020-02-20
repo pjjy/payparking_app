@@ -108,9 +108,9 @@ class _SyncingPage extends State<SyncingPage>{
             height: 40,
           ),
           Center(
-            child:SpinKitWanderingCubes(
+            child:SpinKitRing(
               color: Colors.blue,
-              size: 70,
+              size: 80,
             ),
           ),
         ],

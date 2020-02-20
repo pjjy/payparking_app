@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
+//import 'package:image_picker/image_picker.dart';
+//import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
@@ -34,6 +34,10 @@ class _ParkTrans extends State<ParkTrans>{
   Color textColorA = Colors.black45;
   Color buttonBackColorB;
   Color textColorB = Colors.black45;
+  Color buttonBackColorNp;
+  bool isSwitched = false;
+
+  var allowCheckDigit = 0;
    setWheelA() {
       setState(() {
         buttonBackColorA = Colors.lightBlue;
@@ -51,6 +55,7 @@ class _ParkTrans extends State<ParkTrans>{
       wheel = 100;
     });
   }
+
 
   List<Widget> _getList() {
      String location = widget.location;
@@ -192,7 +197,7 @@ class _ParkTrans extends State<ParkTrans>{
 
   TextEditingController plateNoController = TextEditingController();
   void confirmed(){
-    if(plateNoController.text == "" || locationA == "Location"){
+    if(isSwitched == false && plateNoController.text == "" && locationA == "Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
@@ -200,21 +205,19 @@ class _ParkTrans extends State<ParkTrans>{
 //      print(dateUntil);
 //      print(selectedRadio);
     }
-
     else {
       if(wheel == 0){
-
       }else{
-        saveData();
-       }
+          saveData();
+      }
      }
    }
 
   create(int x){
     var arr= [];
     var y=x.toString();
-    y.runes.forEach((int rune) {
-      var character=new String.fromCharCode(rune);
+    y.runes.forEach((int rune){
+      var character = new String.fromCharCode(rune);
       arr.add(character);
     });
     odd(){
@@ -263,15 +266,13 @@ class _ParkTrans extends State<ParkTrans>{
   void saveData() async{
       var uid = DateFormat("yyMMdHms").format(new DateTime.now());
       bool result = await DataConnectionChecker().hasConnection;
-      String plateNumber = plateNoController.text;
+      String plateNumber;
       var year = new DateFormat("yy").format(new DateTime.now());
       var month = new DateFormat("MM").format(new DateTime.now());
       var day = DateFormat("dd").format(new DateTime.now());
       var hour = DateFormat("H").format(new DateTime.now());
       var minute = DateFormat("mm").format(new DateTime.now());
       var second = DateFormat("s").format(new DateTime.now());
-
-
       var today = new DateTime.now();
       var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
       var dateTimeToday = DateFormat("H:mm").format(new DateTime.now());
@@ -280,15 +281,22 @@ class _ParkTrans extends State<ParkTrans>{
       var stat = 1;
       var user = widget.empId;
 
-      var dateTodayP = DateFormat("yyyy-MM-dd").format(new DateTime.now());
-      var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
-      var dateUntilP = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
-
-
+//    var dateTodayP = DateFormat("yyyy-MM-dd").format(new DateTime.now());
+//    var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
+//    var dateUntilP = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
       //check digit
+
       var checkDigitNum = int.parse('$year$month$day$hour$minute$second');
       var checkDigitResult = create(checkDigitNum);
       //check digit
+
+      if(isSwitched == true){
+        plateNumber = checkDigitResult;
+        print(plateNumber);
+      }if(isSwitched == false ){
+        plateNumber = plateNoController.text;
+        print(plateNumber);
+      }
 
       if(result == true){
         String locationAnew = locationA;
@@ -320,7 +328,7 @@ class _ParkTrans extends State<ParkTrans>{
                       textColor: Colors.white,
                       fontSize: 16.0
                   );
-                  Navigator.of(context).pop();
+//                  Navigator.of(context).pop();
                 },
               ),
               new FlatButton(
@@ -392,12 +400,7 @@ class _ParkTrans extends State<ParkTrans>{
             child: Text(widget.name.toString(),style: TextStyle(fontSize: width/36,color: Colors.black),),
           ),
         ],
-        textTheme: TextTheme(
-            title: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-            )
-        ),
+
       ),
       body: ListView(
 //          physics: BouncingScrollPhysics(),
@@ -432,6 +435,7 @@ class _ParkTrans extends State<ParkTrans>{
 
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
               child: new TextFormField(
+
                controller:plateNoController,
                autofocus: false,
                textCapitalization: TextCapitalization.sentences,
@@ -460,12 +464,38 @@ class _ParkTrans extends State<ParkTrans>{
             padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
               child:Column(
                 children: <Widget>[
+                Text("No Plate #",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
+                Divider(
+                height: 20.0,
+                color: Colors.transparent,
+               ),
+                Transform.scale( scale: 3.0,
+                 child: Switch(
+
+                    value: isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                         if(isSwitched == true){
+                           _isEnabled = false;
+                           plateNoController.clear();
+                         }else{
+                           _isEnabled = true;
+                         }
+                     });
+                    },
+                    activeTrackColor: Colors.lightBlueAccent.withOpacity(0.3),
+                    activeColor: Colors.lightBlue,
+                  ),
+                 ),
+
+                  Text("   "),
                   FlatButton.icon(
                     label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
                     splashColor: Colors.lightBlue,
                     color: buttonBackColorB,
                     icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 15.0),
+                    padding: EdgeInsets.symmetric(horizontal: width/15.0,vertical: 20.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
@@ -480,7 +510,7 @@ class _ParkTrans extends State<ParkTrans>{
                     splashColor: Colors.lightBlue,
                     color: buttonBackColorA,
                     icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 15.0),
+                    padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 20.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)
@@ -494,7 +524,7 @@ class _ParkTrans extends State<ParkTrans>{
                     label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
                     splashColor: Colors.lightBlue,
                     icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
-                    padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 15.0),
+                    padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 20.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(35.0),
                         side: BorderSide(color: Colors.lightBlue)

@@ -258,18 +258,17 @@ class PayParkingDatabase {
     });
   }
 
-  Future olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,outBy,dLocation) async{
-    await http.post("http://172.16.46.130/e_parking/olSendReprint",body:{
-      'id':id.toString(),
+  Future olReprintCouponTicket(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location) async{
+    await http.post("http://172.16.46.130/e_parking/olReprintCouponTicket",body:{
       'uid':uid.toString(),
-      'plateNumber':dPlate.toString(),
-      'dateIn':dateTimeIn.toString(),
-      'dateNow':dateTimeNow.toString(),
-      'amountPay':dAmount.toString(),
-      'penalty':penalty.toString(),
-      'user':dEmpId.toString(),
-      'outBy':outBy.toString(),
-      'location':dLocation.toString(),
+      'checkDigit':checkDigit.toString(),
+      'plateNo':plateNo.toString(),
+      'dateToday':dateToday.toString(),
+      'dateTimeToday':dateTimeToday.toString(),
+      'dateUntil':dateUntil.toString(),
+      'amount':amount.toString(),
+      'empId':empId.toString(),
+      'location':location.toString(),
     });
   }
   Future olCancel(id) async{

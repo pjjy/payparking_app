@@ -30,14 +30,13 @@ class _SignInPageState extends State<SignInPage> {
         builder: (BuildContext context) {
           // return object of type Dialog
           return CupertinoAlertDialog(
-            content: new SpinKitWanderingCubes(
+            content: new SpinKitRing(
               color: Colors.blueAccent,
-              size: 60,
+              size: 80,
             ),
           );
         },
       );
-
     });
     logInAttempt();
   }

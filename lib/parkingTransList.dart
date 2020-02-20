@@ -204,7 +204,7 @@ class _ParkTransList extends State<ParkTransList>{
               // usually buttons at the bottom of the dialog
               new FlatButton(
                 child: new Text("Close"),
-                onPressed:() {
+                onPressed:(){
                   Navigator.of(context).pop();
                 },
               ),
@@ -214,20 +214,18 @@ class _ParkTransList extends State<ParkTransList>{
       );
     }
   }
+//  managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
 
-  Future managerLoginReprint(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay,penalty,user,empNameIn,outBy,empNameOut,location) async{
+  Future managerLoginReprint(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location) async{
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
       var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-      print(res);
+//      print(res);
       if(res == 'true'){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
         await db.olSendTransType(widget.empId,'reprint');
-
-//        await db.olSendReprint(id,uid,dPlate,dateTimeIn,dateTimeNow,dAmount,penalty,dEmpId,empId,dLocation);
-//        await db.olSendReprint(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
-
+        await db.olReprintCouponTicket(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location);
         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
         });
       }
@@ -241,7 +239,7 @@ class _ParkTransList extends State<ParkTransList>{
             // return object of type Dialog
             return CupertinoAlertDialog(
               title: new Text("Wrong credentials"),
-              content: new Text("Please check your password"),
+              content: new Text("Please check your username and password"),
               actions: <Widget>[
                 // usually buttons at the bottom of the dialog
                 new FlatButton(
@@ -301,7 +299,7 @@ class _ParkTransList extends State<ParkTransList>{
             // return object of type Dialog
             return CupertinoAlertDialog(
               title: new Text("Wrong credentials"),
-              content: new Text("Please check your password"),
+              content: new Text("Please check your username and password"),
               actions: <Widget>[
                 // usually buttons at the bottom of the dialog
                 new FlatButton(
@@ -465,7 +463,7 @@ class _ParkTransList extends State<ParkTransList>{
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
                       bool enabled = true;
-                      if(difference >= 4){
+                      if(difference >= 6){
                         enabled = false;
                       }
 
@@ -680,6 +678,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
+                                    child: new Text("Escapee"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
                                       showDialog(
@@ -732,7 +731,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                           // return object of type Dialog
                                                           return CupertinoAlertDialog(
                                                             title: new Text("Wrong credentials"),
-                                                            content: new Text("Please check your password"),
+                                                            content: new Text("Please check your username and password"),
                                                             actions: <Widget>[
                                                               // usually buttons at the bottom of the dialog
                                                               new FlatButton(
@@ -762,7 +761,7 @@ class _ParkTransList extends State<ParkTransList>{
                                     },
                                   ),
                                   new FlatButton(
-                                    child: new Text("Reprinst"),
+                                    child: new Text("Reprint"),
                                     onPressed: (){
 //                                        couponPrint.sample(plateData[index]["d_Plate"],DateFormat("yyyy-MM-dd").format(dateTimeIn),DateFormat("hh:mm a").format(dateTimeIn),DateFormat("yyyy-MM-dd").format(dateTimeIn.add(new Duration(days: 7))),plateData[index]['d_amount'],"ppd","12","location");
 //                                          Navigator.push(
@@ -798,7 +797,8 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                    managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_dateUntil'],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
+
                                                   }
                                               ),
                                               new FlatButton(
@@ -923,7 +923,7 @@ class _ParkTransList extends State<ParkTransList>{
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
                       bool enabled = true;
-                      if(difference >= 4){
+                      if(difference >= 6){
                          enabled = false;
                       }
                       if(difference <= 90){
@@ -1189,7 +1189,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                           // return object of type Dialog
                                                           return CupertinoAlertDialog(
                                                             title: new Text("Wrong credentials"),
-                                                            content: new Text("Please check your password"),
+                                                            content: new Text("Please check your username and password"),
                                                             actions: <Widget>[
                                                               // usually buttons at the bottom of the dialog
                                                               new FlatButton(
@@ -1262,7 +1262,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                  managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_dateUntil'],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
                                                 },
                                               ),
                                               new FlatButton(
