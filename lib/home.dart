@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+
 import 'parkingtrans.dart';
 import 'parkingTransList.dart';
 import 'history.dart';
 import  'settings.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'dart:async';
-import 'dart:io';
 
 class HomeT extends StatefulWidget {
   final logInData;

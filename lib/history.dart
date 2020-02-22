@@ -47,16 +47,16 @@ class _HistoryTransList extends State<HistoryTransList> {
 
    Future getHistoryTransData() async {
      listStat = false;
-    var res = await db.fetchAllHistory();
+    var res = await db.olFetchHistory(widget.location);
     setState((){
-      plateData = res;
+      plateData = res["user_details"];
     });
 
   }
 
   Future promptSyncData() async{
     bool result = await DataConnectionChecker().hasConnection;
-    if(result  == true){
+    if(result == true){
       showDialog(
         barrierDismissible: false,
         context: context,
@@ -296,7 +296,8 @@ class _HistoryTransList extends State<HistoryTransList> {
                                   Text('     Time In : ${plateData2[index]["d_dateTimeIn"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     Time Out : ${plateData2[index]["d_dateTimeout"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     Entrance Fee : '+oCcy.format(int.parse(plateData2[index]["d_amount"])),style: TextStyle(fontSize: width/30),),
-                                  Text('     Penalty : '+oCcy.format(int.parse(plateData2[index]["d_penalty"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Charge : '+oCcy.format(int.parse(plateData2[index]["d_penalty"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Trans Code : ${plateData2[index]["d_transcode"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     In By : ${plateData2[index]["d_name_in"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     Out By : ${plateData2[index]["d_name_out"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     Location : ${plateData2[index]["d_location"]}',style: TextStyle(fontSize: width/30),),
@@ -318,15 +319,15 @@ class _HistoryTransList extends State<HistoryTransList> {
                     var f = index;
                     Color cardColor;
                     f++;
-                    if(int.parse(plateData[index]["penalty"]) > 0){
+                    if(int.parse(plateData[index]["d_penalty"]) > 0){
                       cardColor = Colors.redAccent.withOpacity(.2);
                     }else{
                       cardColor = Colors.white;
                     }
-                    var totalAmount = int.parse(plateData[index]["penalty"]) + int.parse(plateData[index]["amount"]);
+                    var totalAmount = int.parse(plateData[index]["d_penalty"]) + int.parse(plateData[index]["d_amount"]);
                     return GestureDetector(
                       onLongPress: (){
-                        if(int.parse(plateData[index]["penalty"])!=0){
+                        if(int.parse(plateData[index]["d_penalty"])!=0){
                           showDialog(
                             barrierDismissible: false,
                             context: context,
@@ -339,19 +340,32 @@ class _HistoryTransList extends State<HistoryTransList> {
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
                                     child: new Text("Proceed"),
-                                    onPressed: () async{
+                                    onPressed:() async{
                                       Navigator.of(context).pop();
-                                      print(widget.empId);
-                                      print('reprint_penalty');
+//                                      print(widget.empId);
+//                                      print('reprint_penalty');
                                       await db.olSendTransType(widget.empId,'reprint_penalty');
+                                      await db.olPenaltyReprint(plateData[index]['d_uid'],plateData[index]['d_transcode'],plateData[index]['d_Plate'],plateData[index]['d_dateTimeIn'],plateData[index]['d_dateTimeout'],plateData[index]['d_amount'],plateData[index]['d_penalty'],plateData[index]['d_in_empid'],plateData[index]['out_empid'],plateData[index]['d_location']);
                                       AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                                       });
+//                                        print(plateData[index]['d_uid']);
+//                                        print(plateData[index]['d_transcode']);
+//                                        print(plateData[index]['d_Plate']);
+//                                        print(plateData[index]['d_dateTimeIn']);
+//                                        print(plateData[index]['d_dateTimeout']);
+//                                        print(plateData[index]['d_amount']);
+//                                        print(plateData[index]['d_penalty']);
+//                                        print(plateData[index]['d_in_empid']);
+//                                        print(plateData[index]['out_empid']);
+//                                        print(plateData[index]['d_location']);
+
                                     },
                                   ),
                                   new FlatButton(
                                     child: new Text("Close"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
+
                                     },
                                   ),
                                 ],
@@ -368,17 +382,18 @@ class _HistoryTransList extends State<HistoryTransList> {
 //                       crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ListTile(
-                              title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
+                              title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,fontSize:  width/20),),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('     Time In : ${plateData[index]["dateTimein"]}',style: TextStyle(fontSize: width/30),),
-                                  Text('     Time Out : ${plateData[index]["dateTimeout"]}',style: TextStyle(fontSize: width/30),),
-                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: width/30),),
-                                  Text('     Penalty : '+oCcy.format(int.parse(plateData[index]["penalty"])),style: TextStyle(fontSize: width/30),),
-                                  Text('     In By : ${plateData[index]["empNameIn"]}',style: TextStyle(fontSize: width/30),),
-                                  Text('     Out By : ${plateData[index]["empNameOut"]}',style: TextStyle(fontSize: width/30),),
-                                  Text('     Location : ${plateData[index]["location"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Time In : ${plateData[index]["d_dateTimeIn"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Time Out : ${plateData[index]["d_dateTimeout"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Charge : '+oCcy.format(int.parse(plateData[index]["d_penalty"])),style: TextStyle(fontSize: width/30),),
+                                  Text('     Trans Code : ${plateData[index]["d_transcode"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     In By : ${plateData[index]["d_name_in"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Out By : ${plateData[index]["d_name_out"]}',style: TextStyle(fontSize: width/30),),
+                                  Text('     Location : ${plateData[index]["d_location"]}',style: TextStyle(fontSize: width/30),),
                                   Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/30),),
                                 ],
                               ),

@@ -104,7 +104,7 @@ class PayParkingDatabase {
   Future<List> fetchAllHistory() async {
     var client = await db;
     var res = await client.query('payparhistory ORDER BY id DESC');
-    if (res.isNotEmpty) {
+    if(res.isNotEmpty){
       return client.query('payparhistory ORDER BY id DESC');
     }
     else{
@@ -225,6 +225,16 @@ class PayParkingDatabase {
     return dataUser;
   }
 
+
+  Future olFetchHistory(location) async{
+    Map dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/olFetchHistory",body:{
+      "location":location.toString(),
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
   Future olSaveDelinquent(id,uid,plateNo,dateToday,fullName,secNameC,imgEmp,imgGuard) async{
     await http.post("http://172.16.46.130/e_parking/olSaveDelinquent",body:{
       "id":id.toString(),
@@ -271,9 +281,25 @@ class PayParkingDatabase {
       'location':location.toString(),
     });
   }
+
   Future olCancel(id) async{
     await http.post("http://172.16.46.130/e_parking/olCancel",body:{
       'id':id.toString(),
+    });
+  }
+
+  Future olPenaltyReprint(uId,transCode,plate,dateTimeIn,dateTimeout,amount,penalty,inEmpId,outEmpId,location) async{
+    await http.post("http://172.16.46.130/e_parking/olPenaltyReprint",body:{
+          'uId':uId.toString(),
+          'transCode':transCode.toString(),
+          'plate':plate.toString(),
+          'dateTimeIn':dateTimeIn.toString(),
+          'dateTimeout':dateTimeout.toString(),
+          'amount':amount.toString(),
+          'penalty':penalty.toString(),
+          'inEmpId':inEmpId.toString(),
+          'outEmpId':outEmpId.toString(),
+          'location':location.toString(),
     });
   }
 
