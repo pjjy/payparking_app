@@ -37,35 +37,10 @@ class _ParkTransList extends State<ParkTransList>{
 //  }
   Future getTransData() async {
     listStat = false;
-    bool result = await DataConnectionChecker().hasConnection;
-    if (result == true){
-      var res = await db.olFetchAll(widget.location);
+      var res = await db.ofFetchAll(widget.location);
       setState((){
-        plateData = res["user_details"];
+        plateData = res;
       });
-    }
-    else{
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context){
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: new Text("Connection Problem"),
-            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed:() {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 
 
@@ -673,7 +648,7 @@ class _ParkTransList extends State<ParkTransList>{
                                       Navigator.of(context).pop();
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],amount:plateData2[index]['d_amount'],location:widget.location,username:widget.name)),
+                                        MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData2[index]["d_id"],plateNo:plateData2[index]["d_Plate"],username:widget.name)),
                                       );
                                     },
                                   ),
@@ -797,7 +772,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                    managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_dateUntil'],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
+                                                    managerLoginReprint(plateData[index]['uid'],plateData[index]["chekDigit"],plateData[index]["plateNumber"],plateData[index]['dateToday'],plateData[index]["dateTimeToday"],plateData[index]['dateUntil'],plateData[index]['amount'],plateData[index]["user"],plateData[index]['location']);
 
                                                   }
                                               ),
@@ -845,7 +820,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]["d_id"]);
+                                                  managerCancel(plateData[index]["id"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -911,11 +886,11 @@ class _ParkTransList extends State<ParkTransList>{
                       var penalty = 0;
                       String alertButton;
                       Color cardColor;
-                      var dateString = plateData[index]["d_dateToday"]; //getting time
+                      var dateString = plateData[index]["dateToday"]; //getting time
                       var date = dateString.split("-"); //split time
-                      var hrString = plateData[index]["d_dateTimeToday"]; //getting time
+                      var hrString = plateData[index]["dateTimeToday"]; //getting time
                       var hour = hrString.split(":"); //split time
-                      var vType = plateData[index]["d_amount"];
+                      var vType = plateData[index]["amount"];
 
                       final dateTimeIn = DateTime(int.parse(date[0]),int.parse(date[1]),int.parse(date[2]),int.parse(hour[0]),int.parse(hour[1]));
                       final dateTimeNow = DateTime.now();
@@ -1076,7 +1051,7 @@ class _ParkTransList extends State<ParkTransList>{
                               return CupertinoAlertDialog(
 //                                 title: new Text(plateData[index]["d_Plate"]),
 //                                 content: new Text(alertText),
-                                title: new Text(plateData[index]["d_Plate"]),
+                                title: new Text(plateData[index]["plateNumber"]),
                                 actions: <Widget>[
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
@@ -1096,18 +1071,20 @@ class _ParkTransList extends State<ParkTransList>{
                                           // return object of type Dialog
                                           return CupertinoAlertDialog(
                                             title: new Text("Are you sure?"),
-                                            content: new Text("Do you want to log out this plate # ${plateData[index]["d_Plate"]}"),
+                                            content: new Text("Do you want to log out this plate # ${plateData[index]["plateNumber"]}"),
                                             actions: <Widget>[
                                               // usually buttons at the bottom of the dialog
                                               new FlatButton(
                                                 child: new Text("Yes"),
                                                 onPressed: () {
                                                   if(trigger == 0){
-                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
+                                                    passDataToHistoryWithOutPay(int.parse(plateData[index]["id"]),plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["plateNumber"],dateTimeIn,DateTime.now(),plateData[index]["amount"],plateData[index]["empId"],plateData[index]["fname"],widget.empId,widget.empNameFn,plateData[index]["location"]);
+
                                                   }
                                                   if(trigger == 1){
-                                                    passDataToHistoryWithPay(int.parse(plateData[index]["d_id"]),plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],dateTimeIn,DateTime.now(),plateData[index]["d_amount"],penalty,plateData[index]["d_emp_id"],plateData[index]['d_user'],widget.empId,widget.empNameFn,plateData[index]["d_location"]);
-//                                                    penaltyPrint.sample();
+                                                    passDataToHistoryWithPay(int.parse(plateData[index]["id"]),plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["plateNumber"],dateTimeIn,DateTime.now(),plateData[index]["amount"],penalty,plateData[index]["empId"],plateData[index]['fname'],widget.empId,widget.empNameFn,plateData[index]["location"]);
+//                                                                          (int.parse(plateData[index]["id"]),plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["plateNumber"],dateTimeIn,DateTime.now(),plateData[index]["amount"],plateData[index]["empId"],plateData[index]["fname"],widget.empId,widget.empNameFn,plateData[index]["location"]);
+//
                                                   }
                                                   Navigator.of(context).pop();
                                                 },
@@ -1128,9 +1105,11 @@ class _ParkTransList extends State<ParkTransList>{
                                     child: new Text("Edit"),
                                     onPressed: (){
                                       Navigator.of(context).pop();
+                                      print(plateData[index]["id"]);
+                                      print(plateData[index]["plateNumber"]);
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData[index]["d_id"],plateNo:plateData[index]["d_Plate"],amount:plateData[index]['d_amount'],location:widget.location,username:widget.name)),
+                                        MaterialPageRoute(builder: (context) => UpdateTrans(id:plateData[index]["id"],plateNo:plateData[index]["plateNumber"],username:widget.name)),
                                       );
                                     },
                                   ),
@@ -1175,7 +1154,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                       Navigator.of(context).pop();
                                                       Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["d_id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["d_uid"],plateNo:plateData[index]["d_Plate"])),
+                                                        MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["uid"],plateNo:plateData[index]["plateNumber"])),
                                                       );
                                                     }
                                                     if(res == 'false'){
@@ -1262,7 +1241,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_dateUntil'],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
+                                                  managerLoginReprint(plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["platenumber"],plateData[index]['dateToday'],plateData[index]["dateTimeToday"],plateData[index]['dateUntil'],plateData[index]['amount'],plateData[index]["empId"],plateData[index]['location']);
                                                 },
                                               ),
                                               new FlatButton(
@@ -1345,17 +1324,17 @@ class _ParkTransList extends State<ParkTransList>{
 //                           crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               ListTile(
-                                title:Text('$f.Plt No : ${plateData[index]["d_Plate"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
+                                title:Text('$f.Plt No : ${plateData[index]["plateNumber"]}'.toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold, fontSize: width/20),),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text('     Time In : '+DateFormat("yyyy-MM-dd hh:mm a").format(dateTimeIn),style: TextStyle(fontSize: width/32),),
-                                    Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["d_amount"])),style: TextStyle(fontSize: width/32),),
+                                    Text('     Entrance Fee : '+oCcy.format(int.parse(plateData[index]["amount"])),style: TextStyle(fontSize: width/32),),
                                     Text('     Time lapse : $timeAg',style: TextStyle(fontSize: width/32),),
                                     Text('     Charge : '+oCcy.format(penalty),style: TextStyle(fontSize: width/32),),
-                                    Text('     Trans Code : '+plateData[index]["d_chkdigit"],style: TextStyle(fontSize: width/32),),
-                                    Text('     In By : '+plateData[index]["d_user"],style: TextStyle(fontSize: width/32),),
-                                    Text('     Location : '+plateData[index]["d_location"],style: TextStyle(fontSize: width/32),),
+                                    Text('     Trans Code : '+plateData[index]["checkDigit"],style: TextStyle(fontSize: width/32),),
+                                    Text('     In By : '+plateData[index]["fname"],style: TextStyle(fontSize: width/32),),
+                                    Text('     Location : '+plateData[index]["location"],style: TextStyle(fontSize: width/32),),
                                     Text('     Total : '+oCcy.format(totalAmount),style: TextStyle(fontSize: width/32),),
                                   ],
                                 ),

@@ -17,9 +17,10 @@ import 'package:flutter_appavailability/flutter_appavailability.dart';
 class ParkTrans extends StatefulWidget {
   final String empId;
   final String name;
+  final String empNameFn;
   final String location;
 
-  ParkTrans({Key key, @required this.empId, this.name, this.location}) : super(key: key);
+  ParkTrans({Key key, @required this.empId, this.name, this.empNameFn, this.location}) : super(key: key);
   @override
   _ParkTrans createState() => _ParkTrans();
 }
@@ -197,7 +198,7 @@ class _ParkTrans extends State<ParkTrans>{
 
   TextEditingController plateNoController = TextEditingController();
   void confirmed(){
-    if(isSwitched == false && plateNoController.text == "" && locationA == "Location"){
+    if(isSwitched == false && plateNoController.text == "" || locationA == "Location"){
 //      var today = new DateTime.now();
 //      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
@@ -279,7 +280,8 @@ class _ParkTrans extends State<ParkTrans>{
       var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
       String amount = wheel.toString();
       var stat = 1;
-      var user = widget.empId;
+      var empId = widget.empId;
+      var fName = widget.empNameFn;
 
 //    var dateTodayP = DateFormat("yyyy-MM-dd").format(new DateTime.now());
 //    var dateTimeTodayP = DateFormat("jm").format(new DateTime.now());
@@ -298,7 +300,7 @@ class _ParkTrans extends State<ParkTrans>{
         print(plateNumber);
       }
 
-      if(result == true){
+
         String locationAnew = locationA;
         showDialog(
           barrierDismissible: false,
@@ -315,10 +317,11 @@ class _ParkTrans extends State<ParkTrans>{
                 onPressed: () async{
                   Navigator.of(context).pop();
                   plateNoController.text = "";
-                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
-                  await db.olSendTransType(widget.empId,'ticket');
-                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
-                  });
+//                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
+                  await db.ofSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,empId,fName,stat,locationAnew);
+//                  await db.olSendTransType(widget.empId,'ticket');
+//                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+//                  });
                   Fluttertoast.showToast(
                       msg: "Successfully Added to Transactions",
                       toastLength: Toast.LENGTH_LONG,
@@ -342,33 +345,8 @@ class _ParkTrans extends State<ParkTrans>{
           );
         },
       );
-//      await db.olSaveTransaction(uid,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationA);
-//      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       locationA = "Location";
-    }
-    else{
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: new Text("Connection Problem"),
-            content: new Text("Please Connect to the wifi hotspot or turn the wifi on"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
 
-            ],
-          );
-        },
-      );
-    }
   }
 
   @override

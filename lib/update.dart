@@ -8,13 +8,13 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'parkingTransList.dart';
 
 class UpdateTrans extends StatefulWidget {
-  final String id;
+  final int id;
   final String plateNo;
-  final String amount;
-  final String location;
+
+
   final String username;
 
-  UpdateTrans({Key key, @required this.id, this.plateNo, this.amount,this.location,this.username}) : super(key: key);
+  UpdateTrans({Key key, @required this.id, this.plateNo, this.username}) : super(key: key);
   @override
   _UpdateTrans createState() => _UpdateTrans();
 }
@@ -48,97 +48,59 @@ class _UpdateTrans extends State<UpdateTrans>{
     });
   }
 
-  List<Widget> _getList() {
-    String location = widget.location;
-    var locCount = location.split(",").length;
-    var locSplit = location.split(",");
-    var counter  = locCount;
+//  List<Widget> _getList() {
+//    String location = widget.location;
+//    var locCount = location.split(",").length;
+//    var locSplit = location.split(",");
+//    var counter  = locCount;
+//
+//    counter = counter-1;
+//
+//    List<Widget> temp = [];
+//    for(var q = 0; q < locCount; q++) {
+//      temp.add(
+//        FlatButton(
+//          child: new Text(locSplit[q]),
+//          onPressed: () {
+//            setState(() {
+//              Navigator.of(context, rootNavigator: true).pop('dialog');
+//              locationA = locSplit[q];
+//            });
+//          },
+//        ),
+//      );
+//      if(q >= counter){
+//
+//        temp.add(
+//          FlatButton(
+//            child: new Text("Close "),
+//            onPressed: () {
+//              setState(() {
+//                Navigator.of(context, rootNavigator: true).pop('dialog');
+//                locationA = 'Location';
+//              });
+//            },
+//          ),
+//        );
+//      }
+//    }
+//    return temp;
+//  }
 
-    counter = counter-1;
 
-    List<Widget> temp = [];
-    for(var q = 0; q < locCount; q++) {
-      temp.add(
-        FlatButton(
-          child: new Text(locSplit[q]),
-          onPressed: () {
-            setState(() {
-              Navigator.of(context, rootNavigator: true).pop('dialog');
-              locationA = locSplit[q];
-            });
-          },
-        ),
-      );
-      if(q >= counter){
-
-        temp.add(
-          FlatButton(
-            child: new Text("Close "),
-            onPressed: () {
-              setState(() {
-                Navigator.of(context, rootNavigator: true).pop('dialog');
-                locationA = 'Location';
-              });
-            },
-          ),
-        );
-      }
-    }
-    return temp;
-  }
-
-
-  void addLocation(){
-    showDialog(
-      barrierDismissible: true,
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return CupertinoAlertDialog(
-          title: Text('Add Location'),
-          actions:  _getList(),
-//            <Widget>[
-
-//              FlatButton(
-//                child: new Text("Location A"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location A';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location B"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location B';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location C"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location C';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Location D"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Location D';
-//                },
-//              ),
-//              FlatButton(
-//                child: new Text("Close & Clear"),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                  locationA = 'Add Location';
-//                },
-//              ),
-//            ],
-        );
-      },
-    );
-  }
+//  void addLocation(){
+//    showDialog(
+//      barrierDismissible: true,
+//      context: context,
+//      builder: (BuildContext context) {
+//        // return object of type Dialog
+//        return CupertinoAlertDialog(
+//          title: Text('Add Location'),
+//          actions:  _getList(),
+//        );
+//      },
+//    );
+//  }
 
 
 
@@ -147,12 +109,6 @@ class _UpdateTrans extends State<UpdateTrans>{
 
   void confirmed(){
     if(plateNoController.text == "" ){
-//      var today = new DateTime.now();
-//      var dateToday = DateFormat("yyyy-MM-dd").format(new DateTime.now());
-//      var dateUntil = DateFormat("yyyy-MM-dd").format(today.add(new Duration(days: 7)));
-//      print(dateToday);
-//      print(dateUntil);
-//      print(selectedRadio);
     }
     else {
         saveData();
@@ -209,7 +165,6 @@ class _UpdateTrans extends State<UpdateTrans>{
                   Navigator.of(context).pop();
                 },
               ),
-
             ],
           );
         },
@@ -217,25 +172,18 @@ class _UpdateTrans extends State<UpdateTrans>{
     }
   }
 
-
   String name;
   @override
   void initState(){
     super.initState();
     plateNoController.text = widget.plateNo;
-    //mo prompt if na setupan na ug location or naay internet
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
@@ -261,20 +209,9 @@ class _UpdateTrans extends State<UpdateTrans>{
         ),
       ),
       body: ListView(
-//          physics: BouncingScrollPhysics(),
         children: <Widget>[
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-//             child:NiceButton(
-//                width: 255,
-//                elevation: 0.0,
-//                radius: 52.0,
-//                fontSize: 18.0,
-//                text: "Open Camera",
-//                icon: Icons.camera_alt,
-//                padding: const EdgeInsets.all(15),
-//                background: Colors.blue,
-//                onPressed:pickImage,
-//             ),
+
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
             child: new TextFormField(
@@ -293,63 +230,6 @@ class _UpdateTrans extends State<UpdateTrans>{
               ),
             ),
           ),
-//          Divider(
-//            color: Colors.transparent,
-//            height:15.0,
-//          ),
-//          Padding(
-//            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 35.0),
-//            child:Text('Vehicle Type & Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.black45),),
-//          ),
-//          Padding(
-//              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-//              child:Column(
-//                  children: <Widget>[
-//                    FlatButton.icon(
-//                      label: Text('4 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorA),),
-//                      splashColor: Colors.lightBlue,
-//                      color: buttonBackColorB,
-//                      icon: Icon(Icons.directions_car, color: textColorA,size: width/20.0,),
-//                      padding: EdgeInsets.symmetric(horizontal: width/20.0,vertical: 5.0),
-//                      shape: RoundedRectangleBorder(
-//                          borderRadius: new BorderRadius.circular(35.0),
-//                          side: BorderSide(color: Colors.lightBlue)
-//                      ),
-//                      onPressed:(){
-//                        setWheelB();
-//                      },
-//                    ),
-//                    Text("   "),
-//                    FlatButton.icon(
-//                      label: Text('2 wheels'.toString(),style: TextStyle(fontSize: width/33.0, color: textColorB),),
-//                      splashColor: Colors.lightBlue,
-//                      color: buttonBackColorA,
-//                      icon: Icon(Icons.motorcycle, color: textColorB,size: width/20.0,),
-//                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
-//                      shape: RoundedRectangleBorder(
-//                          borderRadius: new BorderRadius.circular(35.0),
-//                          side: BorderSide(color: Colors.lightBlue)
-//                      ),
-//                      onPressed:(){
-//                        setWheelA();
-//                      },
-//                    ),
-//                    Text("   "),
-//                    FlatButton.icon(
-//                      label: Text(locationA.toString(),style: TextStyle(fontSize: width/33.0, color: Colors.black45),),
-//                      splashColor: Colors.lightBlue,
-//                      icon: Icon(Icons.location_on, color: Colors.black45,size: width/20.0,),
-//                      padding: EdgeInsets.symmetric(horizontal:width/20.0,vertical: 5.0),
-//                      shape: RoundedRectangleBorder(
-//                          borderRadius: new BorderRadius.circular(35.0),
-//                          side: BorderSide(color: Colors.lightBlue)
-//                      ),
-//                      onPressed: addLocation,
-//                    ),
-//                  ]),
-//
-//          ),
-
 
           Padding( padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20.0),
             child: Container(

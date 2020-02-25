@@ -36,14 +36,14 @@ class _HistoryTransList extends State<HistoryTransList> {
     }else{
 //      print(syncData[0]['syncDate']);
     }
-  }// to be delete soon
+   }// to be delete soon
 
 
 
    Future insertSyncDate() async{
     await db.insertSyncDate(DateFormat("yyyy-MM-dd : hh:mm a").format(new DateTime.now()).toString());
     getSyncDate();
-  }
+   }
 
    Future getHistoryTransData() async {
      listStat = false;
@@ -51,8 +51,7 @@ class _HistoryTransList extends State<HistoryTransList> {
     setState((){
       plateData = res["user_details"];
     });
-
-  }
+   }
 
   Future promptSyncData() async{
     bool result = await DataConnectionChecker().hasConnection;
@@ -344,10 +343,10 @@ class _HistoryTransList extends State<HistoryTransList> {
                                       Navigator.of(context).pop();
 //                                      print(widget.empId);
 //                                      print('reprint_penalty');
-                                      await db.olSendTransType(widget.empId,'reprint_penalty');
-                                      await db.olPenaltyReprint(plateData[index]['d_uid'],plateData[index]['d_transcode'],plateData[index]['d_Plate'],plateData[index]['d_dateTimeIn'],plateData[index]['d_dateTimeout'],plateData[index]['d_amount'],plateData[index]['d_penalty'],plateData[index]['d_in_empid'],plateData[index]['out_empid'],plateData[index]['d_location']);
-                                      AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
-                                      });
+                                        await db.olSendTransType(widget.empId,'reprint_penalty');
+                                        await db.olPenaltyReprint(plateData[index]['d_uid'],plateData[index]['d_transcode'],plateData[index]['d_Plate'],plateData[index]['d_dateTimeIn'],plateData[index]['d_dateTimeout'],plateData[index]['d_amount'],plateData[index]['d_penalty'],plateData[index]['d_in_empid'],plateData[index]['out_empid'],plateData[index]['d_location']);
+                                        AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+                                        });
 //                                        print(plateData[index]['d_uid']);
 //                                        print(plateData[index]['d_transcode']);
 //                                        print(plateData[index]['d_Plate']);
@@ -358,7 +357,6 @@ class _HistoryTransList extends State<HistoryTransList> {
 //                                        print(plateData[index]['d_in_empid']);
 //                                        print(plateData[index]['out_empid']);
 //                                        print(plateData[index]['d_location']);
-
                                     },
                                   ),
                                   new FlatButton(

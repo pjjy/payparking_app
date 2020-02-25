@@ -39,15 +39,20 @@ class PayParkingDatabase {
 
   void _onCreate(Database db, int version) {
     db.execute('''
-      CREATE TABLE paypartrans(
+      CREATE TABLE tbl_oftransactions(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uid TEXT,
+        checkDigit TEXT,
         plateNumber TEXT,
         dateToday TEXT,
         dateTimeToday TEXT,
         dateUntil TEXT,
         amount TEXT,
-        user TEXT,
-        status TEXT)''');
+        empId TEXT,
+        fname TEXT,
+        status TEXT,
+        location TEXT
+        )''');
 
     db.execute('''
       CREATE TABLE payparhistory(
@@ -79,14 +84,15 @@ class PayParkingDatabase {
     // Run migration according database versions
   }
 
-  Future<int> addTrans(String plateNumber, String dateToday, String dateTimeToday, String dateUntil,String amount,String user,int stat) async {
+  Future<int> ofSaveTransaction(String uid,String checkDigitResult,String plateNumber,String dateToday,String dateTimeToday,String dateUntil,String amount,String empId, String fName,int stat,String locationAnew) async {
     var client = await db;
-    return client.insert('paypartrans', {'plateNumber':plateNumber,'dateToday':dateToday,'dateTimeToday':dateTimeToday,'dateUntil':dateUntil,'amount':amount,'user':user,'status':stat});
+    return client.insert('tbl_oftransactions', {'uid':uid,'checkDigit':checkDigitResult,'plateNumber':plateNumber,'dateToday':dateToday,'dateTimeToday':dateTimeToday,'dateUntil':dateUntil,'amount':amount,'empId':empId,'fname':fName,'status':stat,'location':locationAnew});
   }
 
-  Future<List> fetchAll() async {
+  Future<List> ofFetchAll(String location) async {
     var client = await db;
-    return client.query('paypartrans Where status = 1');
+    return client.query('tbl_oftransactions', where: 'status = ?',whereArgs: ['1']);
+//    return client.update('paypartrans', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
     // where status = 1
   }
 
