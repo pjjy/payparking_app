@@ -89,11 +89,21 @@ class PayParkingDatabase {
     return client.insert('tbl_oftransactions', {'uid':uid,'checkDigit':checkDigitResult,'plateNumber':plateNumber,'dateToday':dateToday,'dateTimeToday':dateTimeToday,'dateUntil':dateUntil,'amount':amount,'empId':empId,'fname':fName,'status':stat,'location':locationAnew});
   }
 
-  Future<List> ofFetchAll(String location) async {
+  Future ofFetchAll() async {
     var client = await db;
-    return client.query('tbl_oftransactions', where: 'status = ?',whereArgs: ['1']);
-//    return client.update('paypartrans', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
-    // where status = 1
+    //return client.query('tbl_oftransactions', where: 'status = ? and location = ?'  ,whereArgs: ['1',location] );
+      return client.rawQuery('SELECT * FROM tbl_oftransactions WHERE status ="1"',null);
+
+  }
+
+  Future ofFetchSearch(text) async{
+    var client = await db;
+    return client.rawQuery("SELECT * FROM tbl_oftransactions WHERE plateNumber LIKE '%$text%' AND status ='1'",null);
+  }
+
+  Future<int> updatePayTranStat(int id) async{
+    var client = await db;
+    return client.update('tbl_oftransactions', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<List> fetchSync() async{
@@ -109,13 +119,12 @@ class PayParkingDatabase {
 
   Future<List> fetchAllHistory() async {
     var client = await db;
-    var res = await client.query('payparhistory ORDER BY id DESC');
-    if(res.isNotEmpty){
-      return client.query('payparhistory ORDER BY id DESC');
-    }
-    else{
-      return [];
-    }
+    return await client.query('payparhistory ORDER BY id DESC');
+  }
+
+  Future ofFetchSearchHistory(text) async{
+    var client = await db;
+    return client.rawQuery("SELECT * FROM payparhistory WHERE plateNumber LIKE '%$text%'",null);
   }
 
   Future<int> addTransHistory(String uid,checkDigit,String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
@@ -123,13 +132,11 @@ class PayParkingDatabase {
     return client.insert('payparhistory', {'uid':uid,'checkDigit':checkDigit,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
   }
 
-  Future<int> updatePayTranStat(int id) async{
-    var client = await db;
-    return client.update('paypartrans', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
-  }
+
+
+
 
  //mysql query code
-
   Future mysqlLogin(username,password) async{
       final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
         "username": username,
