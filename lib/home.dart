@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
-
 import 'parkingtrans.dart';
 import 'parkingTransList.dart';
 import 'history.dart';
 import  'settings.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 class HomeT extends StatefulWidget {
   final logInData;
@@ -24,8 +24,20 @@ class _Home extends State<HomeT> {
   String userImage;
 
   String data;
+  Timer timer;
+  int counter;
 
+  Future getCounter() async {
+    var res = await db.getCounter();
+    setState(() {
+      if (counter == null) {
+        counter = 0;
+      } else {
+        counter = res;
+      }
+    });
 
+  }
 
   Future getUserData() async{
     var res = await db.olFetchUserData(widget.logInData);
@@ -57,6 +69,15 @@ class _Home extends State<HomeT> {
       userImage = userImage;
     }
     getUserData();
+    super.initState();
+    getCounter();
+    timer = Timer.periodic(Duration(seconds: 5), (Timer t) => getCounter());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -85,7 +106,33 @@ class _Home extends State<HomeT> {
             ),),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.share_up,size: 25.0),
+            icon: new Stack(
+              children: <Widget>[
+                new Icon(Icons.notifications),
+                new Positioned(
+                  right: 0,
+                  child: new Container(
+                    padding: EdgeInsets.all(3),
+                    decoration: new BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: new Text(
+                      '$counter',
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
             title: Text('History',style: TextStyle(
               fontSize: defFontSize, // insert your font size here
             ),),

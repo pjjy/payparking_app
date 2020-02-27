@@ -132,7 +132,17 @@ class PayParkingDatabase {
     return client.insert('payparhistory', {'uid':uid,'checkDigit':checkDigit,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
   }
 
+  Future emptyHistoryTbl() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM payparhistory");
+  }
 
+  Future<int> getCounter() async {
+    //database connection
+    var client = await db;
+    int  count  = Sqflite.firstIntValue(await client.rawQuery('SELECT COUNT(*) FROM payparhistory'));
+    return count;
+  }
 
 
 

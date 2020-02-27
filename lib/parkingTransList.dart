@@ -54,7 +54,7 @@ class _ParkTransList extends State<ParkTransList>{
     var penalty = 0;
 
 
-     await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+//     await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
      await db.addTransHistory(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
      await db.updatePayTranStat(id);
      getTransData();
@@ -78,7 +78,7 @@ class _ParkTransList extends State<ParkTransList>{
 
 
 
-      await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
+//      await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       await db.addTransHistory(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       await db.updatePayTranStat(id);
       getTransData();
