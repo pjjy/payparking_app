@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 
@@ -28,7 +29,7 @@ class _SyncingPage extends State<SyncingPage>{
    String outBy;
    String empNameOut;
    String location;
-   int progress = 1;
+
 
    Future syncTransData() async{
     var res = await db.fetchAllHistory();
@@ -37,11 +38,9 @@ class _SyncingPage extends State<SyncingPage>{
     });
     if(hisData.isEmpty){
       Navigator.of(context).pop();
-      print('wala pay sulod');
     }else{
       bool result = await DataConnectionChecker().hasConnection;
       if(result == true){
-        print("Wifi Connected");
         for(int i = 0; i < hisData.length; i++){
 
           uid = hisData[i]['uid'];
@@ -54,19 +53,6 @@ class _SyncingPage extends State<SyncingPage>{
           user = hisData[i]['user'];
           outBy = hisData[i]['outBy'];
           location = hisData[i]['location'];
-
-//          print(uid);
-//          print(checkDigit);
-//          print(plateNumber);
-//          print(dateTimeIn);
-//          print(dateTimeout);
-//          print(amount);
-//          print(penalty);
-//          print(user);
-//          print(empNameIn);
-//          print(outBy);
-//          print(empNameOut);
-//          print(location);
 
           await http.post("http://172.16.46.130/e_parking/sync_data",body:{
             "uid":uid,
@@ -81,22 +67,39 @@ class _SyncingPage extends State<SyncingPage>{
             "location":location
           });
           if(i == hisData.length-1){
-            await db.emptyHistoryTbl();
-            Fluttertoast.showToast(
-                msg: "Data are synced successfully",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 2,
-                backgroundColor: Colors.black54,
-                textColor: Colors.white,
-                fontSize: 16.0
-            );
-            Navigator.of(context).pop();
+//            await db.emptyHistoryTbl();
+//            Fluttertoast.showToast(
+//                msg: "Data are synced successfully",
+//                toastLength: Toast.LENGTH_LONG,
+//                gravity: ToastGravity.BOTTOM,
+//                timeInSecForIos: 2,
+//                backgroundColor: Colors.black54,
+//                textColor: Colors.white,
+//                fontSize: 16.0
+//            );
+//            Navigator.of(context).pop();
+           downLoad();
           }
         }
       }
+    }
+  }
 
-     }
+  Future downLoad()async{
+    int count;
+    int res1 = await db.countTblUser();
+    count = res1;
+    print(count);
+    for(int i = 1; i <= 5; i++){
+//      await db.downLoadUser(i);
+      Map dataUser;
+      List plateData;
+      final response = await http.post("http://172.16.46.130/e_parking/app_downLoadUser",body:{
+      });
+      dataUser = jsonDecode(response.body);
+      plateData = dataUser['user_details'];
+      print(plateData[i]['d_name']);
+    }
   }
 
   @override

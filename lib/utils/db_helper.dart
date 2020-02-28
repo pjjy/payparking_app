@@ -146,7 +146,29 @@ class PayParkingDatabase {
 
 
 
+
+
  //mysql query code
+
+  Future countTblUser() async{
+    var dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_countDataDownload",body:{
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+//  Future downLoadUser() async{
+//    Map dataUser;
+//    List plateData;
+//    final response = await http.post("http://172.16.46.130/e_parking/app_downLoadUser",body:{
+//    });
+//    dataUser = jsonDecode(response.body);
+//    plateData = dataUser['user_details'];
+//    print(plateData[0]['plateData']);
+//  }
+
+
   Future mysqlLogin(username,password) async{
       final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
         "username": username,

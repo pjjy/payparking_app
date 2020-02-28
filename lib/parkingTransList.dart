@@ -105,7 +105,6 @@ class _ParkTransList extends State<ParkTransList>{
       var res = await db.ofFetchSearch(text);
       setState((){
         plateData2 = res;
-        print(plateData2);
       });
   }
 //  managerLoginReprint(plateData[index]['d_uid'],plateData[index]["d_chkdigit"],plateData[index]["d_Plate"],plateData[index]['d_dateToday'],plateData[index]["d_dateTimeToday"],plateData[index]['d_amount'],plateData[index]["d_emp_id"],plateData[index]['d_location']);
