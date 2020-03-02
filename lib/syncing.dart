@@ -16,7 +16,6 @@ class SyncingPage extends StatefulWidget{
 class _SyncingPage extends State<SyncingPage>{
    List hisData;
    final db = PayParkingDatabase();
-
    String uid;
    String checkDigit;
    String plateNumber;
@@ -36,13 +35,9 @@ class _SyncingPage extends State<SyncingPage>{
     setState(() {
       hisData = res;
     });
-    if(hisData.isEmpty){
-      Navigator.of(context).pop();
-    }else{
       bool result = await DataConnectionChecker().hasConnection;
       if(result == true){
         for(int i = 0; i < hisData.length; i++){
-
           uid = hisData[i]['uid'];
           checkDigit = hisData[i]['checkDigit'];
           plateNumber = hisData[i]['plateNumber'];
@@ -72,7 +67,7 @@ class _SyncingPage extends State<SyncingPage>{
           }
         }
       }
-    }
+
   }
 
   Future userDownLoad()async{
@@ -141,6 +136,15 @@ class _SyncingPage extends State<SyncingPage>{
 //      print(plateData[i]['d_status']);
       if(i == count-1){
        print("end");
+       Fluttertoast.showToast(
+           msg: "Transactions are successfully uploaded",
+           toastLength: Toast.LENGTH_LONG,
+           gravity: ToastGravity.BOTTOM,
+           timeInSecForIos: 2,
+           backgroundColor: Colors.black54,
+           textColor: Colors.white,
+           fontSize: 16.0
+       );
        Navigator.of(context).pop();
       }
     }

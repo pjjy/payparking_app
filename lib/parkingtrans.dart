@@ -323,7 +323,7 @@ class _ParkTrans extends State<ParkTrans>{
 //                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
 //                  });
                   Fluttertoast.showToast(
-                      msg: "Successfully Added to Transactions",
+                      msg: "Successfully added to transactions",
                       toastLength: Toast.LENGTH_LONG,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIos: 2,
@@ -340,7 +340,6 @@ class _ParkTrans extends State<ParkTrans>{
         },
       );
       locationA = "Location";
-
   }
 
   @override
