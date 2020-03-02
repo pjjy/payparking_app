@@ -72,6 +72,17 @@ class PayParkingDatabase {
         )''');
 
     db.execute('''
+      CREATE TABLE tbl_users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        empid TEXT,
+        fullname TEXT,
+        username TEXT,
+        password TEXT,
+        usertype TEXT,
+        status TEXT
+        )''');
+
+    db.execute('''
       CREATE TABLE synchistory(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         syncDate TEXT
@@ -93,7 +104,12 @@ class PayParkingDatabase {
     var client = await db;
     //return client.query('tbl_oftransactions', where: 'status = ? and location = ?'  ,whereArgs: ['1',location] );
       return client.rawQuery('SELECT * FROM tbl_oftransactions WHERE status ="1"',null);
+  }
 
+  Future ofSaveUsers(empId,fullName,userName,password,userType,status) async{
+
+    var client = await db;
+    return client.insert('tbl_users',{'empid':empId,'fullname':fullName,'username':userName,'password':password,'usertype':userType,'status':status});
   }
 
   Future ofFetchSearch(text) async{
@@ -158,15 +174,21 @@ class PayParkingDatabase {
     return dataUser;
   }
 
-//  Future downLoadUser() async{
-//    Map dataUser;
-//    List plateData;
-//    final response = await http.post("http://172.16.46.130/e_parking/app_downLoadUser",body:{
-//    });
-//    dataUser = jsonDecode(response.body);
-//    plateData = dataUser['user_details'];
-//    print(plateData[0]['plateData']);
-//  }
+  Future countTblLocationUser() async{
+    var dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_countLocationUser",body:{
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+  Future countTblLocation() async{
+    var dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_countLocation",body:{
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
 
 
   Future mysqlLogin(username,password) async{

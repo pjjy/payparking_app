@@ -252,7 +252,7 @@ class _ParkTrans extends State<ParkTrans>{
     int total=odd()+even();
     int cv1=0;
     int cv2=0;
-    while (cv1<=total)
+    while (cv1<total)
     {
       cv1+=10;
       if (cv1>=total)
