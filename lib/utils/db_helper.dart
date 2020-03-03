@@ -5,9 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-
-
+import 'package:crypto/crypto.dart';
 
 class PayParkingDatabase {
   static final PayParkingDatabase _instance = PayParkingDatabase._();
@@ -83,6 +81,24 @@ class PayParkingDatabase {
         )''');
 
     db.execute('''
+      CREATE TABLE tbl_usersLocationUser(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        locUserId TEXT,
+        userId TEXT,
+        locationId TEXT,
+        empId TEXT
+        )''');
+
+    db.execute('''
+      CREATE TABLE tbl_location(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        locationId TEXT,
+        location TEXT,
+        locationaddress TEXT,
+        status TEXT
+        )''');
+
+    db.execute('''
       CREATE TABLE synchistory(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         syncDate TEXT
@@ -107,9 +123,19 @@ class PayParkingDatabase {
   }
 
   Future ofSaveUsers(empId,fullName,userName,password,userType,status) async{
-
     var client = await db;
     return client.insert('tbl_users',{'empid':empId,'fullname':fullName,'username':userName,'password':password,'usertype':userType,'status':status});
+
+  }
+
+  Future ofSaveLocationUsers(locUserId,userId,locationId,empId) async{
+    var client = await db;
+    return client.insert('tbl_usersLocationUser',{'locUserId':locUserId,'userId':userId,'locationId':locationId,'empId':empId});
+  }
+
+  Future ofSaveLocation(locationId,location,locationAddress,status) async{
+    var client = await db;
+    return client.insert('tbl_location',{'locationId':locationId,'location':location,'locationaddress':locationAddress,'status':status});
   }
 
   Future ofFetchSearch(text) async{
@@ -132,7 +158,6 @@ class PayParkingDatabase {
     return client.insert('synchistory', {'syncDate':date});
   }
 
-
   Future<List> fetchAllHistory() async {
     var client = await db;
     return await client.query('payparhistory ORDER BY id DESC');
@@ -153,6 +178,22 @@ class PayParkingDatabase {
     return client.rawQuery("DELETE FROM payparhistory");
   }
 
+
+  Future emptyUserTbl() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM tbl_users");
+  }
+
+  Future emptyLocationUserTbl() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM tbl_usersLocationUser");
+  }
+
+  Future emptyLocationTbl() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM tbl_location");
+  }
+
   Future<int> getCounter() async {
     //database connection
     var client = await db;
@@ -160,12 +201,22 @@ class PayParkingDatabase {
     return count;
   }
 
+   Future ofLogin(username,password) async{
+    var client = await db;
+    var passwordF = md5.convert(utf8.encode(password));
+    var ret = client.rawQuery("SELECT * FROM tbl_users WHERE username = '$username' AND password = '$passwordF'",null);
+    if(ret.length  != null){
+      return "true";
+    }else{
+      return "false";
+    }
+//  return ret;
+  }
 
 
 
 
  //mysql query code
-
   Future countTblUser() async{
     var dataUser;
     final response = await http.post("http://172.16.46.130/e_parking/app_countDataDownload",body:{

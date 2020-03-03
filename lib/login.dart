@@ -45,13 +45,15 @@ class _SignInPageState extends State<SignInPage> {
 
     bool result = await DataConnectionChecker().hasConnection;
     if(result == true){
-      var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
+//      var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
+      var res = await db.ofLogin(_usernameController.text,_passwordController.text);
+      print(res);
       if(res.length >= 1 && res != 'error'){
-        Navigator.of(context).pop();
-        Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomeT(logInData:res)),
-        );
+//        Navigator.of(context).pop();
+//        Navigator.push(
+//              context,
+//              MaterialPageRoute(builder: (context) => HomeT(logInData:res)),
+//        );
       }
       if(res == 'error'){
         Navigator.of(context).pop();
@@ -109,7 +111,6 @@ class _SignInPageState extends State<SignInPage> {
   void initState(){
     super.initState();
     createDatabase();
-
   }
 
   @override

@@ -31,11 +31,28 @@ class _SyncingPage extends State<SyncingPage>{
 
 
    Future syncTransData() async{
+     bool result = await DataConnectionChecker().hasConnection;
     var res = await db.fetchAllHistory();
     setState(() {
       hisData = res;
     });
-      bool result = await DataConnectionChecker().hasConnection;
+     if(hisData.isEmpty){
+       if(result==true){
+         userDownLoad();
+       }
+       else{
+         Fluttertoast.showToast(
+             msg: "Please connect to a network",
+             toastLength: Toast.LENGTH_LONG,
+             gravity: ToastGravity.BOTTOM,
+             timeInSecForIos: 2,
+             backgroundColor: Colors.black54,
+             textColor: Colors.white,
+             fontSize: 16.0
+         );
+         Navigator.of(context).pop();
+       }
+     }else{
       if(result == true){
         for(int i = 0; i < hisData.length; i++){
           uid = hisData[i]['uid'];
@@ -67,6 +84,19 @@ class _SyncingPage extends State<SyncingPage>{
           }
         }
       }
+      if(result == false){
+        Fluttertoast.showToast(
+            msg: "no netd",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 2,
+            backgroundColor: Colors.black54,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        Navigator.of(context).pop();
+      }
+    }
 
   }
 
@@ -74,8 +104,8 @@ class _SyncingPage extends State<SyncingPage>{
     int count;
     int res = await db.countTblUser();
     count = res;
-    print(count);
-    for(int i = 0; i <count; i++){
+    await db.emptyUserTbl();
+    for(int i = 0; i < count; i++){
       Map dataUser;
       List plateData;
       final response = await http.post("http://172.16.46.130/e_parking/app_downLoadUser",body:{
@@ -83,16 +113,11 @@ class _SyncingPage extends State<SyncingPage>{
       });
       dataUser = jsonDecode(response.body);
       plateData = dataUser['user_details'];
-//      print(plateData[i]['d_emp_id']);
-//      print(plateData[i]['d_full_name']);
-//      print(plateData[i]['d_username']);
-//      print(plateData[i]['d_password']);
-//      print(plateData[i]['d_usertype']);
-//      print(plateData[i]['d_status']);
-        await db.ofSaveUsers(plateData[i]['d_emp_id'],plateData[i]['d_full_name'],plateData[i]['d_username'],plateData[i]['d_password'],plateData[i]['d_usertype'],plateData[i]['d_status']);
-     if(i == count-1){
-       downloadLocationUser();
-     }
+
+      await db.ofSaveUsers(plateData[i]['d_emp_id'],plateData[i]['d_full_name'],plateData[i]['d_username'],plateData[i]['d_password'],plateData[i]['d_usertype'],plateData[i]['d_status']);
+      if(i == count-1){
+         downloadLocationUser();
+      }
     }
   }
 
@@ -100,7 +125,8 @@ class _SyncingPage extends State<SyncingPage>{
     int count;
     int res = await db.countTblLocationUser();
     count = res;
-    for(int i = 1; i <=count; i++) {
+    await db.emptyLocationUserTbl();
+    for(int i = 0; i < count; i++) {
       Map dataUser;
       List plateData;
       final response1 = await http.post("http://172.16.46.130/e_parking/app_downLoadlocation_user", body: {
@@ -108,10 +134,7 @@ class _SyncingPage extends State<SyncingPage>{
       });
       dataUser = jsonDecode(response1.body);
       plateData = dataUser['user_details'];
-//      print(plateData[i]['d_loc_user_id']);
-//      print(plateData[i]['d_user_id']);
-//      print(plateData[i]['d_location_id']);
-//      print(plateData[i]['d_emp_id']);
+      await db.ofSaveLocationUsers(plateData[i]['d_loc_user_id'],plateData[i]['d_user_id'],plateData[i]['d_location_id'],plateData[i]['d_emp_id']);
       if(i == count-1){
         downloadLocation();
       }
@@ -122,7 +145,8 @@ class _SyncingPage extends State<SyncingPage>{
     int count;
     int res = await db.countTblLocation();
     count = res;
-    for(int i = 1; i < count; i++) {
+    await db.emptyLocationTbl();
+    for(int i = 0; i < count; i++) {
       Map dataUser;
       List plateData;
       final response1 = await http.post("http://172.16.46.130/e_parking/app_downLoadlocation", body: {
@@ -130,12 +154,8 @@ class _SyncingPage extends State<SyncingPage>{
       });
       dataUser = jsonDecode(response1.body);
       plateData = dataUser['user_details'];
-//      print(plateData[i]['d_location_id']);
-//      print(plateData[i]['d_location']);
-//      print(plateData[i]['d_location_address']);
-//      print(plateData[i]['d_status']);
+      await db.ofSaveLocation(plateData[i]['d_location_id'],plateData[i]['d_location'],plateData[i]['d_location_address'],plateData[i]['d_status']);
       if(i == count-1){
-       print("end");
        Fluttertoast.showToast(
            msg: "Transactions are successfully uploaded",
            toastLength: Toast.LENGTH_LONG,
