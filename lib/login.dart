@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'home.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:payparking_app/utils/db_helper.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SignInPage extends StatefulWidget {
@@ -17,12 +16,15 @@ class _SignInPageState extends State<SignInPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool isLoggedIn = false;
+  List data;
 
   Future createDatabase() async{
      await db.init();
   }
 
   void log(){
+
+
     setState((){
       showDialog(
         barrierDismissible: false,
@@ -43,23 +45,23 @@ class _SignInPageState extends State<SignInPage> {
 
   Future logInAttempt() async{
 
-    bool result = await DataConnectionChecker().hasConnection;
-    if(result == true){
+//    bool result = await DataConnectionChecker().hasConnection;
+//    if(result == true){
 //      var res = await db.mysqlLogin(_usernameController.text,_passwordController.text);
       var res = await db.ofLogin(_usernameController.text,_passwordController.text);
-      print(res);
-      if(res.length >= 1 && res != 'error'){
-//        Navigator.of(context).pop();
-//        Navigator.push(
-//              context,
-//              MaterialPageRoute(builder: (context) => HomeT(logInData:res)),
-//        );
-      }
-      if(res == 'error'){
-        Navigator.of(context).pop();
-        setState((){
+      setState(() {
+        data = res;
+      });
+      if(data.isNotEmpty){
 
-        });
+        Navigator.of(context).pop();
+        Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeT(logInData:data[0]['empid'])),
+        );
+      }
+      if(data.isEmpty){
+        Navigator.of(context).pop();
         showDialog(
           barrierDismissible: true,
           context: context,
@@ -81,34 +83,35 @@ class _SignInPageState extends State<SignInPage> {
           },
         );
       }
-    }else{
-      Navigator.of(context).pop();
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: new Text("Connection Problem"),
-            content: new Text("Please Connect to the wifi hotspot or turn your wifi on"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-
-            ],
-          );
-        },
-      );
-    }
+//    }
+//    else{
+//      Navigator.of(context).pop();
+//      showDialog(
+//        barrierDismissible: true,
+//        context: context,
+//        builder: (BuildContext context) {
+//          // return object of type Dialog
+//          return CupertinoAlertDialog(
+//            title: new Text("Connection Problem"),
+//            content: new Text("Please Connect to the wifi hotspot or turn your wifi on"),
+//            actions: <Widget>[
+//              // usually buttons at the bottom of the dialog
+//              new FlatButton(
+//                child: new Text("Close"),
+//                onPressed: () {
+//                  Navigator.of(context).pop();
+//                },
+//              ),
+//            ],
+//          );
+//        },
+//      );
+//    }
   }
 
   @override
   void initState(){
+    initPlatformState();
     super.initState();
     createDatabase();
   }
@@ -121,7 +124,12 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
-
+  Future<void> initPlatformState() async {
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -7,6 +7,7 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+
 class HomeT extends StatefulWidget {
   final logInData;
   HomeT({Key key, @required this.logInData}) : super(key: key);
@@ -17,12 +18,13 @@ class HomeT extends StatefulWidget {
 class _Home extends State<HomeT> {
   final db = PayParkingDatabase();
   List userData;
+
   String empId;
   String name;
   String empNameFn;
   String location;
   String userImage;
-
+  String loc;
   String data;
   Timer timer;
   int counter;
@@ -40,16 +42,30 @@ class _Home extends State<HomeT> {
   }
 
   Future getUserData() async{
-    var res = await db.olFetchUserData(widget.logInData);
+//    var res = await db.olFetchUserData(widget.logInData);
+    var count = await db.ofCountFetchUserData(widget.logInData);
+    var res = await db.ofFetchUserData(widget.logInData);
     setState((){
-      userData = res["user_details"];
-      empId = userData[0]["emp_id"];
-      name = userData[0]["emp_name"];
-      empNameFn = userData[0]["emp_namefn"];
-      location = userData[0]["location"];
-      userImage = userData[0]["user_image"];
+
+      for(var q= 0; q < count; q++){
+       userData = res;
+       loc = userData[q]['location'];
+
+      }
+//      name = userData[0]['fullname'];
+      print(loc);
+
+//      userData = count;
+//      print(userData[1]['location']);
+//      empId = userData[0]["empid"];
+//      name = userData[0]["username"];
+//      empNameFn = userData[0]["emp_namefn"];
+//      location = userData[0]["location"];
+//      userImage = userData[0]["user_image"];
     });
   }
+
+
 
   @override
   void initState(){
@@ -72,6 +88,7 @@ class _Home extends State<HomeT> {
     super.initState();
     getCounter();
     timer = Timer.periodic(Duration(seconds: 5), (Timer t) => getCounter());
+
   }
 
   @override

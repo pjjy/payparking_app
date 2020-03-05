@@ -9,7 +9,7 @@ import 'dart:async';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
+
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 
 
@@ -266,7 +266,6 @@ class _ParkTrans extends State<ParkTrans>{
 
   void saveData() async{
       var uid = DateFormat("yyMMdHms").format(new DateTime.now());
-      bool result = await DataConnectionChecker().hasConnection;
       String plateNumber;
       var year = new DateFormat("yy").format(new DateTime.now());
       var month = new DateFormat("MM").format(new DateTime.now());
@@ -319,9 +318,9 @@ class _ParkTrans extends State<ParkTrans>{
                   plateNoController.text = "";
 //                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
                   await db.ofSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,empId,fName,stat,locationAnew);
-//                  await db.olSendTransType(widget.empId,'ticket');
-//                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
-//                  });
+                  await db.olSendTransType(widget.empId,'ticket');
+                  AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
+                  });
                   Fluttertoast.showToast(
                       msg: "Successfully added to transactions",
                       toastLength: Toast.LENGTH_LONG,

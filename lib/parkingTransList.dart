@@ -150,7 +150,7 @@ class _ParkTransList extends State<ParkTransList>{
   }
 
 
-  Future managerCancel(id) async{
+  Future managerCancel(plateNumber,id) async{
 
 
 
@@ -167,7 +167,7 @@ class _ParkTransList extends State<ParkTransList>{
             // return object of type Dialog
             return CupertinoAlertDialog(
               title: new Text("Successfully Cancelled"),
-              content: new Text("Plate # successfully removed"),
+              content: new Text("Plate '$plateNumber' successfully removed"),
               actions: <Widget>[
                 // usually buttons at the bottom of the dialog
                 new FlatButton(
@@ -736,7 +736,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]["id"]);
+                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
                                                 },
                                               ),
                                               new FlatButton(
@@ -1202,7 +1202,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]["d_id"]);
+                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["d_id"]);
                                                 },
                                               ),
                                               new FlatButton(

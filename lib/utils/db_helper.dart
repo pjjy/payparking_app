@@ -204,15 +204,25 @@ class PayParkingDatabase {
    Future ofLogin(username,password) async{
     var client = await db;
     var passwordF = md5.convert(utf8.encode(password));
-    var ret = client.rawQuery("SELECT * FROM tbl_users WHERE username = '$username' AND password = '$passwordF'",null);
-    if(ret.length  != null){
-      return "true";
-    }else{
-      return "false";
-    }
-//  return ret;
+    var res  = client.rawQuery("SELECT * FROM tbl_users WHERE username = '$username' AND password = '$passwordF'",null);
+    return res;
   }
 
+  Future ofCountFetchUserData(userId) async{
+    var client = await db;
+    var count = Sqflite.firstIntValue(await client.rawQuery("SELECT COUNT(*) FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locationId WHERE userloc.empId = '$userId'",null));
+//    for(var q = 0; q < count; q++){
+//       res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId WHERE userloc.empId = '$userId'");
+//
+//    }
+    return count;
+  }
+
+  Future ofFetchUserData(userId) async{
+    var client = await db;
+    var res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId  INNER JOIN tbl_users as users ON users.empid = userloc.empId WHERE users.empid = '$userId'");
+    return res;
+  }
 
 
 
