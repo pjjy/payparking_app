@@ -6,6 +6,7 @@ import  'settings.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+//import 'package:flutter_blue/flutter_blue.dart';
 
 
 class HomeT extends StatefulWidget {
@@ -17,19 +18,25 @@ class HomeT extends StatefulWidget {
 
 class _Home extends State<HomeT> {
   final db = PayParkingDatabase();
-  List userData;
 
+  //bluetooth var
+//  BluetoothDevice device;
+//  BluetoothState state;
+//  BluetoothDeviceState deviceState;
+  //end bluetooth var
+
+  List userData;
+  List userData1;
   String empId;
   String name;
   String empNameFn;
   String location;
-  String userImage;
-  String loc;
+  String loc = " ";
   String data;
   Timer timer;
   int counter;
 
-  Future getCounter() async {
+    Future getCounter() async {
     var res = await db.getCounter();
     setState(() {
       if (counter == null) {
@@ -43,51 +50,59 @@ class _Home extends State<HomeT> {
 
   Future getUserData() async{
 //    var res = await db.olFetchUserData(widget.logInData);
-    var count = await db.ofCountFetchUserData(widget.logInData);
-    var res = await db.ofFetchUserData(widget.logInData);
-    setState((){
+    var getLoc = await db.ofCountFetchUserData(widget.logInData);
+    userData = getLoc;
+    int count = userData[0]['count'];
+    var locId = userData[0]['location_id'];
+    var res = await db.ofFetchUserData(locId);
+    userData1 = res;
 
-      for(var q= 0; q < count; q++){
-       userData = res;
-       loc = userData[q]['location'];
-
+    setState(() {
+     for(var q = 0; q < count; q++) {
+       loc = (userData1[q]['location'])+", "+loc;
+       if(count>1){
+         loc = loc.substring(0, loc.length - 1);
+       }else{
+         loc = loc.substring(0, loc.length - 1);
+       }
       }
-//      name = userData[0]['fullname'];
-      print(loc);
-
-//      userData = count;
-//      print(userData[1]['location']);
-//      empId = userData[0]["empid"];
-//      name = userData[0]["username"];
-//      empNameFn = userData[0]["emp_namefn"];
-//      location = userData[0]["location"];
-//      userImage = userData[0]["user_image"];
+      name = userData[0]['username'];
+      empNameFn = userData[0]['fullname'];
+      location = loc;
+      empId = userData[0]['userEmpID'];
+      print(name);
+      print(empNameFn);
+      print(location);
+      print(empId);
     });
   }
-
-
 
   @override
   void initState(){
     super.initState();
-    if(empId == null || name == null || location == null || empNameFn == null || userImage == null)
+    if(empId == null || name == null || location == null || empNameFn == null)
     {
       empId = "";
       name = "";
       empNameFn = "";
       location = "";
-      userImage = "";
+
+      print("di pwde kai walai location");
+//      Navigator.of(context).pop();
+
     }else{
       empId = empId;
       name = name;
       empNameFn = empNameFn;
       location = location;
-      userImage = userImage;
     }
     getUserData();
     super.initState();
     getCounter();
     timer = Timer.periodic(Duration(seconds: 5), (Timer t) => getCounter());
+//    if (state == BluetoothState.off) {
+//      print("bluetooth is off");
+//    }
 
   }
 
@@ -99,6 +114,9 @@ class _Home extends State<HomeT> {
 
   @override
   Widget build(BuildContext context){
+
+
+
     double width = MediaQuery.of(context).size.width;
     var  defFontSize = 12.0;
     if(width <= 400){
@@ -190,7 +208,7 @@ class _Home extends State<HomeT> {
           case 3:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: Settings(empNameFn:empNameFn, userImage:userImage, location:location),
+                child: Settings(empNameFn:empNameFn, location:location),
               );
             });
           break;

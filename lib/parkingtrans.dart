@@ -318,7 +318,7 @@ class _ParkTrans extends State<ParkTrans>{
                   plateNoController.text = "";
 //                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
                   await db.ofSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,empId,fName,stat,locationAnew);
-                  await db.olSendTransType(widget.empId,'ticket');
+//                  await db.olSendTransType(widget.empId,'ticket');
                   AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                   });
                   Fluttertoast.showToast(

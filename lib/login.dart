@@ -199,18 +199,19 @@ class _SignInPageState extends State<SignInPage> {
 
     return Container(
       child: Scaffold(
-//        appBar: AppBar(
-//          backgroundColor: Colors.white,
-//          elevation: 0.0,
-//          centerTitle: true,
+
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          centerTitle: true,
 //          title: Text(''),
-//          textTheme: TextTheme(
-//              title: TextStyle(
-//                  color: Colors.black,
-//                  fontWeight: FontWeight.bold
-//              )
-//          ),
-//        ),
+          leading: new IconButton(
+            icon: new Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+
+            },
+          ),
+        ),
         backgroundColor: Colors.white,
         body: new Center(
           child: Form(
@@ -220,7 +221,7 @@ class _SignInPageState extends State<SignInPage> {
               shrinkWrap: true,
               padding: new EdgeInsets.only(left: 30.0, right: 30.0),
               children: <Widget>[
-                SizedBox(height: 100.0),
+                SizedBox(height: 40.0),
                 logoSmall,
                 SizedBox(height: 0.0),
                 logo,

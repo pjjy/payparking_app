@@ -39,6 +39,7 @@ dependencies:
   data_connection_checker: ^0.3.4
   signature: ^2.0.1
   flutter_appavailability: ^0.0.21
+#  flutter_blue: ^0.6.3+1
 
 
 dev_dependencies:

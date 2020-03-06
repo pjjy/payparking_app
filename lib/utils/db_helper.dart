@@ -72,6 +72,7 @@ class PayParkingDatabase {
     db.execute('''
       CREATE TABLE tbl_users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uid TEXT,
         empid TEXT,
         fullname TEXT,
         username TEXT,
@@ -122,9 +123,9 @@ class PayParkingDatabase {
       return client.rawQuery('SELECT * FROM tbl_oftransactions WHERE status ="1"',null);
   }
 
-  Future ofSaveUsers(empId,fullName,userName,password,userType,status) async{
+  Future ofSaveUsers(uid,empId,fullName,userName,password,userType,status) async{
     var client = await db;
-    return client.insert('tbl_users',{'empid':empId,'fullname':fullName,'username':userName,'password':password,'usertype':userType,'status':status});
+    return client.insert('tbl_users',{'uid':uid,'empid':empId,'fullname':fullName,'username':userName,'password':password,'usertype':userType,'status':status});
 
   }
 
@@ -210,17 +211,15 @@ class PayParkingDatabase {
 
   Future ofCountFetchUserData(userId) async{
     var client = await db;
-    var count = Sqflite.firstIntValue(await client.rawQuery("SELECT COUNT(*) FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locationId WHERE userloc.empId = '$userId'",null));
-//    for(var q = 0; q < count; q++){
-//       res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId WHERE userloc.empId = '$userId'");
-//
-//    }
+    var count = client.rawQuery("SELECT COUNT(*) as count, group_concat(locationId) as location_id ,fullname,user.empid as userEmpID,username FROM tbl_usersLocationUser as userloc INNER JOIN tbl_users as user ON userloc.userId = user.uid WHERE user.empId = '$userId'",null);
     return count;
   }
 
-  Future ofFetchUserData(userId) async{
+  Future ofFetchUserData(locId) async{
     var client = await db;
-    var res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId  INNER JOIN tbl_users as users ON users.empid = userloc.empId WHERE users.empid = '$userId'");
+//    var res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId  INNER JOIN tbl_users as users ON users.empid = userloc.empId WHERE users.empid = '$userId'");
+    var res = client.rawQuery("SELECT location from tbl_location WHERE locationId IN (1,2,3);");
+
     return res;
   }
 

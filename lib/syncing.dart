@@ -114,7 +114,7 @@ class _SyncingPage extends State<SyncingPage>{
       dataUser = jsonDecode(response.body);
       plateData = dataUser['user_details'];
 
-      await db.ofSaveUsers(plateData[i]['d_emp_id'],plateData[i]['d_full_name'],plateData[i]['d_username'],plateData[i]['d_password'],plateData[i]['d_usertype'],plateData[i]['d_status']);
+      await db.ofSaveUsers(plateData[i]['d_user_id'],plateData[i]['d_emp_id'],plateData[i]['d_full_name'],plateData[i]['d_username'],plateData[i]['d_password'],plateData[i]['d_usertype'],plateData[i]['d_status']);
       if(i == count-1){
          downloadLocationUser();
       }

@@ -177,16 +177,10 @@ class _HistoryTransList extends State<HistoryTransList> {
             );
           },
         ),
-        textTheme: TextTheme(
-            title: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-            )
-        ),
+
         actions: <Widget>[
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: Colors.black),
-
             onSelected: choiceAction,
             itemBuilder: (BuildContext context){
               return Constants.choices.map((String choice){

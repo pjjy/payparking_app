@@ -4,19 +4,18 @@ import 'login.dart';
 
 class Settings extends StatefulWidget {
   final String empNameFn;
-  final String userImage;
   final String location;
-  Settings({Key key, @required this.empNameFn, this.userImage, this.location}) : super(key: key);
+  Settings({Key key, @required this.empNameFn, this.location}) : super(key: key);
   @override
   _Settings createState() => _Settings();
 }
 
 class _Settings extends State<Settings>{
-  String image;
+
   String name;
   String location;
   Future getData() async{
-      image = widget.userImage;
+
       name = widget.empNameFn;
       location = widget.location;
   }
@@ -70,16 +69,6 @@ class _Settings extends State<Settings>{
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          new Container(
-                              width: 190.0,
-                              height: 190.0,
-                              decoration: new BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: new NetworkImage(image)
-                                  )
-                              )),
                           Divider(
                             color: Colors.transparent,
                             height: 40.0,
