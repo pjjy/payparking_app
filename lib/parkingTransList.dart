@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:payparking_app/utils/db_helper.dart';
+import 'package:payparking_app/utils/file_creator.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
@@ -23,6 +24,7 @@ class ParkTransList extends StatefulWidget{
 class _ParkTransList extends State<ParkTransList>{
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
+  final fileCreate = PayParkingFileCreator();
   List plateData;
   List plateData2;
   TextEditingController _managerKeyUserPass;
@@ -81,9 +83,11 @@ class _ParkTransList extends State<ParkTransList>{
 //      await db.olAddTransHistory(id,uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),outBy.toString(),location.toString());
       await db.addTransHistory(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       await db.updatePayTranStat(id);
+      await fileCreate.transactionTypeFunc('print_penalty');
+      await fileCreate.transPenaltyFunc(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay.toString(),penalty.toString(),user.toString(),empNameIn.toString(),outBy.toString(),empNameOut.toString(),location.toString());
       getTransData();
 
-      await db.olSendTransType(widget.empId,'penalty');
+//      await db.olSendTransType(widget.empId,'penalty');
       AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
       });
 

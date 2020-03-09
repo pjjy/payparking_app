@@ -11,7 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 import 'package:flutter_appavailability/flutter_appavailability.dart';
-
+import 'package:payparking_app/utils/file_creator.dart';
 
 
 class ParkTrans extends StatefulWidget {
@@ -27,6 +27,7 @@ class ParkTrans extends StatefulWidget {
 class _ParkTrans extends State<ParkTrans>{
 
   final db = PayParkingDatabase();
+  final fileCreate = PayParkingFileCreator();
   File pickedImage;
   bool _isEnabled = true;
   String locationA = "Location";
@@ -95,32 +96,32 @@ class _ParkTrans extends State<ParkTrans>{
     return temp;
   }
 
-  Future trapLocation() async{
-    var res = await db.trapLocation(widget.empId);
-    if(res == true){
-       _isEnabled = false;
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return CupertinoAlertDialog(
-            title: new Text("Location Problem"),
-            content: new Text("This user has no location yet please contact your admin for location setup"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed:(){
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
+//  Future trapLocation() async{
+//    var res = await db.trapLocation(widget.empId);
+//    if(res == true){
+//       _isEnabled = false;
+//      showDialog(
+//        barrierDismissible: false,
+//        context: context,
+//        builder: (BuildContext context) {
+//          // return object of type Dialog
+//          return CupertinoAlertDialog(
+//            title: new Text("Location Problem"),
+//            content: new Text("This user has no location yet please contact your admin for location setup"),
+//            actions: <Widget>[
+//              // usually buttons at the bottom of the dialog
+//              new FlatButton(
+//                child: new Text("Close"),
+//                onPressed:(){
+//                  Navigator.of(context).pop();
+//                },
+//              ),
+//            ],
+//          );
+//        },
+//      );
+//    }
+//  }
 
    void addLocation() async{
        showDialog(
@@ -319,6 +320,8 @@ class _ParkTrans extends State<ParkTrans>{
 //                  await db.olSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat,locationAnew);
                   await db.ofSaveTransaction(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,empId,fName,stat,locationAnew);
 //                  await db.olSendTransType(widget.empId,'ticket');
+                  await fileCreate.transactionTypeFunc('print_coupon');
+                  await fileCreate.transactionsFunc(uid,checkDigitResult,plateNumber,dateToday,dateTimeToday,dateUntil,amount,empId,locationAnew);
                   AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                   });
                   Fluttertoast.showToast(
@@ -343,7 +346,7 @@ class _ParkTrans extends State<ParkTrans>{
   @override
   void initState(){
     super.initState();
-    trapLocation();
+//    trapLocation();
   }
 
   @override

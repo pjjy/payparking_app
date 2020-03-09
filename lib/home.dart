@@ -59,7 +59,7 @@ class _Home extends State<HomeT> {
 
     setState(() {
      for(var q = 0; q < count; q++) {
-       loc = (userData1[q]['location'])+", "+loc;
+       loc = (userData1[q]['location'])+" ,"+loc;
        if(count>1){
          loc = loc.substring(0, loc.length - 1);
        }else{
