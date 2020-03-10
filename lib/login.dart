@@ -4,6 +4,8 @@ import 'home.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'constants.dart';
+import 'syncing.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -11,7 +13,6 @@ class SignInPage extends StatefulWidget {
 }
 class _SignInPageState extends State<SignInPage> {
   final db = PayParkingDatabase();
-
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -184,7 +185,6 @@ class _SignInPageState extends State<SignInPage> {
         height: 90.0,
         child: CupertinoButton(
           child:  Text('Log in',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/20.0, color: Colors.lightBlue),),
-
           onPressed:(){
 //            Navigator.push(
 //              context,
@@ -205,12 +205,20 @@ class _SignInPageState extends State<SignInPage> {
           elevation: 0.0,
           centerTitle: true,
 //          title: Text(''),
-          leading: new IconButton(
-            icon: new Icon(Icons.settings, color: Colors.black),
-            onPressed: () {
-
-            },
-          ),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              icon: Icon(Icons.settings_backup_restore, color: Colors.black),
+              onSelected: choiceAction,
+              itemBuilder: (BuildContext context){
+                return Constants.choices.map((String choice){
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         backgroundColor: Colors.white,
         body: new Center(
@@ -237,5 +245,15 @@ class _SignInPageState extends State<SignInPage> {
         ),
       ),
     );
+  }
+  void choiceAction(String choice){
+    if(choice == Constants.dbSync){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SyncingPage()),
+      ).then((result) {
+
+      });
+    }
   }
 }

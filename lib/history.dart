@@ -180,7 +180,7 @@ class _HistoryTransList extends State<HistoryTransList> {
 
         actions: <Widget>[
           PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: Colors.black),
+            icon: Icon(Icons.settings_backup_restore, color: Colors.black),
             onSelected: choiceAction,
             itemBuilder: (BuildContext context){
               return Constants.choices.map((String choice){

@@ -693,7 +693,6 @@ class _ParkTransList extends State<ParkTransList>{
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
                                                     managerLoginReprint(plateData[index]['uid'],plateData[index]["chekDigit"],plateData[index]["plateNumber"],plateData[index]['dateToday'],plateData[index]["dateTimeToday"],plateData[index]['dateUntil'],plateData[index]['amount'],plateData[index]["user"],plateData[index]['location']);
-
                                                   }
                                               ),
                                               new FlatButton(

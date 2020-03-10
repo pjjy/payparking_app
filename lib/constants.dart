@@ -5,8 +5,8 @@ class Constants{
   static const String dbSync = 'Database Sync';
 
   static const List<String> choices = <String>[
-    dlReport,
-    rgReport,
+//    dlReport,
+//    rgReport,
     dbSync
   ];
 }

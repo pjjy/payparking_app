@@ -86,7 +86,7 @@ class _SyncingPage extends State<SyncingPage>{
       }
       if(result == false){
         Fluttertoast.showToast(
-            msg: "no netd",
+            msg: "Please connect to a network",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIos: 2,
@@ -97,7 +97,6 @@ class _SyncingPage extends State<SyncingPage>{
         Navigator.of(context).pop();
       }
     }
-
   }
 
   Future userDownLoad()async{
