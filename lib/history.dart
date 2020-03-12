@@ -7,6 +7,7 @@ import 'constants.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'dart:async';
+import 'package:payparking_app/utils/file_creator.dart';
 
 class HistoryTransList extends StatefulWidget {
   final String location;
@@ -19,6 +20,7 @@ class HistoryTransList extends StatefulWidget {
 class _HistoryTransList extends State<HistoryTransList> {
   final oCcy = new NumberFormat("#,##0.00", "en_US");
   final db = PayParkingDatabase();
+  final fileCreate = PayParkingFileCreator();
   List plateData;
   List syncData;
   String alert;
@@ -313,8 +315,10 @@ class _HistoryTransList extends State<HistoryTransList> {
                                       Navigator.of(context).pop();
 //                                      print(widget.empId);
 //                                      print('reprint_penalty');
-                                        await db.olSendTransType(widget.empId,'reprint_penalty');
-                                        await db.olPenaltyReprint(plateData[index]['d_uid'],plateData[index]['d_transcode'],plateData[index]['d_Plate'],plateData[index]['d_dateTimeIn'],plateData[index]['d_dateTimeout'],plateData[index]['d_amount'],plateData[index]['d_penalty'],plateData[index]['d_in_empid'],plateData[index]['out_empid'],plateData[index]['d_location']);
+//                                        await db.olSendTransType(widget.empId,'reprint_penalty');
+//                                        await db.olPenaltyReprint(plateData[index]['d_uid'],plateData[index]['d_transcode'],plateData[index]['d_Plate'],plateData[index]['d_dateTimeIn'],plateData[index]['d_dateTimeout'],plateData[index]['d_amount'],plateData[index]['d_penalty'],plateData[index]['d_in_empid'],plateData[index]['out_empid'],plateData[index]['d_location']);
+                                        await fileCreate.transactionTypeFunc('reprint_penalty');
+                                        await fileCreate.transPenaltyFunc(plateData[index]['uid'],plateData[index]['checkDigit'],plateData[index]['plateNumber'],plateData[index]['dateTimein'],plateData[index]['dateTimeout'],plateData[index]['amount'],plateData[index]['penalty'],plateData[index]['user'],plateData[index]['empNameIn'],plateData[index]['outBy'],plateData[index]['empNameOut'],plateData[index]['location']);
                                         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
                                         });
 //                                        print(plateData[index]['d_uid']);

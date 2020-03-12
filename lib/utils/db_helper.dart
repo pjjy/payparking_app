@@ -82,6 +82,16 @@ class PayParkingDatabase {
         )''');
 
     db.execute('''
+      CREATE TABLE tbl_manager(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        empId TEXT,
+        username TEXT,
+        password TEXT,
+        usertype TEXT,
+        status TEXT
+        )''');
+
+    db.execute('''
       CREATE TABLE tbl_usersLocationUser(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         locUserId TEXT,
@@ -137,6 +147,11 @@ class PayParkingDatabase {
   Future ofSaveLocation(locationId,location,locationAddress,status) async{
     var client = await db;
     return client.insert('tbl_location',{'locationId':locationId,'location':location,'locationaddress':locationAddress,'status':status});
+  }
+
+  Future ofSaveManagers(empId,username,password,userType,status) async{
+    var client = await db;
+    return client.insert('tbl_manager',{'empId':empId,'username':username,'password':password,'usertype':userType,'status':status,});
   }
 
   Future ofFetchSearch(text) async{
@@ -218,8 +233,14 @@ class PayParkingDatabase {
   Future ofFetchUserData(locId) async{
     var client = await db;
 //    var res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId  INNER JOIN tbl_users as users ON users.empid = userloc.empId WHERE users.empid = '$userId'");
-    var res = client.rawQuery("SELECT location from tbl_location WHERE locationId IN (1,2,3);");
+    var res = client.rawQuery("SELECT location from tbl_location WHERE locationId IN ($locId);");
+    return res;
+  }
 
+  Future ofManagerLogin(username,password) async{
+    var client = await db;
+    var passwordF = md5.convert(utf8.encode(password));
+    var res  = client.rawQuery("SELECT * FROM tbl_manager WHERE username = '$username' AND password = '$passwordF'",null);
     return res;
   }
 
@@ -245,6 +266,14 @@ class PayParkingDatabase {
   Future countTblLocation() async{
     var dataUser;
     final response = await http.post("http://172.16.46.130/e_parking/app_countLocation",body:{
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
+  Future countTblManager() async{
+    var dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_countTblManager",body:{
     });
     dataUser = jsonDecode(response.body);
     return dataUser;

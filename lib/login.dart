@@ -24,8 +24,6 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void log(){
-
-
     setState((){
       showDialog(
         barrierDismissible: false,
@@ -54,12 +52,15 @@ class _SignInPageState extends State<SignInPage> {
         data = res;
       });
       if(data.isNotEmpty){
-
+        print(data[0]['empid']);
         Navigator.of(context).pop();
         Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomeT(logInData:data[0]['empid'])),
         );
+
+//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeT(logInData:data[0]['empid'])));
+
       }
       if(data.isEmpty){
         Navigator.of(context).pop();

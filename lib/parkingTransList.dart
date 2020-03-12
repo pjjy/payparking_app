@@ -6,7 +6,6 @@ import 'package:payparking_app/utils/file_creator.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
-
 import 'update.dart';
 import 'delinquent.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
@@ -115,14 +114,19 @@ class _ParkTransList extends State<ParkTransList>{
 
   Future managerLoginReprint(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location) async{
 //    bool result = await DataConnectionChecker().hasConnection;
-
+      print(plateNo);
       var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-//      print(res);
+
+//    var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+          print(res);
       if(res == 'true'){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
-        await db.olSendTransType(widget.empId,'reprint');
-        await db.olReprintCouponTicket(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location);
+//        await db.olSendTransType(widget.empId,'reprint');
+//        await db.olReprintCouponTicket(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location);
+         await fileCreate.transactionTypeFunc('reprint_coupon');
+         await fileCreate.transactionsFunc(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location);
+
         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
         });
       }
@@ -1156,7 +1160,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerLoginReprint(plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["platenumber"],plateData[index]['dateToday'],plateData[index]["dateTimeToday"],plateData[index]['dateUntil'],plateData[index]['amount'],plateData[index]["empId"],plateData[index]['location']);
+                                                  managerLoginReprint(plateData[index]['uid'],plateData[index]["checkDigit"],plateData[index]["plateNumber"],plateData[index]['dateToday'],plateData[index]["dateTimeToday"],plateData[index]['dateUntil'],plateData[index]['amount'],plateData[index]["empId"],plateData[index]['location']);
                                                 },
                                               ),
                                               new FlatButton(

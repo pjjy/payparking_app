@@ -82,24 +82,28 @@ class _Settings extends State<Settings>{
                           FlatButton(
                             child: new Text('Log Out'.toString(),style: TextStyle(fontSize: width/30.0, color: Colors.grey),),
                             color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+                            padding: EdgeInsets.symmetric(horizontal:width/150.0,vertical: 20.0),
                             shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(35.0),
+                                borderRadius: new BorderRadius.circular(30.0),
                                 side: BorderSide(color: Colors.lightBlue)
                             ),
                             onPressed:(){
-//                              Navigator.push(
-//                                context,
-//                                MaterialPageRoute(builder: (context) => SignInPage()),
-//                              );
+                              Navigator.push(
+                                   context,
+                                    MaterialPageRoute(builder: (context) => SignInPage()),
+                                  );
+//                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>  SignInPage()));
                             },
+                          ),
+                          Divider(
+                            color: Colors.transparent,
                           ),
                           FlatButton(
                             child: new Text('172.16.46.130'.toString(),style: TextStyle(fontSize: width/31.0, color: Colors.grey),),
                             color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal:width/15.0,vertical: 5.0),
+                            padding: EdgeInsets.symmetric(horizontal:width/150.0,vertical: 20.0),
                             shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(35.0),
+                                borderRadius: new BorderRadius.circular(30.0),
                                 side: BorderSide(color: Colors.lightBlue)
                             ),
                             onPressed:(){

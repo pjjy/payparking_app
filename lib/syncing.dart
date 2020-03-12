@@ -135,10 +135,30 @@ class _SyncingPage extends State<SyncingPage>{
       plateData = dataUser['user_details'];
       await db.ofSaveLocationUsers(plateData[i]['d_loc_user_id'],plateData[i]['d_user_id'],plateData[i]['d_location_id'],plateData[i]['d_emp_id']);
       if(i == count-1){
-        downloadLocation();
+        downloadManager();
       }
     }
   }
+
+   Future downloadManager() async{
+     int count;
+     int res = await db.countTblManager();
+     count = res;
+
+     for(int i = 0; i < count; i++) {
+       Map dataUser;
+       List plateData;
+       final response1 = await http.post("http://172.16.46.130/e_parking/app_downLoadManager", body: {
+         "tohide": "tohide"
+       });
+       dataUser = jsonDecode(response1.body);
+       plateData = dataUser['user_details'];
+       await db.ofSaveManagers(plateData[i]['d_emp_id'],plateData[i]['d_username'],plateData[i]['d_password'],plateData[i]['d_usertype'],plateData[i]['d_status']);
+       if(i == count-1){
+         downloadLocation();
+       }
+     }
+   }
 
   Future downloadLocation() async{
     int count;

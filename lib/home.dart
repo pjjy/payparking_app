@@ -36,7 +36,7 @@ class _Home extends State<HomeT> {
   Timer timer;
   int counter;
 
-    Future getCounter() async {
+  Future getCounter() async {
     var res = await db.getCounter();
     setState(() {
       if (counter == null) {
@@ -58,13 +58,14 @@ class _Home extends State<HomeT> {
     userData1 = res;
 
     setState(() {
-     for(var q = 0; q < count; q++) {
-       loc = (userData1[q]['location'])+" ,"+loc;
-       if(count>1){
-         loc = loc.substring(0, loc.length - 1);
-       }else{
-         loc = loc.substring(0, loc.length - 1);
-       }
+      print(userData1);
+      for(var q = 0; q < count; q++) {
+        loc = (userData1[q]['location'])+" , "+loc;
+        if(count>1){
+          loc = loc.substring(0, loc.length - 1);
+        }else{
+          loc = loc.substring(0, loc.length - 1);
+        }
       }
       name = userData[0]['username'];
       empNameFn = userData[0]['fullname'];
@@ -190,34 +191,31 @@ class _Home extends State<HomeT> {
                 child: ParkTrans(empId:empId, name:name, empNameFn:empNameFn, location:location),
               );
             });
-          break;
+            break;
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
                 child: ParkTransList(empId:empId, name:name, location:location, empNameFn:empNameFn),
               );
             });
-          break;
+            break;
           case 2:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
                 child: HistoryTransList(empId:empId,location:location),
               );
             });
-          break;
+            break;
           case 3:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
                 child: Settings(empNameFn:empNameFn, location:location),
               );
             });
-          break;
+            break;
         }
         return returnValue;
       },
     );
   }
 }
-
-
-

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
-
-import 'syncing.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,7 +12,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       home: SignInPage(),
-//    home:SyncingPage(),
     );
   }
 }

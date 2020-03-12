@@ -44,6 +44,7 @@ class PayParkingFileCreator {
     // Write the file
     String text = uid+"\n"+checkDigitResult+"\n"+plateNumber+"\n"+dateToday+"\n"+dateTimeToday+"\n"+dateUntil+"\n"+amount+"\n"+empId+"\n"+locationAnew;
     return file.writeAsString(text);
+
   }
 
   Future<File> transPenaltyFunc(uid,checkDigit,plateNumber,dateIn,dateNow,amountPay,penalty,user,empNameIn,outBy,empNameOut,location) async{
