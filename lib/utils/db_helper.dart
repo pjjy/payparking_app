@@ -164,6 +164,12 @@ class PayParkingDatabase {
     return client.update('tbl_oftransactions', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
   }
 
+
+  Future ofUpdateTransaction(int id, String plateNumber) async {
+    var client = await db;
+    return client.update('tbl_oftransactions', {'plateNumber': plateNumber}, where: 'id = ?', whereArgs: [id]);
+  }
+
   Future<List> fetchSync() async{
     var client = await db;
     return client.query('synchistory ORDER BY id DESC LIMIT 1');
@@ -210,6 +216,11 @@ class PayParkingDatabase {
     return client.rawQuery("DELETE FROM tbl_location");
   }
 
+  Future emptyManagerTbl() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM tbl_manager");
+  }
+
   Future<int> getCounter() async {
     //database connection
     var client = await db;
@@ -244,9 +255,7 @@ class PayParkingDatabase {
     return res;
   }
 
-
-
- //mysql query code
+  //mysql query code
   Future countTblUser() async{
     var dataUser;
     final response = await http.post("http://172.16.46.130/e_parking/app_countDataDownload",body:{

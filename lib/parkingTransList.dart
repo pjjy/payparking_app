@@ -26,6 +26,7 @@ class _ParkTransList extends State<ParkTransList>{
   final fileCreate = PayParkingFileCreator();
   List plateData;
   List plateData2;
+  List data;
   TextEditingController _managerKeyUserPass;
   TextEditingController _managerKeyUser;
   TextEditingController  _textController;
@@ -43,6 +44,12 @@ class _ParkTransList extends State<ParkTransList>{
       plateData = res;
     });
   }
+
+  Future updateStat(id) async{
+    print(id);
+    await db.updatePayTranStat(id);
+  }
+
 
 
 
@@ -115,11 +122,14 @@ class _ParkTransList extends State<ParkTransList>{
   Future managerLoginReprint(uid,checkDigit,plateNo,dateToday,dateTimeToday,dateUntil,amount,empId,location) async{
 //    bool result = await DataConnectionChecker().hasConnection;
       print(plateNo);
-      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+//      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
 
-//    var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-          print(res);
-      if(res == 'true'){
+    var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+//          print(res);
+    setState(() {
+      data = res;
+    });
+     if(data.isNotEmpty){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
 //        await db.olSendTransType(widget.empId,'reprint');
@@ -130,7 +140,7 @@ class _ParkTransList extends State<ParkTransList>{
         AppAvailability.launchApp("com.example.cpcl_test_v1").then((_) {
         });
       }
-      if(res == 'false'){
+      if(data.isEmpty){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
         showDialog(
@@ -163,8 +173,12 @@ class _ParkTransList extends State<ParkTransList>{
 
 
 
-      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-      if(res == 'true'){
+//      var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+    var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+    setState(() {
+      data = res;
+    });
+      if(data.isNotEmpty){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
         await db.olCancel(id);
@@ -181,6 +195,7 @@ class _ParkTransList extends State<ParkTransList>{
                 new FlatButton(
                   child: new Text("Close"),
                   onPressed: () {
+                    updateStat(id);
                     getTransData();
                     Navigator.of(context).pop();
                   },
@@ -190,7 +205,7 @@ class _ParkTransList extends State<ParkTransList>{
           },
         );
       }
-      if(res == 'false'){
+      if(data.isEmpty){
         _managerKeyUser.clear();
         _managerKeyUserPass.clear();
         showDialog(
@@ -609,8 +624,13 @@ class _ParkTransList extends State<ParkTransList>{
                                               new FlatButton(
                                                 child: new Text("Proceed"),
                                                 onPressed:() async{
-                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-                                                    if(res == 'true'){
+//                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+                                                  var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+
+                                                  setState(() {
+                                                    data = res;
+                                                  });
+                                                    if(data.isNotEmpty){
                                                       _managerKeyUser.clear();
                                                       _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
@@ -619,7 +639,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                         MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["uid"],plateNo:plateData[index]["plateNumber"])),
                                                       );
                                                     }
-                                                    if(res == 'false'){
+                                                    if(data.isEmpty){
                                                       _managerKeyUser.clear();
                                                       _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
@@ -1066,9 +1086,13 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:() async{
 
-                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
-                                                    print(res);
-                                                    if(res == 'true'){
+//                                                    var res = await db.olManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+//                                                    print(res);
+                                                  var res = await db.ofManagerLogin(_managerKeyUser.text,_managerKeyUserPass.text);
+                                                  setState(() {
+                                                    data = res;
+                                                  });
+                                                    if(data.isNotEmpty){
                                                       _managerKeyUser.clear();
                                                       _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
@@ -1077,7 +1101,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                         MaterialPageRoute(builder: (context) => Delinquent(id:plateData[index]["id"],fullName:widget.empNameFn,username:widget.name,uid:plateData[index]["uid"],plateNo:plateData[index]["plateNumber"])),
                                                       );
                                                     }
-                                                    if(res == 'false'){
+                                                    if(data.isEmpty){
                                                       _managerKeyUser.clear();
                                                       _managerKeyUserPass.clear();
                                                       Navigator.of(context).pop();
@@ -1209,7 +1233,7 @@ class _ParkTransList extends State<ParkTransList>{
                                                 child: new Text("Proceed"),
                                                 onPressed:(){
                                                   Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["d_id"]);
+                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
                                                 },
                                               ),
                                               new FlatButton(

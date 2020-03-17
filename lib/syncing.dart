@@ -28,9 +28,16 @@ class _SyncingPage extends State<SyncingPage>{
    String outBy;
    String empNameOut;
    String location;
+   String statusNumber = "";
+   String statusText = "";
 
 
    Future syncTransData() async{
+    setState(() {
+      statusNumber = "1/5";
+      statusText = "Uploading data";
+    });
+
      bool result = await DataConnectionChecker().hasConnection;
     var res = await db.fetchAllHistory();
     setState(() {
@@ -100,6 +107,13 @@ class _SyncingPage extends State<SyncingPage>{
   }
 
   Future userDownLoad()async{
+
+     setState(() {
+       statusNumber = "2/5";
+       statusText = "Updating users";
+     });
+
+
     int count;
     int res = await db.countTblUser();
     count = res;
@@ -121,6 +135,12 @@ class _SyncingPage extends State<SyncingPage>{
   }
 
   Future downloadLocationUser() async{
+
+    setState(() {
+      statusNumber = "3/5";
+      statusText = "Updating location user";
+    });
+
     int count;
     int res = await db.countTblLocationUser();
     count = res;
@@ -141,10 +161,16 @@ class _SyncingPage extends State<SyncingPage>{
   }
 
    Future downloadManager() async{
+    setState(() {
+      statusNumber = "4/5";
+      statusText = "Updating managers";
+    });
+
+
      int count;
      int res = await db.countTblManager();
      count = res;
-
+     await db.emptyManagerTbl();
      for(int i = 0; i < count; i++) {
        Map dataUser;
        List plateData;
@@ -161,6 +187,13 @@ class _SyncingPage extends State<SyncingPage>{
    }
 
   Future downloadLocation() async{
+
+
+    setState(() {
+      statusNumber = "5/5";
+      statusText = "Updating locations";
+    });
+
     int count;
     int res = await db.countTblLocation();
     count = res;
@@ -222,9 +255,26 @@ class _SyncingPage extends State<SyncingPage>{
               color: Colors.blue,
               size: 80,
             ),
+
           ),
+          SizedBox(
+            height: 40,
+          ),
+          GradientText(statusNumber,
+              gradient: LinearGradient(colors: [Colors.deepOrangeAccent, Colors.blue, Colors.pink]),
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center),
+          SizedBox(
+            height: 20,
+          ),
+          GradientText(statusText,
+              gradient: LinearGradient(colors: [Colors.black, Colors.blue, Colors.blueGrey]),
+              style: TextStyle(fontSize: 17),
+              textAlign: TextAlign.center),
         ],
       ),
     );
   }
 }
+
+

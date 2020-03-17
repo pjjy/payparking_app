@@ -144,7 +144,8 @@ class _UpdateTrans extends State<UpdateTrans>{
           );
         },
       );
-      await db.olUpdateTransaction(id,plateNumber,wheel,locationA);
+//      await db.olUpdateTransaction(id,plateNumber,wheel,locationA);
+      await db.ofUpdateTransaction(id,plateNumber);
 //      await db.addTrans(plateNumber,dateToday,dateTimeToday,dateUntil,amount,user,stat);
       locationA = "Location";
     }

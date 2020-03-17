@@ -7,7 +7,7 @@ import 'utils/db_helper.dart';
 
 
 class Delinquent extends StatefulWidget {
-  final String id;
+  final int id;
   final String plateNo;
   final String fullName;
   final String username;
