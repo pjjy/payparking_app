@@ -48,7 +48,7 @@ class _Settings extends State<Settings>{
         centerTitle: true,
         title: Text('Settings',style: TextStyle(fontWeight: FontWeight.bold,fontSize: width/28, color: Colors.black),),
         textTheme: TextTheme(
-              title: TextStyle(
+              caption: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold
               )
@@ -79,22 +79,22 @@ class _Settings extends State<Settings>{
                             color: Colors.transparent,
                             height: 60.0,
                           ),
-                          FlatButton(
-                            child: new Text('Log Out'.toString(),style: TextStyle(fontSize: width/30.0, color: Colors.grey),),
-                            color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal:width/150.0,vertical: 20.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.lightBlue)
-                            ),
-                            onPressed:(){
-                              Navigator.push(
-                                   context,
-                                    MaterialPageRoute(builder: (context) => SignInPage()),
-                                  );
-//                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>  SignInPage()));
-                            },
-                          ),
+//                          FlatButton(
+//                            child: new Text('Log Out'.toString(),style: TextStyle(fontSize: width/30.0, color: Colors.grey),),
+//                            color: Colors.transparent,
+//                            padding: EdgeInsets.symmetric(horizontal:width/150.0,vertical: 20.0),
+//                            shape: RoundedRectangleBorder(
+//                                borderRadius: new BorderRadius.circular(30.0),
+//                                side: BorderSide(color: Colors.lightBlue)
+//                            ),
+//                            onPressed:(){
+//                              Navigator.push(
+//                                   context,
+//                                    MaterialPageRoute(builder: (context) => SignInPage()),
+//                                  );
+////                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>  SignInPage()));
+//                            },
+//                          ),
                           Divider(
                             color: Colors.transparent,
                           ),

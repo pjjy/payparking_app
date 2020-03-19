@@ -75,7 +75,7 @@ class _Delinquent extends State<Delinquent>{
           ),
         ],
         textTheme: TextTheme(
-            title: TextStyle(
+            caption: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold
             )

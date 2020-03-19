@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
+//import 'dart:async';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:firebase_ml_vision/firebase_ml_vision.dart';

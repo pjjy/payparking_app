@@ -378,11 +378,10 @@ class _ParkTransList extends State<ParkTransList>{
                       final difference = dateTimeNow.difference(dateTimeIn).inMinutes;
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
-                      bool enabled = true;
+                      bool enabled = false;
                       if(difference >= 6){
                         enabled = false;
                       }
-
                       if(difference <= 90){
                         alertButton = "Logout";
                         trigger = 0;
@@ -396,6 +395,7 @@ class _ParkTransList extends State<ParkTransList>{
                       if(difference >= 101){
                         alertButton = "Logout & Print receipt";
                         trigger = 1;
+                        enabled = true;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 120 && vType == '100'){
@@ -731,53 +731,53 @@ class _ParkTransList extends State<ParkTransList>{
                                       );
                                     },
                                   ),
-                                  new FlatButton(
-                                    child: new Text("Cancellation"),
-                                    onPressed: enabled ? () {
-                                      Navigator.of(context).pop();
-                                      showDialog(
-                                        barrierDismissible: true,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          // return object of type Dialog
-                                          return CupertinoAlertDialog(
-                                            title: new Text("Manager's key"),
-                                            content: new Column(
-                                              children: <Widget>[
-                                                new CupertinoTextField(
-                                                  autofocus: true,
-                                                  placeholder: "Username",
-                                                  controller: _managerKeyUser,
-                                                ),
-                                                Divider(),
-                                                new CupertinoTextField(
-                                                  autofocus: true,
-                                                  placeholder: "Password",
-                                                  controller: _managerKeyUserPass,
-                                                  obscureText: true,
-                                                ),
-                                              ],
-                                            ),
-                                            actions: <Widget>[
-                                              new FlatButton(
-                                                child: new Text("Proceed"),
-                                                onPressed:(){
-                                                  Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
-                                                },
-                                              ),
-                                              new FlatButton(
-                                                child: new Text("Close"),
-                                                onPressed:(){
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    } : null,
-                                  ),
+//                                  new FlatButton(
+//                                    child: new Text("Cancellation"),
+//                                    onPressed: enabled ? () {
+//                                      Navigator.of(context).pop();
+//                                      showDialog(
+//                                        barrierDismissible: true,
+//                                        context: context,
+//                                        builder: (BuildContext context) {
+//                                          // return object of type Dialog
+//                                          return CupertinoAlertDialog(
+//                                            title: new Text("Manager's key"),
+//                                            content: new Column(
+//                                              children: <Widget>[
+//                                                new CupertinoTextField(
+//                                                  autofocus: true,
+//                                                  placeholder: "Username",
+//                                                  controller: _managerKeyUser,
+//                                                ),
+//                                                Divider(),
+//                                                new CupertinoTextField(
+//                                                  autofocus: true,
+//                                                  placeholder: "Password",
+//                                                  controller: _managerKeyUserPass,
+//                                                  obscureText: true,
+//                                                ),
+//                                              ],
+//                                            ),
+//                                            actions: <Widget>[
+//                                              new FlatButton(
+//                                                child: new Text("Proceed"),
+//                                                onPressed:(){
+//                                                  Navigator.of(context).pop();
+//                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
+//                                                },
+//                                              ),
+//                                              new FlatButton(
+//                                                child: new Text("Close"),
+//                                                onPressed:(){
+//                                                  Navigator.of(context).pop();
+//                                                },
+//                                              ),
+//                                            ],
+//                                          );
+//                                        },
+//                                      );
+//                                    } : null,
+//                                  ),
                                   new FlatButton(
                                     child: new Text("Close"),
                                     onPressed: () {
@@ -840,23 +840,26 @@ class _ParkTransList extends State<ParkTransList>{
                       final difference = dateTimeNow.difference(dateTimeIn).inMinutes;
                       final fifteenAgo = new DateTime.now().subtract(new Duration(minutes: difference));
                       final timeAg = timeAgo.format(fifteenAgo);
-                      bool enabled = true;
+                      bool enabled = false;
                       if(difference >= 6){
-                         enabled = false;
+//                         enabled = false;
                       }
                       if(difference <= 90){
                         alertButton = "Logout";
                         trigger = 0;
                         cardColor = Colors.white;
+//                        enabled = false;
                       }
                       if(difference >= 70 && difference <= 100){
                         alertButton = "Logout";
                         trigger = 0;
                         cardColor = Colors.blueAccent.withOpacity(.3);
+//                        enabled = false;
                       }
                       if(difference >= 101){
                         alertButton = "Logout & Print receipt";
                         trigger = 1;
+                        enabled = true;
                         cardColor = Colors.redAccent.withOpacity(.3);
                       }
                       if(difference >= 120 && vType == '100'){
@@ -1056,7 +1059,7 @@ class _ParkTransList extends State<ParkTransList>{
                                   ),
                                   new FlatButton(
                                     child: new Text("Escapee"),
-                                    onPressed: (){
+                                    onPressed: enabled ?  (){
                                       Navigator.of(context).pop();
                                       showDialog(
                                         barrierDismissible: true,
@@ -1138,7 +1141,7 @@ class _ParkTransList extends State<ParkTransList>{
                                           );
                                         },
                                       );
-                                    },
+                                    }:null,
                                   ),
                                   new FlatButton(
                                     child: new Text("Reprint"),
@@ -1199,55 +1202,55 @@ class _ParkTransList extends State<ParkTransList>{
                                       );
                                     },
                                   ),
-                                  new FlatButton(
-                                    child: new Text("Cancellation"),
-                                    onPressed: enabled ? () {
-                                      Navigator.of(context).pop();
-                                      showDialog(
-                                        barrierDismissible: true,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          // return object of type Dialog
-                                          return CupertinoAlertDialog(
-                                            title: new Text("Manager's key"),
-                                            content: new Column(
-                                              children: <Widget>[
-
-                                                new CupertinoTextField(
-                                                  autofocus: true,
-                                                  placeholder: "Username",
-                                                  controller: _managerKeyUser,
-                                                ),
-                                                Divider(),
-                                                new CupertinoTextField(
-                                                  autofocus: true,
-                                                  placeholder: "Password",
-                                                  controller: _managerKeyUserPass,
-                                                  obscureText: true,
-                                                ),
-
-                                              ],
-                                            ),
-                                            actions: <Widget>[
-                                              new FlatButton(
-                                                child: new Text("Proceed"),
-                                                onPressed:(){
-                                                  Navigator.of(context).pop();
-                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
-                                                },
-                                              ),
-                                              new FlatButton(
-                                                child: new Text("Close"),
-                                                onPressed:(){
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    } : null,
-                                  ),
+//                                  new FlatButton(
+//                                    child: new Text("Cancellation"),
+//                                    onPressed: enabled ? () {
+//                                      Navigator.of(context).pop();
+//                                      showDialog(
+//                                        barrierDismissible: true,
+//                                        context: context,
+//                                        builder: (BuildContext context) {
+//                                          // return object of type Dialog
+//                                          return CupertinoAlertDialog(
+//                                            title: new Text("Manager's key"),
+//                                            content: new Column(
+//                                              children: <Widget>[
+//
+//                                                new CupertinoTextField(
+//                                                  autofocus: true,
+//                                                  placeholder: "Username",
+//                                                  controller: _managerKeyUser,
+//                                                ),
+//                                                Divider(),
+//                                                new CupertinoTextField(
+//                                                  autofocus: true,
+//                                                  placeholder: "Password",
+//                                                  controller: _managerKeyUserPass,
+//                                                  obscureText: true,
+//                                                ),
+//
+//                                              ],
+//                                            ),
+//                                            actions: <Widget>[
+//                                              new FlatButton(
+//                                                child: new Text("Proceed"),
+//                                                onPressed:(){
+//                                                  Navigator.of(context).pop();
+//                                                  managerCancel(plateData[index]['plateNumber'],plateData[index]["id"]);
+//                                                },
+//                                              ),
+//                                              new FlatButton(
+//                                                child: new Text("Close"),
+//                                                onPressed:(){
+//                                                  Navigator.of(context).pop();
+//                                                },
+//                                              ),
+//                                            ],
+//                                          );
+//                                        },
+//                                      );
+//                                    } : null,
+//                                  ),
                                   new FlatButton(
                                     child: new Text("Close"),
                                     onPressed: () {

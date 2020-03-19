@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:payparking_app/utils/db_helper.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'parkingTransList.dart';
+//import 'parkingTransList.dart';
 
 class UpdateTrans extends StatefulWidget {
   final int id;
@@ -203,7 +203,7 @@ class _UpdateTrans extends State<UpdateTrans>{
           ),
         ],
         textTheme: TextTheme(
-            title: TextStyle(
+            caption: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold
             )

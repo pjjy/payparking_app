@@ -67,7 +67,7 @@ class _Delinquent extends State<Reprint>{
           ),
         ],
         textTheme: TextTheme(
-            title: TextStyle(
+            caption: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold
             )
@@ -132,6 +132,7 @@ class _Delinquent extends State<Reprint>{
                         print(widget.fullName);
                         print(dateToday);
                         print(widget.plateNo);
+                        print(imgGuard);
 //                        saveDelinquent(widget.id,widget.uid,widget.plateNo,dateToday,widget.fullName,_secNameController.text,imgGuard);
                         showDialog(
                           barrierDismissible: true,
