@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 
 class SyncingPage extends StatefulWidget{
@@ -34,7 +35,7 @@ class _SyncingPage extends State<SyncingPage>{
 
    Future syncTransData() async{
     setState(() {
-      statusNumber = "1/5";
+      statusNumber = "1/6";
       statusText = "Uploading data";
     });
 
@@ -109,7 +110,7 @@ class _SyncingPage extends State<SyncingPage>{
   Future userDownLoad()async{
 
      setState(() {
-       statusNumber = "2/5";
+       statusNumber = "2/6";
        statusText = "Updating users";
      });
 
@@ -137,7 +138,7 @@ class _SyncingPage extends State<SyncingPage>{
   Future downloadLocationUser() async{
 
     setState(() {
-      statusNumber = "3/5";
+      statusNumber = "3/6";
       statusText = "Updating location user";
     });
 
@@ -162,7 +163,7 @@ class _SyncingPage extends State<SyncingPage>{
 
    Future downloadManager() async{
     setState(() {
-      statusNumber = "4/5";
+      statusNumber = "4/6";
       statusText = "Updating managers";
     });
 
@@ -188,9 +189,8 @@ class _SyncingPage extends State<SyncingPage>{
 
   Future downloadLocation() async{
 
-
     setState(() {
-      statusNumber = "5/5";
+      statusNumber = "5/6";
       statusText = "Updating locations";
     });
 
@@ -208,6 +208,31 @@ class _SyncingPage extends State<SyncingPage>{
       plateData = dataUser['user_details'];
       await db.ofSaveLocation(plateData[i]['d_location_id'],plateData[i]['d_location'],plateData[i]['d_location_address'],plateData[i]['d_status']);
       if(i == count-1){
+        downloadDelinquent();
+      }
+    }
+  }
+
+   Future downloadDelinquent() async{
+     setState(() {
+       statusNumber = "6/6";
+       statusText = "Updating delinquents";
+     });
+     int count;
+     int res = await db.countTblDelinquent();
+     count = res;
+     await db.emptyDelinquent();
+     for(int i = 0; i < count; i++) {
+       Map dataUser;
+       List plateData;
+       final response1 = await http.post("http://172.16.46.130/e_parking/app_downloadDelinquent", body: {
+         "tohide": "tohide"
+       });
+       dataUser = jsonDecode(response1.body);
+       plateData = dataUser['user_details'];
+
+       await db.ofSaveDelinquent(plateData[i]['d_uid'],plateData[i]['d_plateno'],plateData[i]['d_dateToday'],plateData[i]['d_empName'],plateData[i]['d_secNameC'],plateData[i]['d_imgEmp']);
+       if(i == count-1){
        Fluttertoast.showToast(
            msg: "Transactions are successfully uploaded",
            toastLength: Toast.LENGTH_LONG,
@@ -217,16 +242,26 @@ class _SyncingPage extends State<SyncingPage>{
            textColor: Colors.white,
            fontSize: 16.0
        );
-       Navigator.of(context).pop();
-      }
-    }
-  }
+           Navigator.of(context).pop();
+       }
+     }
+   }
 
   @override
   void initState(){
     super.initState();
     syncTransData();
+    BackButtonInterceptor.add(myInterceptor);
   }
+   @override
+   void dispose() {
+     BackButtonInterceptor.remove(myInterceptor);
+     super.dispose();
+   }
+   bool myInterceptor(bool stopDefaultButtonEvent) {
+//     print("BACK BUTTON!"); // Do some stuff.
+     return true;
+   }
   @override
   Widget build(BuildContext context) {
     double setHeight;
@@ -255,7 +290,6 @@ class _SyncingPage extends State<SyncingPage>{
               color: Colors.blue,
               size: 80,
             ),
-
           ),
           SizedBox(
             height: 40,

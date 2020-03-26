@@ -115,6 +115,17 @@ class PayParkingDatabase {
         syncDate TEXT
         )''');
 
+    db.execute('''
+      CREATE TABLE tbl_delinquent(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uid TEXT,
+        plateno TEXT,
+        dateToday TEXT,
+        empName TEXT,
+        secNameC TEXT,
+        imgEmp TEXT
+        )''');
+
     print("Database was created!");
   }
 
@@ -164,7 +175,6 @@ class PayParkingDatabase {
     return client.update('tbl_oftransactions', {'status': '0'}, where: 'id = ?', whereArgs: [id]);
   }
 
-
   Future ofUpdateTransaction(int id, String plateNumber) async {
     var client = await db;
     return client.update('tbl_oftransactions', {'plateNumber': plateNumber}, where: 'id = ?', whereArgs: [id]);
@@ -193,6 +203,7 @@ class PayParkingDatabase {
   Future<int> addTransHistory(String uid,checkDigit,String plateNumber,String dateIn,String dateNow,String amountPay,String penalty,String user,String empNameIn,String outBy, String empNameOut,String location) async {
     var client = await db;
     return client.insert('payparhistory', {'uid':uid,'checkDigit':checkDigit,'plateNumber':plateNumber,'dateTimein':dateIn,'dateTimeout':dateNow,'amount':amountPay,'penalty':penalty,'user':user,'empNameIn':empNameIn,'outBy':outBy,'empNameOut':empNameOut ,'location':location});
+
   }
 
   Future emptyHistoryTbl() async{
@@ -221,6 +232,11 @@ class PayParkingDatabase {
     return client.rawQuery("DELETE FROM tbl_manager");
   }
 
+  Future emptyDelinquent() async{
+    var client = await db;
+    return client.rawQuery("DELETE FROM tbl_delinquent");
+  }
+
   Future<int> getCounter() async {
     //database connection
     var client = await db;
@@ -246,6 +262,12 @@ class PayParkingDatabase {
 //    var res = client.rawQuery("SELECT * FROM tbl_usersLocationUser as userloc INNER JOIN tbl_location as loc ON loc.locationId = userloc.locUserId  INNER JOIN tbl_users as users ON users.empid = userloc.empId WHERE users.empid = '$userId'");
     var res = client.rawQuery("SELECT location from tbl_location WHERE locationId IN ($locId);");
     return res;
+  }
+
+  Future ofSaveDelinquent(uid,plateNo,date,appUser,manager,signImg) async{
+    var client = await db;
+    return client.insert('tbl_delinquent', {'uid':uid,'plateno':plateNo,'dateToday':date,'empName':appUser,'secNameC':manager,'imgEmp':signImg});
+
   }
 
   Future ofManagerLogin(username,password) async{
@@ -288,13 +310,21 @@ class PayParkingDatabase {
     return dataUser;
   }
 
+  Future countTblDelinquent() async{
+    var dataUser;
+    final response = await http.post("http://172.16.46.130/e_parking/app_countTblDelinquent",body:{
+    });
+    dataUser = jsonDecode(response.body);
+    return dataUser;
+  }
+
 
   Future mysqlLogin(username,password) async{
       final response = await http.post("http://172.16.46.130/e_parking/app_login",body:{
         "username": username,
         "password": password,
       });
-      if(response.body.length >=1  && response.statusCode == 200){
+      if(response.body.length >= 1  && response.statusCode == 200){
         return response.body;
       }
       else{
