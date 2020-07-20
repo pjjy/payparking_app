@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:back_button_interceptor/back_button_interceptor.dart';
-
 
 class SyncingPage extends StatefulWidget{
   @override
@@ -34,17 +32,19 @@ class _SyncingPage extends State<SyncingPage>{
 
 
    Future syncTransData() async{
+
     setState(() {
       statusNumber = "1/6";
       statusText = "Uploading data";
     });
 
-     bool result = await DataConnectionChecker().hasConnection;
+    bool result = await DataConnectionChecker().hasConnection;
     var res = await db.fetchAllHistory();
     setState(() {
       hisData = res;
     });
      if(hisData.isEmpty){
+       print("heelo");
        if(result==true){
          userDownLoad();
        }
@@ -108,7 +108,7 @@ class _SyncingPage extends State<SyncingPage>{
   }
 
   Future userDownLoad()async{
-
+      print("helo");
      setState(() {
        statusNumber = "2/6";
        statusText = "Updating users";
@@ -251,17 +251,14 @@ class _SyncingPage extends State<SyncingPage>{
   void initState(){
     super.initState();
     syncTransData();
-    BackButtonInterceptor.add(myInterceptor);
+//    userDownLoad();
   }
    @override
    void dispose() {
-     BackButtonInterceptor.remove(myInterceptor);
+
      super.dispose();
    }
-   bool myInterceptor(bool stopDefaultButtonEvent) {
-//     print("BACK BUTTON!"); // Do some stuff.
-     return true;
-   }
+
   @override
   Widget build(BuildContext context) {
     double setHeight;
