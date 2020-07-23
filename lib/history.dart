@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:payparking_app/utils/db_helper.dart';
 import 'syncing.dart';
-import 'constants.dart';
+import 'constants1.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'dart:async';
 import 'package:payparking_app/utils/file_creator.dart';
+import 'about.dart';
 
 class HistoryTransList extends StatefulWidget {
   final String location;
@@ -183,7 +184,7 @@ class _HistoryTransList extends State<HistoryTransList> {
         actions: <Widget>[
           PopupMenuButton<String>(
             icon: Icon(Icons.settings_backup_restore, color: Colors.black),
-            onSelected: choiceAction,
+            onSelected: choiceAction1,
             itemBuilder: (BuildContext context){
               return Constants.choices.map((String choice){
                 return PopupMenuItem<String>(
@@ -389,11 +390,16 @@ class _HistoryTransList extends State<HistoryTransList> {
   void choiceAction(String choice){
     if(choice == Constants.dbSync){
       promptSyncData();
-    }else if(choice == Constants.dlReport){
-      print('daily report');
-    }else if(choice == Constants.rgReport){
-      print('range report');
+    }
+    if(choice == Constants.dbSync){
+      promptSyncData();
     }
   }
 
+  void choiceAction1(String choice){
+    if(choice == Constants.dbSync){
+      promptSyncData();
+    }
+
+  }
 }

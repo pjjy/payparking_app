@@ -6,6 +6,7 @@ import 'package:payparking_app/utils/db_helper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'constants.dart';
 import 'syncing.dart';
+import 'about.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -196,11 +197,8 @@ class _SignInPageState extends State<SignInPage> {
         ),
       ),
     );
-
-
     return Container(
       child: Scaffold(
-
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -252,6 +250,14 @@ class _SignInPageState extends State<SignInPage> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SyncingPage()),
+      ).then((result) {
+
+      });
+    }
+    if(choice == Constants.about){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => About()),
       ).then((result) {
 
       });
